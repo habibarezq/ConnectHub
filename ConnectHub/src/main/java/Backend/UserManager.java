@@ -5,8 +5,16 @@ import java.util.ArrayList;
 
 public class UserManager implements UserManagerInterface {
 
-    public ArrayList<User> users = new ArrayList<>();
+    private ArrayList<User> users;
+    
+    public UserManager() {
+        this.users = new ArrayList<>();
+    }
 
+    public  ArrayList<User> getUsers() {
+        return users;
+    }
+    
     @Override
     public void signup(String userID, String email, String username, String password, LocalDate dateOfBirth) {
         if (!findUserByID(userID)) {
@@ -14,6 +22,8 @@ public class UserManager implements UserManagerInterface {
             users.add(u);
         }
     }
+
+    
 
     @Override
     public void login(String email, String password) {
@@ -24,7 +34,7 @@ public class UserManager implements UserManagerInterface {
         }
     }
 
-    private boolean findUserByID(String userID) {
+    public boolean findUserByID(String userID) {
         for (User u : users) {
             if (userID.equals(u.getUserID())) {
                 return true;
@@ -33,7 +43,7 @@ public class UserManager implements UserManagerInterface {
         return false;
     }
 
-    private User findUser(String userID) {
+    public User findUser(String userID) {
         for (User u : users) {
             if (userID.equals(u.getUserID())) {
                 return u;
