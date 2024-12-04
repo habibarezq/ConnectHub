@@ -1,9 +1,11 @@
 package Backend;
 
+import Interfaces.FriendRequestService;
 import java.time.*;
 import java.util.ArrayList;
+import Interfaces.FriendshipManager;
 
-public class User implements UserInterface {
+public class User implements UserInterface, FriendshipManager, FriendRequestService {
 
     private String userID;
     private String email;
@@ -11,6 +13,7 @@ public class User implements UserInterface {
     private String password;
     private LocalDate dateOfBirth;
     protected String status;
+    //Each Friends,posts,stories will have its own database service
     private ArrayList friends;
     private ArrayList posts;
     private ArrayList stories;
@@ -96,23 +99,64 @@ public class User implements UserInterface {
         this.stories = stories;
     }
 
-    @Override
-    public void block(User other) {
-
-    }
 
     @Override
     public void removeFriend(User other) {
+       /*  try {
+            User user = UserManager.findUser(other.getUserID());
+
+            if (user != null) {
+                userRepository.deleteById(id);
+                return "Friend Removed successfully!";
+            } else {
+                return "Friend not found";
+            }
+        } catch (Exception e) {
+            return "An error occurred while removing User";
+        }*/
         getFriends().remove(other);
     }
 
+    
+
+    @Override
+    public void blockFriend(User other) {
+        getFriends().remove(other);
+        //Should block interactions and feed of blocked user and not show in suggestions
+    }
     @Override
     public void sendRequest(User other) {
+        Request friendRequest=new Request(this,other);
+        friendRequest.processFriendRequest();
+
+    }
+
+
+    @Override
+    public void suggestFriends(User other) {
+        System.out.println("Friends Suggestions ... ");
+    }
+
+    @Override
+    public void displayStatuses () {
+        System.out.println("All Friends + Their Statuses ... ");
+    }
+    
+    @Override
+    public void acceptRequest(Request friendRequest) {
+        friendRequest.processAcceptFriendRequest();
+        this.friends.add(friendRequest.getRecipient());
+        
+    }
+
+    @Override
+    public void declineRequest(Request friendRequest) {
+        friendRequest.processDeclineFriendRequest();
     }
 
     @Override
     public void logout() {
-        setStatus("offline");
+        setStatus("Offline");
     }
 
 }
