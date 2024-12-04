@@ -1,13 +1,22 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
- */
 package Interfaces;
 
-/**
- *
- * @author hp
- */
+import java.time.LocalDateTime;
+
 public interface ContentCreation {
-    
+
+    public String getContentId();
+
+    public void setContentId(String contentId);
+
+    public String getAuthorId();
+
+    public void setAuthorId(String authorId);
+
+    public String getContent();
+
+    public void setContent(String content);
+
+    public LocalDateTime getUploadingTime();
+
+    public void setUploadingTime(LocalDateTime uploadingTime);
 }
