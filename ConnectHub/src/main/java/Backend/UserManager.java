@@ -24,7 +24,7 @@ public class UserManager implements UserManagerInterface {
         if (!findUserByID(userID)) {
             User u = new User(userID, email, username, dateOfBirth, password);
             users.add(u);
-            u.setStatus("Online");
+            u.setStatus(true);
         }
     }
 
@@ -32,7 +32,7 @@ public class UserManager implements UserManagerInterface {
     public void login(String email, String password) {
         for (User u : users) {
             if (email.equals(u.getEmail()) && password.equals(u.getPassword())) {
-                u.setStatus("Online");
+                u.setStatus(true);
             }
         }
     }
