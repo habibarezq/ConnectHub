@@ -12,7 +12,7 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
     private String username;
     private String password;
     private LocalDate dateOfBirth;
-    protected String status;
+    protected boolean status;
     //Each Friends,posts,stories will have its own database service
     private ArrayList friends;
     private ArrayList posts;
@@ -24,7 +24,7 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
         this.username = username;
         this.password = password;
         this.dateOfBirth = dateOfBirth;
-        status = "online";
+        status = false;
     }
 
     public String getUserID() {
@@ -67,11 +67,11 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
         this.dateOfBirth = dateOfBirth;
     }
 
-    public String getStatus() {
+    public boolean getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(boolean status) {
         this.status = status;
     }
 
@@ -159,7 +159,7 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
 
     @Override
     public void logout() {
-        setStatus("Offline");
+        setStatus(false);
     }
 
 }
