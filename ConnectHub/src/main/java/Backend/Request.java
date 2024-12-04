@@ -32,7 +32,7 @@ public class Request {
     
     public void processDeclineFriendRequest()
     {
-        System.out.println("Declined Friend Request ...");
+        //System.out.println("Declined Friend Request ...");
         System.out.println(sender.getUsername()+" Declined "+ recipient.getUsername());
     }
 }
