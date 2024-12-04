@@ -135,6 +135,9 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
     @Override
     public void suggestFriends(User other) {
         System.out.println("Friends Suggestions ... ");
+        //Is it more logical to move this function elsewhere and send user as argument
+        //and compare users Friends' List and Users' List to print suggestions ?
+        
     }
 
     @Override
