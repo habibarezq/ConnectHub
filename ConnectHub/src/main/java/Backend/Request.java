@@ -32,8 +32,6 @@ public class Request {
     }
 
     public void processAcceptFriendRequest() {
-//        System.out.println("Accepted Friend Request ...");
-//        System.out.println(sender.getUsername() + " Accepted " + recipient.getUsername());
         if (recipient.getFriendRequests().containsKey(getSender()) && recipient.getFriendRequests().get(sender).equals("Pending")) {
             recipient.getFriendRequests().put(sender, "Accepted");
             recipient.getFriends().add(sender);
@@ -45,8 +43,6 @@ public class Request {
     }
 
     public void processDeclineFriendRequest() {
-//        System.out.println("Declined Friend Request ...");
-//        System.out.println(sender.getUsername() + " Declined " + recipient.getUsername());
         if (recipient.getFriendRequests().containsKey(getSender()) && recipient.getFriendRequests().get(sender).equals("Pending")) {
             recipient.getFriendRequests().put(sender, "Declined");
 
@@ -55,4 +51,4 @@ public class Request {
             System.out.println("No friend request from " + sender.getUsername());
         }
     }
-
+}
