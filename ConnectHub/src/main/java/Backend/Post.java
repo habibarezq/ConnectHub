@@ -1,13 +1,12 @@
 package Backend;
 
-import java.awt.Image;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Post extends Content{
-    public Post(String contentId, String authorId, String contentText, Image ContentImage, LocalDate uploadingTime) {
-        super(contentId, authorId, contentText, ContentImage, uploadingTime);
+    public Post(User u, String content) {
+        super(u.getUserID()+u.getNumberOfPosts(), u.getUserID(), content, LocalDateTime.now());
         // content id will be getUserName() + getNumPosts()
-        // author id is the normal user id
+        // author id is the normal user id getUserId()
         
     }
 

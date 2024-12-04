@@ -11,7 +11,14 @@ Interfaces\FriendshipManager.class
 Frontend\Signup.class
 Backend\UserInterface.class
 com\mycompany\connecthub\ConnectHub.class
+<<<<<<< HEAD
 Interfaces\FriendRequestService.class
 Backend\Request.class
 Backend\ProfileManagement.class
 Backend\UserManager.class
+=======
+<<<<<<< HEAD
+Frontend\Newsfeed.class
+=======
+>>>>>>> main
+>>>>>>> origin

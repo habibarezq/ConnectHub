@@ -6,9 +6,9 @@ import Backend.User;
 
 
 public interface FriendRequestService {
-    public void sendRequest(User reciever);
-    public void acceptRequest(Request friendRequest);
-    public void declineRequest(Request friendRequest);
+    public void sendRequest(User recipient);
+    public void acceptRequest(User sender);
+    public void declineRequest(User sender);
     
   
 }
