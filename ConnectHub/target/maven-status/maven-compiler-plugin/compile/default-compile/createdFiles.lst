@@ -2,3 +2,7 @@ Backend\NewClass.class
 Frontend\NewClass.class
 Interfaces\NewInterface.class
 com\mycompany\connecthub\ConnectHub.class
+<<<<<<< HEAD
+Frontend\Newsfeed.class
+=======
+>>>>>>> main
