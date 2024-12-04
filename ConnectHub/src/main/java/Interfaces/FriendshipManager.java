@@ -2,6 +2,7 @@
 package Interfaces;
 
 import Backend.User;
+import java.util.ArrayList;
 
 
 public interface FriendshipManager {
@@ -11,5 +12,6 @@ public interface FriendshipManager {
     public void blockFriend(User recipient);
     //Not sure ha7ot dy wala la2 hena
     public void displayStatuses ();
-    public void suggestFriends(User recipient);
+    public ArrayList<User> suggestFriends(ArrayList<User> allUsers);
+    
 }
