@@ -55,4 +55,4 @@ public class Request {
             System.out.println("No friend request from " + sender.getUsername());
         }
     }
-}
+
