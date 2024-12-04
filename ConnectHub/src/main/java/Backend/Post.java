@@ -1,6 +1,5 @@
 package Backend;
 
-import java.awt.Image;
 import java.time.LocalDate;
 
 public class Post extends Content{

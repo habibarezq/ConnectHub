@@ -4,6 +4,7 @@ import Interfaces.FriendRequestService;
 import java.time.*;
 import java.util.ArrayList;
 import Interfaces.FriendshipManager;
+import java.util.HashMap;
 
 public class User implements UserInterface, FriendshipManager, FriendRequestService {
 
@@ -14,11 +15,15 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
     private LocalDate dateOfBirth;
     protected boolean status;
     //Each Friends,posts,stories will have its own database service
-    private ArrayList friends;
-    private ArrayList posts;
-    private ArrayList stories;
+
+    private ArrayList posts; //String for friend requests statuses
+    private ArrayList stories; //User's online status 
     private static int numberOfStories;
     private static int numberOfPosts;
+    private ArrayList<User> friends; //List of User's Friends
+    private ArrayList<User> blocked; //List of User's blocked
+    private HashMap<User, String> friendRequests;
+ 
 
     public User(String userID, String email, String username, LocalDate dateOfBirth, String password) {
         this.userID = userID;
@@ -29,6 +34,33 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
         status = false;
         this.numberOfPosts = 0;
         this.numberOfStories = 0;
+        this.friends = new ArrayList<>();
+        this.friendRequests = new HashMap<>();
+        this.blocked=new ArrayList<>();
+    }
+
+    public ArrayList<User> getBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(ArrayList<User> blocked) {
+        this.blocked = blocked;
+    }
+
+    public ArrayList<User> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(ArrayList<User> friends) {
+        this.friends = friends;
+    }
+
+    public HashMap<User, String> getFriendRequests() {
+        return friendRequests;
+    }
+
+    public void setFriendRequests(HashMap<User, String> friendRequests) {
+        this.friendRequests = friendRequest;
     }
 
     public String getUserID() {
@@ -79,14 +111,6 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
         this.status = status;
     }
 
-    public ArrayList getFriends() {
-        return friends;
-    }
-
-    public void setFriends(ArrayList friends) {
-        this.friends = friends;
-    }
-
     public ArrayList getPosts() {
         return posts;
     }
@@ -104,58 +128,56 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
     }
 
     @Override
-    public void removeFriend(User other) {
-        /*  try {
-            User user = UserManager.findUser(other.getUserID());
-
-            if (user != null) {
-                userRepository.deleteById(id);
-                return "Friend Removed successfully!";
-            } else {
-                return "Friend not found";
-            }
-        } catch (Exception e) {
-            return "An error occurred while removing User";
-        }*/
-        getFriends().remove(other);
+    public void removeFriend(User friend) {
+        if (friends.contains(friend)) {
+            friends.remove(friend);
+            friend.getFriends().remove(this);
+            System.out.println(friend.getUsername() + " has been removed from your friend list.");
+        } else {
+            System.out.println(friend.getUsername() + " is not in your friend list");
+    }
     }
 
     @Override
-    public void blockFriend(User other) {
-        getFriends().remove(other);
-        //Should block interactions and feed of blocked user and not show in suggestions
+    public void blockFriend(User friend) {
+        if (friends.contains(friend)) {
+            friends.remove(friend);
+            friend.getFriends().remove(this);
+            blocked.add(friend);
+            System.out.println(friend.getUsername() + " has been blocked from.");
+        } else {
+            System.out.println(friend.getUsername() + " is not in your friend list");
+        }
     }
 
     @Override
-    public void sendRequest(User other) {
-        Request friendRequest = new Request(this, other);
+    public void sendRequest(User recipient) {
+        Request friendRequest = new Request(this, recipient);
         friendRequest.processFriendRequest();
 
     }
 
     @Override
-    public void suggestFriends(User other) {
-        System.out.println("Friends Suggestions ... ");
-        //Is it more logical to move this function elsewhere and send user as argument
-        //and compare users Friends' List and Users' List to print suggestions ?
-
-    }
-
-    @Override
-    public void displayStatuses() {
-        System.out.println("All Friends + Their Statuses ... ");
-    }
-
-    @Override
-    public void acceptRequest(Request friendRequest) {
+    public void acceptRequest(User sender) {
+        Request friendRequest = new Request(sender, this);
         friendRequest.processAcceptFriendRequest();
-        this.friends.add(friendRequest.getRecipient());
-
+    }
+  
+    @Override
+    public void declineRequest(User sender) {
+        Request friendRequest = new Request(sender, this);
+        friendRequest.processDeclineFriendRequest();
     }
 
     @Override
-    public void declineRequest(Request friendRequest) {
-        friendRequest.processDeclineFriendRequest();
+    public ArrayList<User> suggestFriends(ArrayList<User> allUsers) {
+        ArrayList<User> suggestions=new ArrayList<>();
+        for(User user: allUsers)
+        {
+            if(user !=this && !friends.contains(user) && !friendRequests.containsKey(user) && !blocked.contains(user))
+                suggestions.add(user);
+        }
+        return suggestions;
     }
 
     @Override

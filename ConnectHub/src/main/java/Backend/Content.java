@@ -1,6 +1,6 @@
 package Backend;
 
-import java.awt.Image;
+
 import java.time.LocalDate;
 
 public abstract class Content {
@@ -14,8 +14,8 @@ public abstract class Content {
         this.contentId = contentId;
         this.authorId = authorId;
         this.content = content;
+        this.uploadingTime = uploadingTime;
     }
-
     public String getContentId() {
         return contentId;
     }
@@ -36,7 +36,7 @@ public abstract class Content {
         return content;
     }
 
-    public void setContentImage(String content) {
+    public void setContent(String content) {
         this.content = content;
     }
 
@@ -47,5 +47,4 @@ public abstract class Content {
     public void setUploadingTime(LocalDate uploadingTime) {
         this.uploadingTime = uploadingTime;
     }
-
 }
