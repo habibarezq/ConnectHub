@@ -1,43 +1,21 @@
 package Backend;
 
-import java.awt.Image;
+
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 public abstract class Content {
     protected String contentId;
     protected String authorId;
-    protected String contentText;
-    protected Image ContentImage;
+    protected String content;
     protected LocalDate uploadingTime;
     //protected User user;
-    protected ArrayList<Post> posts;  //posts of user
-    protected ArrayList<Story> stories; //stories of user
 
-    public Content(String contentId, String authorId, String contentText, Image ContentImage, LocalDate uploadingTime) {
+    public Content(String contentId, String authorId, String content, LocalDate uploadingTime) {
         this.contentId = contentId;
         this.authorId = authorId;
-        this.contentText = contentText;
-        this.ContentImage = ContentImage;
+        this.content = content;
         this.uploadingTime = uploadingTime;
     }
-
-    public ArrayList<Post> getPosts() {
-        return posts;
-    }
-
-    public void setPosts(ArrayList<Post> posts) {
-        this.posts = posts;
-    }
-
-    public ArrayList<Story> getStories() {
-        return stories;
-    }
-
-    public void setStories(ArrayList<Story> stories) {
-        this.stories = stories;
-    }
-
     
     public String getContentId() {
         return contentId;
@@ -55,20 +33,12 @@ public abstract class Content {
         this.authorId = authorId;
     }
 
-    public String getContentText() {
-        return contentText;
+    public String getContent() {
+        return content;
     }
 
-    public void setContentText(String contentText) {
-        this.contentText = contentText;
-    }
-
-    public Image getContentImage() {
-        return ContentImage;
-    }
-
-    public void setContentImage(Image ContentImage) {
-        this.ContentImage = ContentImage;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public LocalDate getUploadingTime() {
@@ -79,15 +49,5 @@ public abstract class Content {
         this.uploadingTime = uploadingTime;
     }
     
-    public void addPost(Post p)
-    {
-        posts.add(p);
-    }
-    
-    public void addStory(Story s)
-    {
-        stories.add(s);
-        //manage time
-    }
     
 }
