@@ -17,14 +17,18 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
     private ArrayList friends;
     private ArrayList posts;
     private ArrayList stories;
+    private static int numberOfStories;
+    private static int numberOfPosts;
 
-    public User(String userID, String email, String username, LocalDate dateOfBirth ,String password) {
+    public User(String userID, String email, String username, LocalDate dateOfBirth, String password) {
         this.userID = userID;
         this.email = email;
         this.username = username;
         this.password = password;
         this.dateOfBirth = dateOfBirth;
         status = false;
+        this.numberOfPosts = 0;
+        this.numberOfStories = 0;
     }
 
     public String getUserID() {
@@ -99,10 +103,9 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
         this.stories = stories;
     }
 
-
     @Override
     public void removeFriend(User other) {
-       /*  try {
+        /*  try {
             User user = UserManager.findUser(other.getUserID());
 
             if (user != null) {
@@ -117,39 +120,37 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
         getFriends().remove(other);
     }
 
-    
-
     @Override
     public void blockFriend(User other) {
         getFriends().remove(other);
         //Should block interactions and feed of blocked user and not show in suggestions
     }
+
     @Override
     public void sendRequest(User other) {
-        Request friendRequest=new Request(this,other);
+        Request friendRequest = new Request(this, other);
         friendRequest.processFriendRequest();
 
     }
-
 
     @Override
     public void suggestFriends(User other) {
         System.out.println("Friends Suggestions ... ");
         //Is it more logical to move this function elsewhere and send user as argument
         //and compare users Friends' List and Users' List to print suggestions ?
-        
+
     }
 
     @Override
-    public void displayStatuses () {
+    public void displayStatuses() {
         System.out.println("All Friends + Their Statuses ... ");
     }
-    
+
     @Override
     public void acceptRequest(Request friendRequest) {
         friendRequest.processAcceptFriendRequest();
         this.friends.add(friendRequest.getRecipient());
-        
+
     }
 
     @Override
@@ -162,4 +163,11 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
         setStatus(false);
     }
 
+    public int getNumberOfPosts() {
+        return numberOfPosts;
+    }
+
+    public int getNumberOfStories() {
+        return numberOfStories;
+    }
 }
