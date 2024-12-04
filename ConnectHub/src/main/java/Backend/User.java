@@ -60,7 +60,7 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
     }
 
     public void setFriendRequests(HashMap<User, String> friendRequests) {
-        this.friendRequests = friendRequest;
+        this.friendRequests = friendRequests;
     }
 
     public String getUserID() {
