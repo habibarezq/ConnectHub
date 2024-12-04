@@ -1,5 +1,4 @@
 
-
 package com.mycompany.connecthub;
 
 public class ConnectHub {
