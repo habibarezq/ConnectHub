@@ -18,7 +18,7 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
     private ArrayList posts;
     private ArrayList stories;
 
-    public User(String userID, String email, String username, String password, LocalDate dateOfBirth) {
+    public User(String userID, String email, String username, LocalDate dateOfBirth ,String password) {
         this.userID = userID;
         this.email = email;
         this.username = username;
