@@ -17,7 +17,7 @@ public class ConnectHub {
     users.add(u2);
     
     u1.sendRequest((User) u2);
-    //u2.declineRequest((User) u1);
+    u2.declineRequest((User) u1);
     System.out.println("Request :"+u2.getFriendRequests().get(u1));
 //    UserFileManager.saveUsers(users);
 

@@ -165,16 +165,19 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
     }
 
     @Override
-    public void suggestFriends(User other) {
-        System.out.println("Friends Suggestions ... ");
-        //Is it more logical to move this function elsewhere and send user as argument
-        //and compare users Friends' List and Users' List to print suggestions ?
-
+    public ArrayList<User> suggestFriends(ArrayList<User> allUsers) {
+        ArrayList<User> suggestions=new ArrayList<>();
+        for(User user: allUsers)
+        {
+            if(user !=this && !friends.contains(user) && !friendRequests.containsKey(user) && !blocked.contains(user))
+                suggestions.add(user);
+        }
+        return suggestions;
     }
 
     @Override
     public void displayStatuses() {
-        System.out.println("All Friends + Their Statuses ... ");
+        
     }
 
     @Override
