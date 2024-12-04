@@ -1,0 +1,16 @@
+[
+    {
+        "password": "27120000",
+        "dob": "2004-06-30",
+        "userId": "T4",
+        "email": "b@.com",
+        "username": "habibarezq"
+    },
+    {
+        "password": "12345678",
+        "dob": "2003-11-23",
+        "userId": "T5",
+        "email": "a@.com",
+        "username": "shiraznasser"
+    }
+]
