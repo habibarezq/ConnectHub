@@ -16,7 +16,6 @@ public abstract class Content {
         this.content = content;
         this.uploadingTime = uploadingTime;
     }
-    
     public String getContentId() {
         return contentId;
     }
@@ -48,6 +47,4 @@ public abstract class Content {
     public void setUploadingTime(LocalDate uploadingTime) {
         this.uploadingTime = uploadingTime;
     }
-    
-    
 }

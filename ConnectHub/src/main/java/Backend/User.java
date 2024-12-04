@@ -15,11 +15,15 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
     private LocalDate dateOfBirth;
     protected boolean status;
     //Each Friends,posts,stories will have its own database service
+
+    private ArrayList posts; //String for friend requests statuses
+    private ArrayList stories; //User's online status 
+    private static int numberOfStories;
+    private static int numberOfPosts;
     private ArrayList<User> friends; //List of User's Friends
     private ArrayList<User> blocked; //List of User's blocked
     private HashMap<User, String> friendRequests;
-    private ArrayList posts; //String for friend requests statuses
-    private ArrayList stories; //User's online status
+ 
 
     public User(String userID, String email, String username, LocalDate dateOfBirth, String password) {
         this.userID = userID;
@@ -27,7 +31,9 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
         this.username = username;
         this.password = password;
         this.dateOfBirth = dateOfBirth;
-        this.status = false;
+        status = false;
+        this.numberOfPosts = 0;
+        this.numberOfStories = 0;
         this.friends = new ArrayList<>();
         this.friendRequests = new HashMap<>();
         this.blocked=new ArrayList<>();
@@ -54,7 +60,7 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
     }
 
     public void setFriendRequests(HashMap<User, String> friendRequests) {
-        this.friendRequests = friendRequests;
+        this.friendRequests = friendRequest;
     }
 
     public String getUserID() {
@@ -129,7 +135,7 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
             System.out.println(friend.getUsername() + " has been removed from your friend list.");
         } else {
             System.out.println(friend.getUsername() + " is not in your friend list");
-        }
+    }
     }
 
     @Override
@@ -155,9 +161,8 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
     public void acceptRequest(User sender) {
         Request friendRequest = new Request(sender, this);
         friendRequest.processAcceptFriendRequest();
-
     }
-
+  
     @Override
     public void declineRequest(User sender) {
         Request friendRequest = new Request(sender, this);
@@ -176,13 +181,15 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
     }
 
     @Override
-    public void displayStatuses() {
-        
-    }
-
-    @Override
     public void logout() {
         setStatus(false);
     }
 
+    public int getNumberOfPosts() {
+        return numberOfPosts;
+    }
+
+    public int getNumberOfStories() {
+        return numberOfStories;
+    }
 }
