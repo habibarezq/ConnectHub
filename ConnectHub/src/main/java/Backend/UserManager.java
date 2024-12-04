@@ -1,9 +1,9 @@
 package Backend;
 
-
+import static Backend.Password.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-
+import java.util.UUID;
 
 public class UserManager implements UserManagerInterface {
 
@@ -18,18 +18,16 @@ public class UserManager implements UserManagerInterface {
     }
 
     @Override
-    public void signup(String userID, String email, String username, String password, LocalDate dateOfBirth) {
-        if (!findUserByID(userID)) {
-            User u = new User(userID, email, username, dateOfBirth, password);
-            users.add(u);
-            u.setStatus(true);
-        }
+    public void signup(String email, String username, String password, LocalDate dateOfBirth) {
+        User u = new User(UUID.randomUUID().toString(), email, username, dateOfBirth, hashPassword(password));
+        users.add(u);
+        u.setStatus(true);
     }
 
     @Override
     public void login(String email, String password) {
         for (User u : users) {
-            if (email.equals(u.getEmail()) && password.equals(u.getPassword())) {
+            if (email.equals(u.getEmail()) && verifyPassword(password, u.getPassword())) {
                 u.setStatus(true);
             }
         }
