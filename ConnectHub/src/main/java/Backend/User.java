@@ -1,10 +1,9 @@
 package Backend;
 
-import Interfaces.FriendRequestService;
+
 import java.time.*;
-import java.util.ArrayList;
-import Interfaces.FriendshipManager;
-import java.util.HashMap;
+import java.util.*;
+import Interfaces.*;
 
 public class User implements UserInterface, FriendshipManager, FriendRequestService {
 
