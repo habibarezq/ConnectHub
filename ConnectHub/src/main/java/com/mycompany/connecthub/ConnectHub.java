@@ -20,7 +20,7 @@ public class ConnectHub {
     u1.sendRequest((User) u2);
     u2.declineRequest((User) u1);
     System.out.println("Request :"+u2.getFriendRequests().get(u1));
-    UserFileManager.saveUsers(m.getUsers());
+    UserFileManager.saveToFile(m.getUsers());
 
 
      //TEST READ USERS' DATA from json FORMAT

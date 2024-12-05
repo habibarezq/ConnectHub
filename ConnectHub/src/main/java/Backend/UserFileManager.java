@@ -16,7 +16,7 @@ public class UserFileManager {
 
     private static final String FILE_PATH = "users.txt";
 
-    public static ArrayList<User> readUsers() {
+    public static ArrayList<User> readFromFile() {
         ArrayList<User> users = new ArrayList<>();
         try {
             String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
@@ -43,7 +43,7 @@ public class UserFileManager {
         return users;
     }
 
-    public static void saveUsers(ArrayList<User> users) {
+    public static void saveToFile(ArrayList<User> users) {
         
         File f= new File(FILE_PATH);
         try {

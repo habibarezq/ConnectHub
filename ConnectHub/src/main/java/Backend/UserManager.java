@@ -10,7 +10,7 @@ public class UserManager implements UserManagerInterface {
     private ArrayList<User> users;
 
     public UserManager() {
-        this.users = UserFileManager.readUsers();
+        this.users = UserFileManager.readFromFile();
     }
 
     public ArrayList<User> getUsers() {
