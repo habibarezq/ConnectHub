@@ -18,3 +18,5 @@ createdFiles.lst
 
 /target/
 
+ConnectHub/target/classes/com/mycompany/connecthub/ConnectHub.class
+ConnectHub/target/classes/Frontend/Newsfeed.class
