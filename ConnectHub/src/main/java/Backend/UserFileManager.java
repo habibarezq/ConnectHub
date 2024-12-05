@@ -19,7 +19,7 @@ public class UserFileManager {
     public static ArrayList<User> readUsers() {
         ArrayList<User> users = new ArrayList<>();
         try {
-            String json = new String(Files.readAllBytes(Paths.get("users.txt")));
+            String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
             JSONArray usersArray = new JSONArray(json); // Parse the JSON array
 
             for (int i = 0; i < usersArray.length(); i++) {
@@ -52,6 +52,8 @@ public class UserFileManager {
             System.out.println("Error:  " + ex.getMessage());
         }
         JSONArray usersArray = new JSONArray();
+        
+        
         for (User user : users) {
             JSONObject userJSON = new JSONObject();
             userJSON.put("userId", user.getUserID());
@@ -64,7 +66,7 @@ public class UserFileManager {
         
         try {
             FileWriter file = new FileWriter(FILE_PATH);
-            file.write(usersArray.toString(4));
+            file.write(usersArray.toString(4)); //Why 4?
             file.flush();
             file.close();
             System.out.println("Data Saved Successfully.");

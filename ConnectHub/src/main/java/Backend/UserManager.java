@@ -18,19 +18,22 @@ public class UserManager implements UserManagerInterface {
     }
 
     @Override
-    public void signup(String email, String username, String password, LocalDate dateOfBirth) {
+    public User signup(String email, String username,LocalDate dateOfBirth ,String password) {
         User u = new User(UUID.randomUUID().toString(), email, username, dateOfBirth, hashPassword(password));
         users.add(u);
         u.setStatus(true);
+        return u;
     }
 
     @Override
-    public void login(String email, String password) {
+    public User login(String email, String password) {
         for (User u : users) {
             if (email.equals(u.getEmail()) && verifyPassword(password, u.getPassword())) {
                 u.setStatus(true);
+                return u;
             }
         }
+        return null;
     }
 
     public boolean findUserByID(String userID) {
