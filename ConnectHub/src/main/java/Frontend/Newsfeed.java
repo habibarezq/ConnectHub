@@ -1,8 +1,16 @@
 package Frontend;
 
+<<<<<<< HEAD
 import Backend.Post;
 import Backend.Story;
 import Backend.User;
+=======
+import Backend.*;
+import java.awt.Image;
+import java.io.*;
+import java.awt.BorderLayout;
+import java.time.LocalDateTime;
+>>>>>>> fd4622ed107b161071b05ff5c7b994e33a3ac1c2
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 
@@ -16,15 +24,22 @@ public class Newsfeed extends javax.swing.JFrame {
     private DefaultListModel<String> friendsModel;
     private DefaultListModel<String> suggestedFriendsModel;
     private DefaultListModel<String> postsModel;
+
+   // private ArrayList<Post> posts;
+    //private ArrayList<Story> stories;
     //remove arraylist from abstract class in content creation
     //change the content type to String and its going to be determined by either .jpg if image or text
 
     public Newsfeed() {
         initComponents();
         setTitle("Newsfeed");
+<<<<<<< HEAD
         //setContentPane(jPanel1);
         setResizable(false);
         
+=======
+
+>>>>>>> fd4622ed107b161071b05ff5c7b994e33a3ac1c2
         this.posts = new ArrayList<>();
         this.stories = new ArrayList<>();
         friendsModel = new DefaultListModel<>();
@@ -36,9 +51,33 @@ public class Newsfeed extends javax.swing.JFrame {
        // postsJList.setModel(postsModel);
         
         populateFriends();
+<<<<<<< HEAD
         pack();
         populateSuggestedFriedns();
         //populatePosts();
+=======
+        populateSuggestedFriends();
+        populatePosts();
+//        setContentPane(jPanel3);
+//        setResizable(false);
+//        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+//        this.posts = new ArrayList<>();
+//        this.stories = new ArrayList<>();
+        //jPanel3.setLayout(new BoxLayout(jPanel3, BoxLayout.Y_AXIS));
+//         posts.add(new Post("p1", "user1", "This is my first post!", LocalDateTime.now()));
+//        posts.add(new Post("p2", "user2", "Having a great day!", LocalDateTime.now().minusHours(1)));
+//        stories.add(new Story("s1", "user1", "path/to/image1.jpg", LocalDateTime.now()));
+//        stories.add(new Story("s2", "user2", "path/to/image2.jpg", LocalDateTime.now().minusHours
+        //setLayout(new BorderLayout());
+        //postsPanel.setLayout(new BoxLayout(postsPanel, BoxLayout.Y_AXIS));
+        //add(scrollPane, BorderLayout.CENTER);
+//      setLayout(new BorderLayout());
+//        postsPanel.setLayout(new BoxLayout(postsPanel, BoxLayout.Y_AXIS));
+//        add(scrollPane, BorderLayout.CENTER);
+//        setSize(400, 600);
+//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        setLayout(new BorderLayout());
+>>>>>>> fd4622ed107b161071b05ff5c7b994e33a3ac1c2
 
     }
 

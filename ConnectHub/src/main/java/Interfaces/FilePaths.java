@@ -6,5 +6,8 @@ public interface FilePaths {
 
     public String PROFILES_FILE_PATH = "profiles.txt";
 
-    //static final String POSTS_FILE_PATH = "posts.txt";
+    public String POSTS_FILE_PATH = "posts.txt";
+
+    public String STORIES_FILE_PATH="stories.txt";
+
 }
