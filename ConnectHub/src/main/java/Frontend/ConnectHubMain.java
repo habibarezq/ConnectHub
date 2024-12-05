@@ -1,35 +1,17 @@
 package Frontend;
 
-import java.awt.*;
 import static java.lang.System.exit;
-import javax.swing.*;
 
 public class ConnectHubMain extends javax.swing.JFrame {
 
     /**
      * Creates new form Signup
      */
-    public CardLayout cardLayout;
-    public JPanel cardPanel;
-    
     public ConnectHubMain() {
         initComponents();
         setTitle("Connect Hub");
-        cardLayout = new CardLayout();
-        cardPanel = new JPanel(cardLayout);
-
-        cardPanel.add(new Login(this), "Login");
-        cardPanel.add(new Signup(this), "Signup");
-        //cardPanel.add(new Newsfeed(this), "Newsfeed");
-
-        add(cardPanel);
-        switchPanel( "Login"); // Show Login first
     }
     
-    public void switchPanel(String panelName) {
-        cardLayout.show(cardPanel, panelName);
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -88,9 +70,8 @@ public class ConnectHubMain extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(loginButton, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(exitButton, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
-                        .addComponent(signupButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(exitButton, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
+                    .addComponent(signupButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(141, 141, 141))
         );
         layout.setVerticalGroup(
@@ -104,7 +85,7 @@ public class ConnectHubMain extends javax.swing.JFrame {
                 .addComponent(loginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(33, 33, 33)
                 .addComponent(exitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         pack();
@@ -118,12 +99,14 @@ public class ConnectHubMain extends javax.swing.JFrame {
 
     private void signupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signupButtonActionPerformed
         // TODO add your handling code here:
-        switchPanel("Signup");
+        new Signup().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_signupButtonActionPerformed
 
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
         // TODO add your handling code here:
-        switchPanel("Login");
+        new Login().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_loginButtonActionPerformed
 
     /**
