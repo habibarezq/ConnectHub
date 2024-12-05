@@ -1,5 +1,7 @@
 /ConnectHub/nbproject/private/
 /ConnectHub/target/
+/ConnectHub/src/main/java/Frontend/MainFrameInitial.java
+
 inputFiles.lst
 createdFiles.lst
 *.class
@@ -15,3 +17,4 @@ createdFiles.lst
 *.~*
 
 /target/
+

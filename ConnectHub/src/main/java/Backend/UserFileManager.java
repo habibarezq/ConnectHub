@@ -17,6 +17,7 @@ import Interfaces.*;
 
 public class UserFileManager implements FileManager {
 
+
    static String FILE_PATH = Interfaces.FilePaths.USERS_FILE_PATH;
     
    @Override
@@ -47,7 +48,9 @@ public class UserFileManager implements FileManager {
         return users;
     }
 
+
     public void saveToFile(ArrayList<User> users , FILE_PATH) {
+
         
         File f= new File(FILE_PATH);
         try {
