@@ -64,7 +64,7 @@ public class UserFileManager implements FileManager<User> {
     }
 
     @Override
-    public void saveTOFile(ArrayList<User> data, String FILE_PATH) {
+    public void saveToFile(ArrayList<User> data, String FILE_PATH) {
         File f = new File(FILE_PATH);
         try {
             f.createNewFile();
