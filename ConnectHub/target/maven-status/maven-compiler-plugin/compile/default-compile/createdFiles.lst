@@ -1,10 +1,3 @@
-Backend\UserManagerInterface.class
-Backend\User.class
-Backend\UserFileManager.class
+Interfaces\ContentCreation.class
 Backend\Content.class
 Backend\Password.class
-Interfaces\FriendshipManager.class
-Backend\UserInterface.class
-Interfaces\FriendRequestService.class
-Backend\Request.class
-Backend\UserManager.class
