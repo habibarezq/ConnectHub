@@ -1,5 +1,6 @@
 package Interfaces;
 
+import java.awt.Image;
 import java.time.LocalDateTime;
 
 public interface ContentCreation {
@@ -12,9 +13,13 @@ public interface ContentCreation {
 
     public void setAuthorId(String authorId);
 
-    public String getContent();
+    public String getContentTxt();
 
-    public void setContent(String content);
+    public void setContentTxt(String contentTxt);
+    
+    public Image getContentPng();
+    
+    public void setContentPng(Image contentPng);
 
     public LocalDateTime getUploadingTime();
 

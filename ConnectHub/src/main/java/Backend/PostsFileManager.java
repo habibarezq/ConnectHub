@@ -1,6 +1,11 @@
 package Backend;
 
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.*;
 import org.json.*;
 
@@ -11,8 +16,30 @@ public class PostsFileManager {
     
     public static ArrayList<Post> readUsers()
     {
-        return null;
-}
+         ArrayList<Post> posts = new ArrayList<>();
+
+        try {
+            String json = new String(Files.readAllBytes(Paths.get("posts.txt")));
+            JSONArray postsArray = new JSONArray(json); // Parse the JSON array
+
+            for (int i = 0; i < postsArray.length(); i++) {
+                JSONObject postJSON = postsArray.getJSONObject(i);
+                String authorId = postJSON.getString("userId");
+                String contentId = postJSON.getString("contentId");
+                String TextContent = postJSON.getString("TextContent");
+                String ImageContentBase64 = postJSON.getString("ImageContent");
+                byte[] imageBytes = Base64.getDecoder().decode(ImageContentBase64);//decoding the base64 string into a byte array
+                Image image = Toolkit.getDefaultToolkit().createImage(imageBytes); 
+                LocalDateTime time = LocalDateTime.parse(postJSON.getString("time"));
+                posts.add(new Post(contentId, authorId, TextContent, image, time));
+            }
+        } catch (IOException ex) {
+            System.out.println("Error reading file: " + ex.getMessage());
+        } catch (JSONException ex) {
+            System.out.println("Error parsing JSON: " + ex.getMessage());
+        }
+        return posts;
+    }
     
     
 
@@ -27,7 +54,8 @@ public class PostsFileManager {
         JSONArray postsArray = new JSONArray();
         for(Post post : posts)
         {
-             JSONObject postJSON = new JSONObject();
+            
+            JSONObject postJSON = new JSONObject();
             postJSON.put("userId", post.getAuthorId());
             postJSON.put("contentId", post.getContentId());
             postJSON.put("TextContent", post.getContentTxt());
