@@ -13,7 +13,7 @@ public class ProfileFileManager implements FileManager<Profile>{
     }
 
     @Override
-    public void saveTOFile(ArrayList<Profile> data, String FILE_PATH) {
+    public void saveToFile(ArrayList<Profile> data, String FILE_PATH) {
         
     }
     

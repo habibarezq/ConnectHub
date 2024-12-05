@@ -1,5 +1,7 @@
 package Backend;
 
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -35,6 +37,7 @@ public class PostsFileManager implements FileManager<Post> {
         return posts;
     }
 
+
     @Override
     public void readFromFile(String FILE_PATH) {
         if(!posts.isEmpty()) return; //to avoid reloading
@@ -44,14 +47,15 @@ public class PostsFileManager implements FileManager<Post> {
 
             this.posts.clear(); // Clear the existing list before loading new data
             for (int i = 0; i < usersArray.length(); i++) {
-                JSONObject userJSON = usersArray.getJSONObject(i);
-                String id = userJSON.getString("userId");
-                String email = userJSON.getString("email");
-                String username = userJSON.getString("username");
-                LocalDate dateOfBirth = LocalDate.parse(userJSON.getString("dob"));
-                String password = userJSON.getString("password");
-
-                User user = new User(id, email, username, dateOfBirth, password);
+                JSONObject postJSON = postsArray.getJSONObject(i);
+                String authorId = postJSON.getString("userId");
+                String contentId = postJSON.getString("contentId");
+                String TextContent = postJSON.getString("TextContent");
+                String ImageContentBase64 = postJSON.getString("ImageContent");
+                byte[] imageBytes = Base64.getDecoder().decode(ImageContentBase64);//decoding the base64 string into a byte array
+                Image image = Toolkit.getDefaultToolkit().createImage(imageBytes); 
+                LocalDateTime time = LocalDateTime.parse(postJSON.getString("time"));
+                posts.add(new Post(contentId, authorId, TextContent, image, time));
                 this.posts.add(posts); // Add to the instance variable, not local
             }
 
@@ -72,7 +76,8 @@ public class PostsFileManager implements FileManager<Post> {
             System.out.println("Error:  " + ex.getMessage());
         }
         JSONArray postsArray = new JSONArray();
-        for (Post post : posts) {
+        for(Post post : posts)
+        {
             JSONObject postJSON = new JSONObject();
             postJSON.put("userId", post.getAuthorId());
             postJSON.put("contentId", post.getContentId());
