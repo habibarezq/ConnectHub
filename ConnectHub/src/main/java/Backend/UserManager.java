@@ -40,6 +40,7 @@ public class UserManager implements UserManagerInterface {
                 u.setStatus(true);
             }
         }
+    return null;
     }
     
     public boolean loginValidation(String email, String password) {

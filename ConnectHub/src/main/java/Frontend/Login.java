@@ -101,22 +101,22 @@ public class Login extends javax.swing.JFrame {
         // TODO add your handling code here:
         String email= emailText.getText();
         String password= PasswordField.getText();
-        
-        UserManager u=new UserManager();
-        if(email.equals("") || password.equals("")){
-            JOptionPane.showMessageDialog(this, "Some fields are empty!", "Message", JOptionPane.ERROR_MESSAGE);
-        }
-        else if(u.loginValidation(email,password))
-        {
-            //new NewsFeed().setVisible(true);
-            u.login(email,password);
-            this.dispose();
-        }
-        else{
-            JOptionPane.showMessageDialog(this, "Wrong Username or Password", "Message", JOptionPane.ERROR_MESSAGE);
-            emailText.setText("");
-            PasswordField.setText("");
-        }
+//        
+//        //UserManager u=new UserManager();
+//        if(email.equals("") || password.equals("")){
+//            JOptionPane.showMessageDialog(this, "Some fields are empty!", "Message", JOptionPane.ERROR_MESSAGE);
+//        }
+//        else if(u.loginValidation(email,password))
+//        {
+//            //new NewsFeed().setVisible(true);
+//            u.login(email,password);
+//            this.dispose();
+//        }
+//        else{
+//            JOptionPane.showMessageDialog(this, "Wrong Username or Password", "Message", JOptionPane.ERROR_MESSAGE);
+//            emailText.setText("");
+//            PasswordField.setText("");
+//        }
         
     }//GEN-LAST:event_loginButtonActionPerformed
 
