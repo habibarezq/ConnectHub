@@ -97,7 +97,7 @@ public class UserFileManager implements FileManager<User> {
 
     }
 
-     // Method to find user by ID
+    // Method to find user by ID
     public User findUserByID(String userID) {
         for (User u : users) {
             if (userID.equals(u.getUserID())) {
