@@ -18,7 +18,9 @@ createdFiles.lst
 
 /target/
 
+
 ConnectHub/target/classes/com/mycompany/connecthub/ConnectHub.class
 ConnectHub/target/classes/Frontend/Newsfeed.class
 ConnectHub/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
 ConnectHub/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+

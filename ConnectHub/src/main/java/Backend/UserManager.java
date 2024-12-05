@@ -1,6 +1,7 @@
 package Backend;
 
 import static Backend.Password.*;
+//import static Backend.UserFileManager.readUsers;
 import Interfaces.FilePaths;
 import Validation.UserValidation;
 import java.time.LocalDate;
@@ -37,10 +38,16 @@ public class UserManager implements UserManagerInterface {
         for (User u : users) {
             if (email.equals(u.getEmail()) && verifyPassword(password, u.getPassword())) {
                 u.setStatus(true);
-                return u;
             }
         }
-        return null;
     }
-
+    
+    public boolean loginValidation(String email, String password) {
+        for (User u : users) {
+            if (email.equals(u.getEmail()) && verifyPassword(password, u.getPassword())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
