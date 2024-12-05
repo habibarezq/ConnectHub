@@ -1,2 +1,17 @@
 /ConnectHub/nbproject/private/
 /ConnectHub/target/
+inputFiles.lst
+createdFiles.lst
+*.class
+
+#Log Files
+*.log
+
+#Temporary Files
+*.tmp
+*.bak
+*.swp
+*.swo
+*.~*
+
+/target/
