@@ -12,12 +12,12 @@ public abstract class Content implements ContentCreation{
     protected LocalDateTime uploadingTime;
     //protected User user;
 
-    public Content(String contentId, String authorId, String contentTxt, Image contentPng) {
+    public Content(String contentId, String authorId, String contentTxt, Image contentPng, LocalDateTime uploadingTime) {
         this.contentId = contentId;
         this.authorId = authorId;
         this.contentTxt = contentTxt;
         this.contentPng = contentPng;
-        this.uploadingTime = LocalDateTime.now();
+        this.uploadingTime = uploadingTime;
     }
 
 
@@ -66,5 +66,7 @@ public abstract class Content implements ContentCreation{
     public void setUploadingTime(LocalDateTime uploadingTime) {
         this.uploadingTime = uploadingTime;
     }
+    
+    
 
 }
