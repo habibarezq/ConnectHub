@@ -1,93 +1,70 @@
 package Backend;
 
+import Interfaces.ContentCreation;
 import java.awt.Image;
-import java.time.LocalDate;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 
-public abstract class Content {
+public abstract class Content implements ContentCreation{
     protected String contentId;
     protected String authorId;
-    protected String contentText;
-    protected Image ContentImage;
-    protected LocalDate uploadingTime;
+    protected String contentTxt;
+    protected Image contentPng;
+    protected LocalDateTime uploadingTime;
     //protected User user;
-    protected ArrayList<Post> posts;  //posts of user
-    protected ArrayList<Story> stories; //stories of user
 
-    public Content(String contentId, String authorId, String contentText, Image ContentImage, LocalDate uploadingTime) {
+    public Content(String contentId, String authorId, String contentTxt, Image contentPng) {
         this.contentId = contentId;
         this.authorId = authorId;
-        this.contentText = contentText;
-        this.ContentImage = ContentImage;
-        this.uploadingTime = uploadingTime;
+        this.contentTxt = contentTxt;
+        this.contentPng = contentPng;
+        this.uploadingTime = LocalDateTime.now();
     }
 
-    public ArrayList<Post> getPosts() {
-        return posts;
-    }
 
-    public void setPosts(ArrayList<Post> posts) {
-        this.posts = posts;
-    }
-
-    public ArrayList<Story> getStories() {
-        return stories;
-    }
-
-    public void setStories(ArrayList<Story> stories) {
-        this.stories = stories;
-    }
-
-    
+    @Override
     public String getContentId() {
         return contentId;
     }
 
+    @Override
     public void setContentId(String contentId) {
         this.contentId = contentId;
     }
 
+    @Override
     public String getAuthorId() {
         return authorId;
     }
 
+    @Override
     public void setAuthorId(String authorId) {
         this.authorId = authorId;
     }
 
-    public String getContentText() {
-        return contentText;
+    public String getContentTxt() {
+        return contentTxt;
     }
 
-    public void setContentText(String contentText) {
-        this.contentText = contentText;
+    public void setContentTxt(String contentTxt) {
+        this.contentTxt = contentTxt;
     }
 
-    public Image getContentImage() {
-        return ContentImage;
+    public Image getContentPng() {
+        return contentPng;
     }
 
-    public void setContentImage(Image ContentImage) {
-        this.ContentImage = ContentImage;
+    public void setContentPng(Image contentPng) {
+        this.contentPng = contentPng;
     }
 
-    public LocalDate getUploadingTime() {
+    @Override
+    public LocalDateTime getUploadingTime() {
         return uploadingTime;
     }
 
-    public void setUploadingTime(LocalDate uploadingTime) {
+    @Override
+    public void setUploadingTime(LocalDateTime uploadingTime) {
         this.uploadingTime = uploadingTime;
     }
-    
-    public void addPost(Post p)
-    {
-        posts.add(p);
-    }
-    
-    public void addStory(Story s)
-    {
-        stories.add(s);
-        //manage time
-    }
-    
+
 }

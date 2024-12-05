@@ -1,13 +1,12 @@
 package Backend;
 
-import java.awt.Image;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Story extends Content{
-
-      public Story(String contentId, String authorId, String contentText, Image ContentImage, LocalDate uploadingTime) {
-        super(contentId, authorId, contentText, ContentImage, uploadingTime);
-        // content id will be getUserName() + getNumPosts()
+      
+      public Story(User u, String content) {
+        super(u.getUserID()+u.getNumberOfStories(), u.getUserID(), content, LocalDateTime.now());
+        // content id will be getUserId() + getNumPosts()
         // author id is the normal user id getUserId()
         
     }
