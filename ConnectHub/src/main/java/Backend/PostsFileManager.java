@@ -5,24 +5,48 @@ import java.awt.Toolkit;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import org.json.*;
 
-public class PostsFileManager {
-    
-    private static final String FILE_PATH = "posts.txt";
-    
-    
-    public static ArrayList<Post> readUsers()
-    {
-         ArrayList<Post> posts = new ArrayList<>();
+//importing the FilePaths and FileManager interfaces
+import Interfaces.*;
 
+public class PostsFileManager implements FileManager<Post> {
+    private static PostsFileManager instance;
+    private ArrayList<Post> posts;
+
+    // private constructor to avoid instantiation
+    private PostsFileManager() {
+        this.posts = new ArrayList<>();
+        readFromFile(FilePaths.USERS_FILE_PATH);
+    }
+
+    public static PostsFileManager getInstance() {
+        if (instance == null) {
+            instance = new PostsFileManager();
+        }
+        return instance;
+    }
+
+    public ArrayList<Post> getPosts() {
+
+        if (posts.isEmpty()) {
+            readFromFile(FilePaths.POSTS_FILE_PATH);
+        }
+        return posts;
+    }
+
+
+    @Override
+    public void readFromFile(String FILE_PATH) {
+        if(!posts.isEmpty()) return; //to avoid reloading
         try {
-            String json = new String(Files.readAllBytes(Paths.get("posts.txt")));
-            JSONArray postsArray = new JSONArray(json); // Parse the JSON array
+            String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
+            JSONArray usersArray = new JSONArray(json); // Parse the JSON array
 
-            for (int i = 0; i < postsArray.length(); i++) {
+            this.posts.clear(); // Clear the existing list before loading new data
+            for (int i = 0; i < usersArray.length(); i++) {
                 JSONObject postJSON = postsArray.getJSONObject(i);
                 String authorId = postJSON.getString("userId");
                 String contentId = postJSON.getString("contentId");
@@ -32,20 +56,20 @@ public class PostsFileManager {
                 Image image = Toolkit.getDefaultToolkit().createImage(imageBytes); 
                 LocalDateTime time = LocalDateTime.parse(postJSON.getString("time"));
                 posts.add(new Post(contentId, authorId, TextContent, image, time));
+                this.posts.add(posts); // Add to the instance variable, not local
             }
+
         } catch (IOException ex) {
             System.out.println("Error reading file: " + ex.getMessage());
         } catch (JSONException ex) {
             System.out.println("Error parsing JSON: " + ex.getMessage());
         }
-        return posts;
     }
-    
-    
 
-    public static void savePosts(ArrayList<Post> posts) 
-    {
-        File f= new File(FILE_PATH);
+
+    @Override
+    public void saveToFile(ArrayList<Post> data, String FILE_PATH) {
+        File f = new File(FILE_PATH);
         try {
             f.createNewFile();
         } catch (IOException ex) {
@@ -54,7 +78,6 @@ public class PostsFileManager {
         JSONArray postsArray = new JSONArray();
         for(Post post : posts)
         {
-            
             JSONObject postJSON = new JSONObject();
             postJSON.put("userId", post.getAuthorId());
             postJSON.put("contentId", post.getContentId());
@@ -72,9 +95,8 @@ public class PostsFileManager {
         } catch (FileNotFoundException e) {
             System.out.println("File Not Found:  " + e.getMessage());
         } catch (IOException e) {
-            System.out.println("Error saving users: " + e.getMessage());
+            System.out.println("Error saving posts: " + e.getMessage());
         }
     }
-    
-    
+
 }
