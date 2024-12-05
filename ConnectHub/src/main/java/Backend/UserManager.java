@@ -1,6 +1,9 @@
 package Backend;
 
 import static Backend.Password.*;
+//import static Backend.UserFileManager.readUsers;
+import Interfaces.FilePaths;
+import Validation.UserValidation;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -9,45 +12,42 @@ public class UserManager implements UserManagerInterface {
 
     private ArrayList<User> users;
 
-    public UserManager() {
-        this.users = UserFileManager.readUsers();
+    public UserManager(ArrayList<User> users) {
+        this.users = users;
     }
 
-    public ArrayList<User> getUsers() {
-        return users;
-    }
 
     @Override
-    public void signup(String email, String username, String password, LocalDate dateOfBirth) {
+    public User signup(String email, String username, LocalDate dateOfBirth, String password) {
+        if (UserValidation.isEmailTaken(email,users)) {
+            throw new IllegalArgumentException("Email is already taken");
+        }
+        else if(UserValidation.isUsernameTaken(username, users))
+        {
+            throw new IllegalArgumentException("UserName is already taken");
+        }
         User u = new User(UUID.randomUUID().toString(), email, username, dateOfBirth, hashPassword(password));
         users.add(u);
         u.setStatus(true);
+        UserFileManager.getInstance().saveTOFile(users, FilePaths.USERS_FILE_PATH); // Save the updated list
+        return u;
     }
 
     @Override
-    public void login(String email, String password) {
+    public User login(String email, String password) {
         for (User u : users) {
             if (email.equals(u.getEmail()) && verifyPassword(password, u.getPassword())) {
                 u.setStatus(true);
             }
         }
     }
-
-    public boolean findUserByID(String userID) {
+    
+    public boolean loginValidation(String email, String password) {
         for (User u : users) {
-            if (userID.equals(u.getUserID())) {
+            if (email.equals(u.getEmail()) && verifyPassword(password, u.getPassword())) {
                 return true;
             }
         }
         return false;
-    }
-
-    public User findUser(String userID) {
-        for (User u : users) {
-            if (userID.equals(u.getUserID())) {
-                return u;
-            }
-        }
-        return null;
     }
 }

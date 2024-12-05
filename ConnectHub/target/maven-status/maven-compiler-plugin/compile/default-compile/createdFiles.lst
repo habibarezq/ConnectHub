@@ -1,8 +1,10 @@
-Backend\NewClass.class
-Frontend\NewClass.class
-Interfaces\NewInterface.class
-com\mycompany\connecthub\ConnectHub.class
-<<<<<<< HEAD
-Frontend\Newsfeed.class
-=======
->>>>>>> main
+Backend\UserManagerInterface.class
+Backend\User.class
+Backend\UserFileManager.class
+Backend\Content.class
+Backend\Password.class
+Interfaces\FriendshipManager.class
+Backend\UserInterface.class
+Interfaces\FriendRequestService.class
+Backend\Request.class
+Backend\UserManager.class

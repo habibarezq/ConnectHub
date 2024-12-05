@@ -1,10 +1,9 @@
 package Backend;
 
-import Interfaces.FriendRequestService;
+
 import java.time.*;
-import java.util.ArrayList;
-import Interfaces.FriendshipManager;
-import java.util.HashMap;
+import java.util.*;
+import Interfaces.*;
 
 public class User implements UserInterface, FriendshipManager, FriendRequestService {
 
@@ -191,5 +190,10 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
 
     public int getNumberOfStories() {
         return numberOfStories;
+    }
+
+    @Override
+    public void displayStatuses() {
+        
     }
 }

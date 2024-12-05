@@ -9,7 +9,7 @@ public abstract class Content implements ContentCreation{
     protected String authorId;
     protected String contentTxt;
     protected Image contentPng;
-        protected LocalDateTime uploadingTime;
+    protected LocalDateTime uploadingTime;
     //protected User user;
 
     public Content(String contentId, String authorId, String contentTxt, Image contentPng) {
