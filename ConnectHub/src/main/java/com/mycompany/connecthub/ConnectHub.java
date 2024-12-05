@@ -12,16 +12,16 @@ public class ConnectHub {
     public static void main(String[] args) {
       ArrayList<User> users = new ArrayList<>();
       //TEST SAVE USERS' DATA in json FORMAT
-      UserManager m=new UserManager();
-      User u1=m.signup("b@.com","habibarezq",LocalDate.of(2004, Month.JUNE, 30),"27120000");
-      User u2=m.signup("a@.com","shiraznasser",LocalDate.of(2003, Month.NOVEMBER, 23),"12345678");
+      UserFileManager m=UserFileManager.getInstance();
+      UserManager u=new UserManager(m.getUsers());
+      User u1=u.signup("c@.com","janaEmad",LocalDate.of(2004, Month.MARCH, 3),"27120000");
+      User u2=u.signup("d@.com","habibaelghazouly",LocalDate.of(2003, Month.AUGUST, 19),"12345678");
     
       
     u1.sendRequest((User) u2);
     u2.declineRequest((User) u1);
     System.out.println("Request :"+u2.getFriendRequests().get(u1));
-    UserFileManager.saveToFile(m.getUsers());
-
+    
 
      //TEST READ USERS' DATA from json FORMAT
 //    users = UserFileManager.readUsers();

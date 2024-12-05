@@ -1,11 +1,6 @@
 [
     {
         "password": "$2a$10$n2oj6ZmLre3ZUzx9aekTce0KZ7Y7Q6.qvNIAWttio4zs9OY.8/Cz2",
-        "hobbies": [
-            "Sports",
-            "Books",
-            "Clothes"
-        ],
         "dob": "2004-06-30",
         "userId": "715372e8-be4e-42a1-a146-a1bdd3389ff7",
         "email": "b@.com",
@@ -13,14 +8,23 @@
     },
     {
         "password": "$2a$10$nXvKVrNaa3fl8eYfUxlwZuFQCQ9QJswC8hLDWtr7sSo7kFjTeI.x2",
-        "hobbies": [
-            "Sports",
-            "Books",
-            "Clothes"
-        ],
         "dob": "2003-11-23",
         "userId": "9bbfc69f-c542-4dac-9d47-572d589c9423",
         "email": "a@.com",
         "username": "shiraznasser"
+    },
+    {
+        "password": "$2a$10$FiOYUPmKBY.5E34LjhmCeOlRRnHU2e2cH49jEKY8OwG87bwMMiqzu",
+        "dob": "2004-03-03",
+        "userId": "93f0963d-bfcd-4b3a-a8b2-68153c9c9066",
+        "email": "c@.com",
+        "username": "janaEmad"
+    },
+    {
+        "password": "$2a$10$HeJ7r1rFOrEjLqxsyPWEAejIv1BKXHPLRD2G1gAtSwkf3pMini07q",
+        "dob": "2003-08-19",
+        "userId": "1ea51bb8-fc6f-4c69-9b60-4c337adf5eff",
+        "email": "d@.com",
+        "username": "habibaelghazouly"
     }
 ]

@@ -1,7 +1,7 @@
 package Frontend;
 
-import Backend.Post;
-import Backend.Story;
+//import Backend.Post;
+//import Backend.Story;
 import java.awt.BorderLayout;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -10,8 +10,8 @@ import javax.swing.JFrame;
 
 public class Newsfeed extends javax.swing.JFrame {
 
-    private ArrayList<Post> posts;
-    private ArrayList<Story> stories;
+   // private ArrayList<Post> posts;
+    //private ArrayList<Story> stories;
     //remove arraylist from abstract class in content creation
     //change the content type to String and its going to be determined by either .jpg if image or text
 
@@ -21,16 +21,16 @@ public class Newsfeed extends javax.swing.JFrame {
         setContentPane(jPanel1);
         setResizable(false);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        this.posts = new ArrayList<>();
-        this.stories = new ArrayList<>();
+//        this.posts = new ArrayList<>();
+  //      this.stories = new ArrayList<>();
         //jPanel3.setLayout(new BoxLayout(jPanel3, BoxLayout.Y_AXIS));
 //         posts.add(new Post("p1", "user1", "This is my first post!", LocalDateTime.now()));
 //        posts.add(new Post("p2", "user2", "Having a great day!", LocalDateTime.now().minusHours(1)));
 //        stories.add(new Story("s1", "user1", "path/to/image1.jpg", LocalDateTime.now()));
 //        stories.add(new Story("s2", "user2", "path/to/image2.jpg", LocalDateTime.now().minusHours(2)));
-      setLayout(new BorderLayout());
-        postsPanel.setLayout(new BoxLayout(postsPanel, BoxLayout.Y_AXIS));
-        add(scrollPane, BorderLayout.CENTER);
+        setLayout(new BorderLayout());
+        //postsPanel.setLayout(new BoxLayout(postsPanel, BoxLayout.Y_AXIS));
+        //add(scrollPane, BorderLayout.CENTER);
         setSize(400, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
