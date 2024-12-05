@@ -1,52 +1,54 @@
-
 package Backend;
 
 import Interfaces.*;
 import java.awt.Image;
 
-public class Profile implements ProfileManager{
+public class Profile implements ProfileManager {
 
-    UserFileManager manager=UserFileManager.getInstance();
+    UserFileManager userManager = UserFileManager.getInstance();
 
+    private String userId;
     private Image profilePic;
     private Image coverPic;
     private String bio;
-   
-    public Profile(String userId) {
-        
-        this.profilePic = null;
-        this.coverPic = null;
-        this.bio = null;
+
+    public Profile(String userId, Image profilePic, Image coverPic, String bio) {
+        this.userId = userId;
+        this.profilePic = profilePic;
+        this.coverPic = coverPic;
+        this.bio = bio;
     }
+    
     
     //method to update the profile photo
     @Override
-    public boolean changeProfilePic(Image profile) {
-        
-        
-        return true;
+    public void changeProfilePic(Image profile) {
+        this.profilePic = profile;
+
+        //SaveToFile
     }
 
     //method to update the cover photo
     @Override
-    public boolean changeCoverPic(Image cover) {
-       
-        return true;
+    public void changeCoverPic(Image cover) {
+        this.coverPic = cover;
+
+        //SaveToFile
     }
 
     // method to enable the user to update the current bio
     @Override
-    public boolean updateBio(String bio) {
-       
-        //update bio
-        return true;
+    public void updateBio(String bio) {
+        this.bio = bio;
+
+        //SaveToFile
     }
 
     // method to enable the user to update the current password
     @Override
     public boolean updatePassword(String userId, String password) {
-        
-        User user = manager.findUserByID(userId);
+
+        User user = userManager.findUserByID(userId);
         String hashedPass = Password.hashPassword(password);
 
         //confirm updating passwords only if it does not match the old one
@@ -54,10 +56,10 @@ public class Profile implements ProfileManager{
             return false;
         }
         user.setPassword(hashedPass);
-        
+
         // updating the users.txt file
-        manager.saveToFile(UserFileManager.getInstance().getUsers(), FilePaths.USERS_FILE_PATH);
-        
+        userManager.saveToFile(UserFileManager.getInstance().getUsers(), FilePaths.USERS_FILE_PATH);
+
         return true;
     }
 
