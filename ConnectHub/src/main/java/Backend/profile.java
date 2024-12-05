@@ -3,7 +3,7 @@ package Backend;
 import Interfaces.profileManager;
 import java.awt.Image;
 
-public class profile implements profileManager {
+public class Profile implements profileManager {
 
     UserManager manager = new UserManager();
 
@@ -11,7 +11,7 @@ public class profile implements profileManager {
     private Image coverPic;
     private String bio;
 
-    public profile(String userId) {
+    public Profile(String userId) {
         User user = manager.findUser(userId);
         this.profilePic = null;
         this.coverPic = null;
