@@ -1,21 +1,25 @@
 package Backend;
 
 import Interfaces.ContentCreation;
+import java.awt.Image;
 import java.time.LocalDateTime;
 
 public abstract class Content implements ContentCreation{
     protected String contentId;
     protected String authorId;
-    protected String content;
+    protected String contentTxt;
+    protected Image contentPng;
     protected LocalDateTime uploadingTime;
     //protected User user;
 
-    public Content(String contentId, String authorId, String content, LocalDateTime uploadingTime) {
+    public Content(String contentId, String authorId, String contentTxt, Image contentPng) {
         this.contentId = contentId;
         this.authorId = authorId;
-        this.content = content;
-        this.uploadingTime = uploadingTime;
+        this.contentTxt = contentTxt;
+        this.contentPng = contentPng;
+        this.uploadingTime = LocalDateTime.now();
     }
+
 
     @Override
     public String getContentId() {
@@ -37,14 +41,20 @@ public abstract class Content implements ContentCreation{
         this.authorId = authorId;
     }
 
-    @Override
-    public String getContent() {
-        return content;
+    public String getContentTxt() {
+        return contentTxt;
     }
 
-    @Override
-    public void setContent(String content) {
-        this.content = content;
+    public void setContentTxt(String contentTxt) {
+        this.contentTxt = contentTxt;
+    }
+
+    public Image getContentPng() {
+        return contentPng;
+    }
+
+    public void setContentPng(Image contentPng) {
+        this.contentPng = contentPng;
     }
 
     @Override

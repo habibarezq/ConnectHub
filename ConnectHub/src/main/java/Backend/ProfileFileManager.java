@@ -1,13 +1,20 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package Backend;
 
-/**
- *
- * @author Habiba Elghazouly
- */
-public class ProfileFileManager {
+import Interfaces.FileManager;
+import java.util.ArrayList;
+
+
+public class ProfileFileManager implements FileManager<Profile>{
+
+    @Override
+    public void readFromFile(String FILE_PATH) {
+
+    }
+
+    @Override
+    public void saveTOFile(ArrayList<Profile> data, String FILE_PATH) {
+        
+    }
     
 }
