@@ -12,11 +12,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class UserFileManager {
+//importing the FilePaths and FileManager interfaces
+import Interfaces.*;
 
-    private static final String FILE_PATH = "users.txt";
+public class UserFileManager implements FileManager {
 
-    public static ArrayList<User> readUsers() {
+   static String FILE_PATH = Interfaces.FilePaths.USERS_FILE_PATH;
+    
+   @Override
+    public  ArrayList<User> readFromFile(FILE_PATH) {
         ArrayList<User> users = new ArrayList<>();
         try {
             String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
@@ -43,7 +47,7 @@ public class UserFileManager {
         return users;
     }
 
-    public static void saveUsers(ArrayList<User> users) {
+    public void saveToFile(ArrayList<User> users , FILE_PATH) {
         
         File f= new File(FILE_PATH);
         try {
