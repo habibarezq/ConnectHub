@@ -2,14 +2,14 @@ package Interfaces;
 
 import java.awt.*;
 
-public interface profileManager {
+public interface ProfileManager {
     // an Interface that has the methods of the Profile Management depending on the user ID
 
-    public boolean changeProfilePic(String userId, Image profile);
+    public boolean changeProfilePic(Image profile);
 
-    public boolean changeCoverPic(String userId, Image cover);
+    public boolean changeCoverPic( Image cover);
 
-    public boolean updateBio(String userId, String bio);
+    public boolean updateBio(String bio);
 
     public boolean updatePassword(String userId, String password);
 

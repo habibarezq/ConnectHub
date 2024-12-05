@@ -1,31 +1,54 @@
 package Backend;
 
+
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.*;
 
-public class StoriesFileManager {
+//importing the FilePaths and FileManager interfaces
+import Interfaces.*;
 
-    private static final String FILE_PATH = "stories.txt";
+public class StoriesFileManager implements FileManager<Story> {
 
-    public static ArrayList<Story> readStories() {
-        ArrayList<Story> stories = new ArrayList<>();
+    private static StoriesFileManager instance;
+    private ArrayList<Story> stories;
 
+    // private constructor to avoid instantiation
+    private StoriesFileManager() {
+        this.stories = new ArrayList<>();
+        readFromFile(FilePaths.STORIES_FILE_PATH);
+    }
+
+    public static StoriesFileManager getInstance() {
+        if (instance == null) {
+            instance = new StoriesFileManager();
+        }
+        return instance;
+    }
+
+    public ArrayList<Story> getStories() {
+
+        if (stories.isEmpty()) {
+            readFromFile(FilePaths.USERS_FILE_PATH);
+        }
+        return stories;
+    }
+
+    @Override
+    public void readFromFile(String FILE_PATH) {
+        if (!stories.isEmpty())
+            return; // to avoid reloading
         try {
-            String json = new String(Files.readAllBytes(Paths.get("stories.txt")));
+            String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
             JSONArray storiesArray = new JSONArray(json); // Parse the JSON array
 
+            this.stories.clear(); // Clear the existing list before loading new data
             for (int i = 0; i < storiesArray.length(); i++) {
                 JSONObject storyJSON = storiesArray.getJSONObject(i);
                 String authorId = storyJSON.getString("userId");
@@ -42,10 +65,10 @@ public class StoriesFileManager {
         } catch (JSONException ex) {
             System.out.println("Error parsing JSON: " + ex.getMessage());
         }
-        return stories;
     }
 
-    public static void savePosts(ArrayList<Story> stories) {
+    @Override
+    public void saveToFile(ArrayList<Story> stories,String FILE_PATH) {
         File f = new File(FILE_PATH);
         try {
             f.createNewFile();
@@ -71,8 +94,17 @@ public class StoriesFileManager {
         } catch (FileNotFoundException e) {
             System.out.println("File Not Found:  " + e.getMessage());
         } catch (IOException e) {
-            System.out.println("Error saving users: " + e.getMessage());
+            System.out.println("Error saving Stories: " + e.getMessage());
         }
     }
 
+    // Method to find Story by authorID
+    public Story findUserByID(String authorId) {
+        for (Story s : stories) {
+            if (authorId.equals(s.getAuthorId())) {
+                return s;
+            }
+        }
+        return null;
+    }
 }
