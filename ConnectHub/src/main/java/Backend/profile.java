@@ -56,7 +56,7 @@ public class Profile implements ProfileManager{
         user.setPassword(hashedPass);
         
         // updating the users.txt file
-        manager.saveToFile(UserFileManager.getInstance().getUsers(), FilePaths.USERS_FILE_PATH);
+        //manager.saveToFile(UserFileManager.getInstance().getUsers(), FilePaths.USERS_FILE_PATH);
         
         return true;
     }
