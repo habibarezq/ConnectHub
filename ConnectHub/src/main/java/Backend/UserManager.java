@@ -16,14 +16,11 @@ public class UserManager implements UserManagerInterface {
         this.users = users;
     }
 
-
     @Override
     public User signup(String email, String username, LocalDate dateOfBirth, String password) {
-        if (UserValidation.isEmailTaken(email,users)) {
+        if (UserValidation.isEmailTaken(email, users)) {
             throw new IllegalArgumentException("Email is already taken");
-        }
-        else if(UserValidation.isUsernameTaken(username, users))
-        {
+        } else if (UserValidation.isUsernameTaken(username, users)) {
             throw new IllegalArgumentException("UserName is already taken");
         }
         User u = new User(UUID.randomUUID().toString(), email, username, dateOfBirth, hashPassword(password));
@@ -38,10 +35,13 @@ public class UserManager implements UserManagerInterface {
         for (User u : users) {
             if (email.equals(u.getEmail()) && verifyPassword(password, u.getPassword())) {
                 u.setStatus(true);
+                return u;
             }
         }
+        return null;
     }
     
+
     public boolean loginValidation(String email, String password) {
         for (User u : users) {
             if (email.equals(u.getEmail()) && verifyPassword(password, u.getPassword())) {
