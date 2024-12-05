@@ -1,6 +1,7 @@
 package Backend;
 
 import static Backend.Password.*;
+//import static Backend.UserFileManager.readUsers;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -31,6 +32,15 @@ public class UserManager implements UserManagerInterface {
                 u.setStatus(true);
             }
         }
+    }
+    
+    public boolean loginValidation(String email, String password) {
+        for (User u : users) {
+            if (email.equals(u.getEmail()) && verifyPassword(password, u.getPassword())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean findUserByID(String userID) {

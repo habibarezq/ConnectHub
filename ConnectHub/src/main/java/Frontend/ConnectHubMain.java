@@ -1,35 +1,17 @@
 package Frontend;
 
-import java.awt.*;
 import static java.lang.System.exit;
-import javax.swing.*;
 
 public class ConnectHubMain extends javax.swing.JFrame {
 
     /**
      * Creates new form Signup
      */
-    public CardLayout cardLayout;
-    public JPanel cardPanel;
-    
     public ConnectHubMain() {
         initComponents();
         setTitle("Connect Hub");
-        cardLayout = new CardLayout();
-        cardPanel = new JPanel(cardLayout);
-
-        cardPanel.add(new Login(this), "Login");
-        cardPanel.add(new Signup(this), "Signup");
-        //cardPanel.add(new Newsfeed(this), "Newsfeed");
-
-        add(cardPanel);
-        switchPanel( "Login"); // Show Login first
     }
     
-    public void switchPanel(String panelName) {
-        cardLayout.show(cardPanel, panelName);
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -118,12 +100,14 @@ public class ConnectHubMain extends javax.swing.JFrame {
 
     private void signupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signupButtonActionPerformed
         // TODO add your handling code here:
-        switchPanel("Signup");
+        new Signup().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_signupButtonActionPerformed
 
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
         // TODO add your handling code here:
-        switchPanel("Login");
+        new Login().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_loginButtonActionPerformed
 
     /**
