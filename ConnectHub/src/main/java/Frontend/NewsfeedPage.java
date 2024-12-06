@@ -1,3 +1,4 @@
+
 package Frontend;
 
 import Backend.Post;
@@ -97,6 +98,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
        
     }
 
+   
     private void populatePosts() {
         JPanel postPanel = new JPanel();
         postPanel.setLayout(new BoxLayout(postPanel, BoxLayout.Y_AXIS));
@@ -461,3 +463,4 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private javax.swing.JList<String> suggestedFriendsList;
     // End of variables declaration//GEN-END:variables
 }
+
