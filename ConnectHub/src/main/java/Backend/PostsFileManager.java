@@ -48,20 +48,21 @@ public class PostsFileManager implements FileManager<Post> {
                 String authorId = postJSON.getString("userId");
                 String contentId = postJSON.getString("contentId");
                 String TextContent = postJSON.getString("TextContent");
-
-                // Add validation for Base64 encoding of image
-                String ImageContentBase64 = postJSON.getString("ImageContent");
-                byte[] imageBytes = null;
-                try {
-                    imageBytes = Base64.getDecoder().decode(ImageContentBase64); // Decode Base64 image data
-                } catch (IllegalArgumentException e) {
-                    System.out.println("Error decoding Base64 image for post with contentId: " + contentId + ". Skipping post.");
-                    continue; // Skip this post if image decoding fails
-                }
-
-                Image image = Toolkit.getDefaultToolkit().createImage(imageBytes);
+                String imagePath = postJSON.getString("ImagePath");
+                
+//                // Add validation for Base64 encoding of image
+//                String ImageContentBase64 = postJSON.getString("ImageContent");
+//                byte[] imageBytes = null;
+//                try {
+//                    imageBytes = Base64.getDecoder().decode(ImageContentBase64); // Decode Base64 image data
+//                } catch (IllegalArgumentException e) {
+//                    System.out.println("Error decoding Base64 image for post with contentId: " + contentId + ". Skipping post.");
+//                    continue; // Skip this post if image decoding fails
+//                }
+//
+//                Image image = Toolkit.getDefaultToolkit().createImage(imageBytes);
                 LocalDateTime time = LocalDateTime.parse(postJSON.getString("time"));
-                posts.add(new Post(contentId, authorId, TextContent, image, time));
+                posts.add(new Post(contentId, authorId, TextContent, imagePath, time));
             }
         } catch (IOException ex) {
             System.out.println("Error reading file: " + ex.getMessage());
@@ -85,7 +86,7 @@ public class PostsFileManager implements FileManager<Post> {
             postJSON.put("userId", post.getAuthorId());
             postJSON.put("contentId", post.getContentId());
             postJSON.put("TextContent", post.getContentTxt());
-            postJSON.put("ImageContent", post.getContentPng()); // Convert image to Base64
+            postJSON.put("ImagePath", post.getcontentPath()); // Convert image to Base64
             postJSON.put("time", post.getUploadingTime());
             postsArray.put(postJSON);
         }
