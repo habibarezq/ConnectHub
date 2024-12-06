@@ -23,9 +23,15 @@
 
 package Backend;
 
-import Interfaces.FileManager;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import org.json.*;
 
+//importing the FilePaths and FileManager interfaces
+import Interfaces.*;
 
 public class ProfileFileManager implements FileManager<Profile>{
 

@@ -9,4 +9,5 @@ public interface FileManager<T> {
     public void readFromFile(String FILE_PATH);
     public void saveToFile(ArrayList<T> data , String FILE_PATH);
 
+    //ADD GET INSTANCE GET USERS "SINGLETON"
 }
