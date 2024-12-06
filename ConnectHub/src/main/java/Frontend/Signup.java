@@ -1,7 +1,11 @@
 package Frontend;
 
+import Backend.User;
 import Backend.UserFileManager;
 import Backend.UserManager;
+import Validation.UserValidation;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -17,16 +21,20 @@ public class Signup extends javax.swing.JFrame {
      * Creates new form Signup
      */
     protected ArrayList usersArray;
-    
-    public Signup(UserFileManager userFileManager) {
+
+    public Signup(UserFileManager userFileManager,ConnectHubMain connectWindow) {
         initComponents();
         setTitle("Signup");
         usersArray = userFileManager.getUsers();
-        
+        setResizable(false);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         populateDateComboBox();
-//        populateDayComboBox();
-//        populateMonthComboBox();
-//        populateYearComboBox();
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                connectWindow.setVisible(true);
+            }
+        });
     }
 
     private void populateDateComboBox() {
@@ -35,7 +43,7 @@ public class Signup extends javax.swing.JFrame {
         start.set(1924, Calendar.JANUARY, 1);
 
         Calendar end = Calendar.getInstance();
-        end.set(LocalDate.now().getYear(), LocalDate.now().getMonthValue()-1,LocalDate.now().getDayOfMonth());
+        end.set(LocalDate.now().getYear(), LocalDate.now().getMonthValue() - 1, LocalDate.now().getDayOfMonth());
 
         DefaultComboBoxModel<String> dateModel = new DefaultComboBoxModel<>();
 
@@ -46,35 +54,7 @@ public class Signup extends javax.swing.JFrame {
 
         dateBox.setModel(dateModel); // Set the model for jComboBox1
     }
-//    private void populateDayComboBox() {
-//        DefaultComboBoxModel<String> dayModel = new DefaultComboBoxModel<>();
-//        dayModel.addElement("DD");
-//        Integer i;
-//        for (i = 1; i < 32; i++) {
-//            dayModel.addElement(i.toString());
-//        }
-//        dayBox.setModel(dayModel); // Set the model for day ComboBox       
-//    }
-//
-//    private void populateMonthComboBox() {
-//        DefaultComboBoxModel<String> monthModel = new DefaultComboBoxModel<>();
-//        monthModel.addElement("MM");
-//        Integer i;
-//        for (i = 1; i < 13; i++) {
-//            monthModel.addElement(i.toString());
-//        }
-//        monthBox.setModel(monthModel); // Set the model for month ComboBox
-//    }
-//
-//    private void populateYearComboBox() {
-//        DefaultComboBoxModel<String> yearModel = new DefaultComboBoxModel<>();
-//        yearModel.addElement("YYYY");
-//        Integer i;
-//        for (i = (Integer) LocalDate.now().getYear(); i >= 1924; i--) {
-//            yearModel.addElement(i.toString());
-//        }
-//        yearBox.setModel(yearModel); // Set the model for year ComboBox
-//    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -202,9 +182,6 @@ public class Signup extends javax.swing.JFrame {
         String username = usernameText.getText();
         String email = emailText.getText();
         String password = PasswordField.getText();
-//        String day = (String) dayBox.getSelectedItem();
-//        String month = (String) monthBox.getSelectedItem();
-//        String year = (String) yearBox.getSelectedItem();
         String date = (String) dateBox.getSelectedItem();
         LocalDate local = null;
         UserManager u = new UserManager(usersArray);
@@ -217,27 +194,26 @@ public class Signup extends javax.swing.JFrame {
                 ex.printStackTrace();
             }
         }
-
-//        if (day != null && month != null && year != null) {
-//            try {
-//                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-//                local = LocalDate.parse(day + "-" + month + "-" + year, formatter);
-//
-//            } catch (DateTimeParseException ex) {
-//                ex.printStackTrace();
-//            }
-//        }
         if (email.equals("") || password.equals("") || username.equals("")) {
             JOptionPane.showMessageDialog(this, "Some fields are empty!", "Message", JOptionPane.ERROR_MESSAGE);
-            //} else if(validations){
-        } else if (u.signup(email, username, local, password) != null) {
-            JOptionPane.showMessageDialog(this, "The user has been successfully created.", "Message", JOptionPane.PLAIN_MESSAGE);
-            new NewsfeedPage().setVisible(true);
-            this.dispose();
-            
+        } else if (UserValidation.isEmailTaken(email, usersArray)) {
+            JOptionPane.showMessageDialog(this, "Email is already taken.", "Message", JOptionPane.ERROR_MESSAGE);
+            emailText.setText("");
+        } else if (UserValidation.isUsernameTaken(username, usersArray)) {
+            JOptionPane.showMessageDialog(this, "Username is already taken.", "Message", JOptionPane.ERROR_MESSAGE);
+            usernameText.setText("");
         } else {
-            JOptionPane.showMessageDialog(this, "Registration failed !!", "Message", JOptionPane.ERROR_MESSAGE);
+            User user = u.signup(email, username, local, password);
+            if (user != null) {
+                JOptionPane.showMessageDialog(this, "The user has been successfully created.", "Message", JOptionPane.PLAIN_MESSAGE);
+                this.dispose();
+                new NewsfeedPage(user).setVisible(true);
+                
+            } else {
+                JOptionPane.showMessageDialog(this, "Registration failed !!", "Message", JOptionPane.ERROR_MESSAGE);
+            }
         }
+
     }//GEN-LAST:event_signupButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed

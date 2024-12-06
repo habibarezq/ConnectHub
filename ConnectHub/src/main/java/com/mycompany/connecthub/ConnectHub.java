@@ -62,9 +62,12 @@
 //
 //        // Adding a new post
 //        System.out.println("Adding a new post...");
-//        Image postImage = Toolkit.getDefaultToolkit().createImage(new byte[]{});
-////        Post newPost = new Post("content4", "user4", "This is a new post", postImage, LocalDateTime.now());
-//      //  posts.add(newPost);
+//        Image postImage = Toolkit.getDefaultToolkit().createImage(new byte[] {});
+//        Post newPost = new Post("content4", "user4", "This is a new post", postImage, LocalDateTime.now());
+//        posts.add(newPost);
+//        Post newPost = new Post("content4", "user4", "This is a new post", postImage, LocalDateTime.now());
+//        // posts.add(newPost);
+//
 //        postsManager.saveToFile(posts); // Save posts back to file
 //
 //        // Test StoriesFileManager
@@ -85,7 +88,7 @@
 //
 //        // Adding a new story
 //        System.out.println("Adding a new story...");
-//        Image storyImage = Toolkit.getDefaultToolkit().createImage(new byte[]{});
+//        Image storyImage = Toolkit.getDefaultToolkit().createImage(new byte[] {});
 //        Story newStory = new Story("story4", "user4", "This is a new story", storyImage, LocalDateTime.now());
 //        stories.add(newStory);
 //        storiesManager.saveToFile(stories); // Save stories back to file
@@ -133,6 +136,5 @@
 //        System.out.println("Content refreshed successfully.");
 //
 //        System.out.println("Testing completed!");
-////    }
 //    }
 //}

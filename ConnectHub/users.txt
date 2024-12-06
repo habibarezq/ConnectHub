@@ -12,5 +12,40 @@
         "userId": "457154dd-294b-43c4-a4a9-8ebb744e3e06",
         "email": "h2@gmail.com",
         "username": "habibaelghazouly"
+    },
+    {
+        "password": "$2a$10$523qNrRbpxqic0WWBuHmqe.aiOldNvCZR1Ak3ZxArkxrPYZtuLM/a",
+        "dob": "2000-06-17",
+        "userId": "5f8078ba-4213-4fac-93fc-a1ea9d560eb9",
+        "email": "j@gmail.com",
+        "username": "janaEmad"
+    },
+    {
+        "password": "$2a$10$xW1bUYnla2hxMEyDTnv6OuFu4uLsDJo1O6cq34B2Jc4uL.DiV65.W",
+        "dob": "1999-06-13",
+        "userId": "e55d3f08-baed-4675-922f-c2af3769fc69",
+        "email": "c@gmail.com",
+        "username": "rahma"
+    },
+    {
+        "password": "$2a$10$2RLRFxbqSyMmbudSGFsUQeq2aqGQQ9QsQLMg4YjdhV22JOFzT2YgO",
+        "dob": "2017-10-13",
+        "userId": "14742de1-a179-4840-8794-63bc37dc2319",
+        "email": "a@gmail.com",
+        "username": "ali"
+    },
+    {
+        "password": "$2a$10$fOwDBeRKi9QNPjcCrFJvseFC.tzGZMJVNqKURqxOVcd.G8OQeku9G",
+        "dob": "2024-11-29",
+        "userId": "8be566cf-d29b-4861-85ee-3b78fd44a626",
+        "email": "b@gmail.com",
+        "username": "amr"
+    },
+    {
+        "password": "$2a$10$Qs7g1K99HFWn3kLDZxDmRO9OTZpa2Ev2o.O/ol3Y9/hGJrKScYI6a",
+        "dob": "2000-06-17",
+        "userId": "9fc606f6-ee8a-45bc-ba48-0d4e59351ac8",
+        "email": "g@gmail.com",
+        "username": "farah"
     }
 ]

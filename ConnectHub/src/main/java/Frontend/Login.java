@@ -1,8 +1,11 @@
 package Frontend;
 
-import Backend.UserFileManager;
+
 import javax.swing.JOptionPane;
-import Backend.UserManager;
+import Backend.*;
+import Validation.UserValidation;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 public class Login extends javax.swing.JFrame {
@@ -12,10 +15,20 @@ public class Login extends javax.swing.JFrame {
      */
     protected ArrayList usersArray;
 
-    public Login(UserFileManager userFileManager) {
+    public Login(UserFileManager userFileManager,ConnectHubMain connectWindow) {
         initComponents();
         setTitle("Login");
+        setResizable(false);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         usersArray = userFileManager.getUsers();
+        
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                connectWindow.setVisible(true);
+            }
+        });
+
     }
 
     /**
@@ -109,9 +122,10 @@ public class Login extends javax.swing.JFrame {
         UserManager u = new UserManager(usersArray);
         if (email.equals("") || password.equals("")) {
             JOptionPane.showMessageDialog(this, "Some fields are empty!", "Message", JOptionPane.ERROR_MESSAGE);
-        } else if (u.loginValidation(email, password)) {
-            u.login(email, password);
-            new NewsfeedPage().setVisible(true);
+        }
+        else if (u.loginValidation(email, password)) {
+            User user=u.login(email, password);
+            new NewsfeedPage(user).setVisible(true);
             this.dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Wrong Email or Password", "Message", JOptionPane.ERROR_MESSAGE);

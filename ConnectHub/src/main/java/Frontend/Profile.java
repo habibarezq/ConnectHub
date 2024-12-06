@@ -10,25 +10,55 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import Backend.*;
+import java.util.ArrayList;
+import javax.swing.JPanel;
 
 public class Profile extends javax.swing.JFrame {
 
     //for the friends list
+   
     private DefaultListModel<String> friendsModel;
-
+    private ArrayList<String> imagePaths;
    //private void startup(UserProfile profile);
-
+    
     public Profile() {
         setTitle("My Profile");
         initComponents();
+        setSize(1000, 593);
+        setResizable(false);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         // method to retrieve the info of the profile of the logged in user
         //startup(profile);
 
-        friendsModel = new DefaultListModel<>();
-        friendsList.setModel(friendsModel);
+        imagePaths =new ArrayList<>();
+        
+        imagePaths.add("C:/Users/habib/Documents/NetBeansProjects/ConnectHub/testScroll/images.jpg");
+        imagePaths.add("C:/Users/habib/Documents/NetBeansProjects/ConnectHub/testScroll/download.jpeg");
+        imagePaths.add("C:/Users/habib/Documents/NetBeansProjects/ConnectHub/testScroll/download(1).jpeg");
+        
+        JLabel jLabelTest=new JLabel("Here");
+        //Initialize the post panel
+        postPanel=new JPanel();
+        postPanel.add(jLabelTest);
+        postPanel.setLayout(new BoxLayout(postPanel, BoxLayout.Y_AXIS));
+        
+        // Add the scroll pane to the frame
+        JScrollPane scrollPane = new JScrollPane(postPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        add(scrollPane, BorderLayout.CENTER);
+        
+//        // Create a button to load posts (images)
+//        JButton loadImagesButton = new JButton("Load Posts");
+//        loadImagesButton.addActionListener(e -> loadImagesFromArrayList());
+//        add(loadImagesButton, BorderLayout.SOUTH);
+    loadImagesFromArrayList();
+        setVisible(true);
+        //friendsModel = new DefaultListModel<>();
+        //friendsList.setModel(friendsModel);
 
-        populateFriends();
+        //populateFriends();
     }
 
     public void populateFriends() {
@@ -36,10 +66,49 @@ public class Profile extends javax.swing.JFrame {
     
     }
     
-    private void startup(UserProfile profile){
-        //retrieving the data
-        
+    // This method will be used to load images from the ArrayList and display them in postPanel
+    private void loadImagesFromArrayList() {
+        // Clear previous posts before adding new ones
+        postPanel.removeAll();
+
+        // Loop through the ArrayList and display images
+        for (String imagePath : imagePaths) {
+            // Create a panel for each post
+            JPanel singlePostPanel = new JPanel();
+            singlePostPanel.setLayout(new BoxLayout(singlePostPanel, BoxLayout.Y_AXIS));
+            singlePostPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+            // Check if the image file exists
+            File file = new File(imagePath);
+            if (file.exists()) {
+                // Load and resize the image
+                ImageIcon originalIcon = new ImageIcon(imagePath);
+                Image originalImage = originalIcon.getImage();
+                int width = 300;  // desired width
+                int height = 300;  // desired height
+                Image resizedImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+                ImageIcon resizedIcon = new ImageIcon(resizedImage);
+
+                // Add the resized image to the post panel
+                JLabel imageLabel = new JLabel(resizedIcon);
+                singlePostPanel.add(imageLabel);
+            } else {
+                // Display an error if the image is not found
+                JLabel errorLabel = new JLabel("Image not found: " + imagePath);
+                errorLabel.setForeground(Color.RED);
+                singlePostPanel.add(errorLabel);
+            }
+
+            // Add the single post panel to the main post panel
+            postPanel.add(singlePostPanel);
+            postPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Add space between posts
+        }
+
+        // Refresh the UI
+        postPanel.revalidate();
+        postPanel.repaint();
     }
+    
 
     private String changeImage(javax.swing.JLabel imageLabel) {
 
@@ -102,8 +171,10 @@ public class Profile extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         friendsList = new javax.swing.JList<>();
         jLabel2 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(1000, 600));
 
         profileLabel.setBackground(new java.awt.Color(255, 255, 255));
         profileLabel.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
@@ -174,39 +245,46 @@ public class Profile extends javax.swing.JFrame {
         jLabel2.setText("Friends ");
         jLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
 
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("My Posts");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jScrollPane1)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(157, 157, 157)
-                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(bioLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(profileLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
-                                .addComponent(profileButton))
-                            .addGap(18, 18, 18)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(coverButton)
-                                .addComponent(coverLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addComponent(jScrollPane2))
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(523, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane1)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(157, 157, 157)
+                                .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(bioLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(profileLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+                                    .addComponent(profileButton))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(coverButton)
+                                    .addComponent(coverLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 541, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(354, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(54, 54, 54)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(coverLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(profileLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(coverLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(profileLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(profileButton)
@@ -222,8 +300,8 @@ public class Profile extends javax.swing.JFrame {
                 .addGap(34, 34, 34)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(47, 47, 47))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         profileLabel.getAccessibleContext().setAccessibleParent(profileLabel);
@@ -319,6 +397,7 @@ public class Profile extends javax.swing.JFrame {
     private javax.swing.JList<String> friendsList;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -326,4 +405,5 @@ public class Profile extends javax.swing.JFrame {
     private javax.swing.JButton profileButton;
     private javax.swing.JLabel profileLabel;
     // End of variables declaration//GEN-END:variables
+     private javax.swing.JPanel  postPanel;
 }
