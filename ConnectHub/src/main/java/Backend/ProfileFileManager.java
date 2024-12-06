@@ -3,73 +3,74 @@ package Backend;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import org.json.*;
 
-//importing the FilePaths and FileManager interfaces
+// importing the FilePaths and FileManager interfaces
 import Interfaces.*;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
-import java.time.LocalDateTime;
-import java.util.Base64;
-import javax.imageio.ImageIO;
 
 public class ProfileFileManager implements FileManager<UserProfile> {
 
     private static ProfileFileManager instance;
-    private ArrayList<UserProfile> profiles;
     private String FILE_PATH = FilePaths.PROFILES_FILE_PATH;
+    private UserProfile userProfile;
+    private String userId;
 
-    // private constructor to avoid instantiation
-    private ProfileFileManager() {
-        this.profiles = new ArrayList<>();
+   
+    private ProfileFileManager(String userId) {
+        this.userId = userId;
+        this.userProfile = null; 
         readFromFile();
     }
 
-    public static ProfileFileManager getInstance() {
-        if (instance == null) {
-            instance = new ProfileFileManager();
+    // Singleton pattern with userId specificity
+    public static synchronized ProfileFileManager getInstance(String userId) {
+        if (instance == null || !instance.userId.equals(userId)) {
+            instance = new ProfileFileManager(userId);
         }
         return instance;
     }
 
-    public ArrayList<UserProfile> getProfiles() {
-        if (profiles.isEmpty()) {
-            readFromFile(); //EH EL LOGIC HENAA
+    public UserProfile getUserProfile() {
+        if (userProfile == null) {
+            readFromFile(); // Load the profile if not already loaded
         }
-        return profiles;
+        return userProfile;
     }
-
 
     @Override
     public void readFromFile() {
-        if (!profiles.isEmpty()) {
-            return; // To avoid reloading
-        }
         try {
             String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
-            JSONArray postsArray = new JSONArray(json); // Parse the JSON array
+            JSONArray profilesArray = new JSONArray(json); // Parse the JSON array
 
-            this.profiles.clear(); // Clear the existing list before loading new data
-            for (int i = 0; i < postsArray.length(); i++) {
-                JSONObject postJSON = postsArray.getJSONObject(i);
-                String userId = postJSON.getString("userId");
-                String bio = postJSON.getString("Bio");
-                String profilePath = postJSON.getString("ProfilePhotoPath");
-                String coverPath = postJSON.getString("CoverPhotoPath");
+            for (int i = 0; i < profilesArray.length(); i++) {
+                JSONObject profileJSON = profilesArray.getJSONObject(i);
 
-                profiles.add(new UserProfile(userId, profilePath, coverPath , bio));
+                // Check if the userId matches
+                if (profileJSON.getString("userId").equals(userId)) {
+                    String bio = profileJSON.getString("Bio");
+                    String profilePath = profileJSON.getString("ProfilePhotoPath");
+                    String coverPath = profileJSON.getString("CoverPhotoPath");
+
+                    // Create the UserProfile object for the specific user
+                    userProfile = new UserProfile(userId, profilePath, coverPath, bio);
+                    break; // Exit the loop as the profile has been found
+                }
             }
         } catch (IOException ex) {
             System.out.println("Error reading file: " + ex.getMessage());
         } catch (JSONException ex) {
             System.out.println("Error parsing JSON: " + ex.getMessage());
         }
+
+        // If the profile was not found, initialize with default values
+        if (userProfile == null) {
+            userProfile = new UserProfile(userId, "", "", ""); // Default profile with empty fields
+        }
     }
 
-     @Override
+    @Override
     public void saveToFile(ArrayList<UserProfile> data) {
         File f = new File(FILE_PATH);
         try {
@@ -78,28 +79,28 @@ public class ProfileFileManager implements FileManager<UserProfile> {
             System.out.println("Error: " + ex.getMessage());
         }
 
-        JSONArray postsArray = new JSONArray();
+        JSONArray profilesArray = new JSONArray();
+
         for (UserProfile profile : data) {
-            JSONObject postJSON = new JSONObject();
-            postJSON.put("userId", profile.getUserId());
-            postJSON.put("Bio", profile.getBio());
-            postJSON.put("ProfilePhotoPath", profile.getProfilePic());
-            postJSON.put("CoverPhotoPath", profile.getCoverPic());
-          
-            postsArray.put(postJSON);
+            JSONObject profileJSON = new JSONObject();
+            profileJSON.put("userId", profile.getUserId());
+            profileJSON.put("Bio", profile.getBio());
+            profileJSON.put("ProfilePhotoPath", profile.getProfilePic());
+            profileJSON.put("CoverPhotoPath", profile.getCoverPic());
+
+            profilesArray.put(profileJSON);
         }
 
         try {
             FileWriter file = new FileWriter(FILE_PATH);
-            file.write(postsArray.toString(4));
+            file.write(profilesArray.toString(4));
             file.flush();
             file.close();
             System.out.println("Data Saved Successfully.");
         } catch (FileNotFoundException e) {
             System.out.println("File Not Found: " + e.getMessage());
         } catch (IOException e) {
-            System.out.println("Error saving posts: " + e.getMessage());
+            System.out.println("Error saving profiles: " + e.getMessage());
         }
     }
 }
-
