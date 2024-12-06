@@ -14,11 +14,12 @@ public class UserFileManager implements FileManager<User> {
 
     private static UserFileManager instance;
     private ArrayList<User> users;
+    private String FILE_PATH=FilePaths.USERS_FILE_PATH;
 
     //private constructor to avoid instantiation
     private UserFileManager() {
         this.users = new ArrayList<>();
-        readFromFile(FilePaths.USERS_FILE_PATH);
+        readFromFile();
     }
 
     public static UserFileManager getInstance() {
@@ -31,13 +32,13 @@ public class UserFileManager implements FileManager<User> {
     public ArrayList<User> getUsers() {
 
         if (users.isEmpty()) {
-            readFromFile(FilePaths.USERS_FILE_PATH);
+            readFromFile();
         }
         return users;
     }
 
     @Override
-    public void readFromFile(String FILE_PATH) {
+    public void readFromFile() {
         if(!users.isEmpty()) return; //to avoid reloading
         try {
             String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
@@ -64,7 +65,7 @@ public class UserFileManager implements FileManager<User> {
     }
 
     @Override
-    public void saveTOFile(ArrayList<User> data, String FILE_PATH) {
+    public void saveToFile(ArrayList<User> data) {
         File f = new File(FILE_PATH);
         try {
             f.createNewFile();
@@ -97,7 +98,7 @@ public class UserFileManager implements FileManager<User> {
 
     }
 
-     // Method to find user by ID
+    // Method to find user by ID
     public User findUserByID(String userID) {
         for (User u : users) {
             if (userID.equals(u.getUserID())) {

@@ -15,14 +15,11 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
     protected boolean status;
     //Each Friends,posts,stories will have its own database service
 
-    private ArrayList posts; //String for friend requests statuses
-    private ArrayList stories; //User's online status 
-    private static int numberOfStories;
-    private static int numberOfPosts;
+    private ContentManager contentManager;
     private ArrayList<User> friends; //List of User's Friends
     private ArrayList<User> blocked; //List of User's blocked
     private HashMap<User, String> friendRequests;
- 
+
 
     public User(String userID, String email, String username, LocalDate dateOfBirth, String password) {
         this.userID = userID;
@@ -31,11 +28,20 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
         this.password = password;
         this.dateOfBirth = dateOfBirth;
         status = false;
-        this.numberOfPosts = 0;
-        this.numberOfStories = 0;
+
         this.friends = new ArrayList<>();
         this.friendRequests = new HashMap<>();
         this.blocked=new ArrayList<>();
+
+        this.contentManager=ContentManager.getInstance(userID);
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public ContentManager getContentManager() {
+        return contentManager;
     }
 
     public ArrayList<User> getBlocked() {
@@ -110,22 +116,6 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
         this.status = status;
     }
 
-    public ArrayList getPosts() {
-        return posts;
-    }
-
-    public void setPosts(ArrayList posts) {
-        this.posts = posts;
-    }
-
-    public ArrayList getStories() {
-        return stories;
-    }
-
-    public void setStories(ArrayList stories) {
-        this.stories = stories;
-    }
-
     @Override
     public void removeFriend(User friend) {
         if (friends.contains(friend)) {
@@ -182,14 +172,6 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
     @Override
     public void logout() {
         setStatus(false);
-    }
-
-    public int getNumberOfPosts() {
-        return numberOfPosts;
-    }
-
-    public int getNumberOfStories() {
-        return numberOfStories;
     }
 
     @Override

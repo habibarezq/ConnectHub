@@ -1,66 +1,97 @@
 package Backend;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.Base64;
+import org.json.*;
 
-public class StoriesFileManager {
-    
-    private static final String FILE_PATH = "stories.txt";
-    
-       public static ArrayList<Story> readStories()
-    {
-        ArrayList<Story> stories = new ArrayList<>();
-        
-         try {
-            String json = new String(Files.readAllBytes(Paths.get("posts.txt")));
-            JSONArray storiesArray = new JSONArray(json); // Parse the JSON array
+//importing the FilePaths and FileManager interfaces
+import Interfaces.*;
 
-            for (int i = 0; i < storiesArray.length(); i++) 
-            {
-               JSONObject storyJSON = storiesArray.getJSONObject(i);
-               String authorId = storyJSON.getString("userId");
-               String contentId = storyJSON.getString("contentId");
-               String content = storyJSON.getString("content");
-               LocalDateTime time = LocalDateTime.parse(storyJSON.getString("time"));
-            }
-}
-           catch (IOException ex) {
-            System.out.println("Error reading file: " + ex.getMessage());
-        } catch (JSONException ex) {
-            System.out.println("Error parsing JSON: " + ex.getMessage());
+public class StoriesFileManager implements FileManager<Story> {
+
+    private static StoriesFileManager instance;
+    private String FILE_PATH=FilePaths.STORIES_FILE_PATH;
+    private ArrayList<Story> stories;
+
+    // private constructor to avoid instantiation
+    private StoriesFileManager() {
+        this.stories = new ArrayList<>();
+        readFromFile();
+    }
+
+    public static StoriesFileManager getInstance() {
+        if (instance == null) {
+            instance = new StoriesFileManager();
+        }
+        return instance;
+    }
+
+    public ArrayList<Story> getStories() {
+
+        if (stories.isEmpty()) {
+            readFromFile(); //EH EL LOGIC HENNAAAA
         }
         return stories;
     }
 
-    
-    
-     public static void savePosts(ArrayList<Story> stories) 
-    {
-        File f= new File(FILE_PATH);
+    @Override
+public void readFromFile() {
+
+    if (!stories.isEmpty())
+        return; // to avoid reloading
+    try {
+        String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
+        JSONArray storiesArray = new JSONArray(json); // Parse the JSON array
+
+        this.stories.clear(); // Clear the existing list before loading new data
+        for (int i = 0; i < storiesArray.length(); i++) {
+            JSONObject storyJSON = storiesArray.getJSONObject(i);
+            String authorId = storyJSON.getString("userId");
+            String contentId = storyJSON.getString("contentId");
+            String TextContent = storyJSON.getString("TextContent");
+            String ImageContentBase64 = storyJSON.getString("ImageContent");
+
+            // Add validation for Base64 encoding
+            try {
+                byte[] imageBytes = Base64.getDecoder().decode(ImageContentBase64); // Decode the Base64 string into a byte array
+                Image image = Toolkit.getDefaultToolkit().createImage(imageBytes);
+                LocalDateTime time = LocalDateTime.parse(storyJSON.getString("time"));
+                stories.add(new Story(contentId, authorId, TextContent, image, time));
+            } catch (IllegalArgumentException e) {
+                System.out.println("Error decoding Base64 image for story with contentId: " + contentId + ". Skipping story.");
+            }
+        }
+    } catch (IOException ex) {
+        System.out.println("Error reading file: " + ex.getMessage());
+    } catch (JSONException ex) {
+        System.out.println("Error parsing JSON: " + ex.getMessage());
+    }
+}
+
+
+    @Override
+    public void saveToFile(ArrayList<Story> stories) {
+        File f = new File(FILE_PATH);
         try {
             f.createNewFile();
         } catch (IOException ex) {
             System.out.println("Error:  " + ex.getMessage());
         }
         JSONArray storiesArray = new JSONArray();
-        for(Story story : stories)
-        {
-             JSONObject storyJSON = new JSONObject();
+        for (Story story : stories) {
+            JSONObject storyJSON = new JSONObject();
             storyJSON.put("userId", story.getAuthorId());
             storyJSON.put("contentId", story.getContentId());
             storyJSON.put("TextContent", story.getContentTxt());
-            storyJSON.put("ImageContent", story.getContentPng());
-            storyJSON.put("time", story.getUploadingTime());
+            storyJSON.put("ImageContent", story.getContentPng()); //image is added as a Base64 string
+            storyJSON.put("time", story.getUploadingTime()); //base64 is a binary-to-text encoding scheme to encode binary data and ensure transmitting data safely
             storiesArray.put(storyJSON);
         }
         try {
@@ -72,9 +103,8 @@ public class StoriesFileManager {
         } catch (FileNotFoundException e) {
             System.out.println("File Not Found:  " + e.getMessage());
         } catch (IOException e) {
-            System.out.println("Error saving users: " + e.getMessage());
+            System.out.println("Error saving Stories: " + e.getMessage());
         }
     }
-    
-    
+
 }

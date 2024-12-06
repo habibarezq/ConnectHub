@@ -1,26 +1,44 @@
 [
     {
-        "password": "$2a$10$n2oj6ZmLre3ZUzx9aekTce0KZ7Y7Q6.qvNIAWttio4zs9OY.8/Cz2",
-        "hobbies": [
-            "Sports",
-            "Books",
-            "Clothes"
-        ],
-        "dob": "2004-06-30",
-        "userId": "715372e8-be4e-42a1-a146-a1bdd3389ff7",
-        "email": "b@.com",
-        "username": "habibarezq"
+        "password": "password1",
+        "dob": "1990-05-15",
+        "userId": "user1",
+        "email": "user1@example.com",
+        "username": "user1"
     },
     {
-        "password": "$2a$10$nXvKVrNaa3fl8eYfUxlwZuFQCQ9QJswC8hLDWtr7sSo7kFjTeI.x2",
-        "hobbies": [
-            "Sports",
-            "Books",
-            "Clothes"
-        ],
-        "dob": "2003-11-23",
-        "userId": "9bbfc69f-c542-4dac-9d47-572d589c9423",
-        "email": "a@.com",
-        "username": "shiraznasser"
+        "password": "password2",
+        "dob": "1985-11-20",
+        "userId": "user2",
+        "email": "user2@example.com",
+        "username": "user2"
+    },
+    {
+        "password": "password3",
+        "dob": "2000-01-30",
+        "userId": "user3",
+        "email": "user3@example.com",
+        "username": "user3"
+    },
+    {
+        "password": "password123",
+        "dob": "1995-05-15",
+        "userId": "user4",
+        "email": "user4@example.com",
+        "username": "user4username"
+    },
+    {
+        "password": "password123",
+        "dob": "1995-05-15",
+        "userId": "user4",
+        "email": "user4@example.com",
+        "username": "user4username"
+    },
+    {
+        "password": "password123",
+        "dob": "1995-05-15",
+        "userId": "user5",
+        "email": "user5@example.com",
+        "username": "userusername"
     }
 ]
