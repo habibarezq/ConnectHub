@@ -348,7 +348,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
     private void profileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_profileButtonActionPerformed
         //goes to profile frame 
-        new Profile().setVisible(true);
+        new Profile(UserFileManager.getInstance().findUserByID(userId)).setVisible(true);
     }//GEN-LAST:event_profileButtonActionPerformed
 
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed

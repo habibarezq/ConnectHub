@@ -16,99 +16,101 @@ import javax.swing.JPanel;
 public class Profile extends javax.swing.JFrame {
 
     //for the friends list
-   
     private DefaultListModel<String> friendsModel;
-    private ArrayList<String> imagePaths;
-   //private void startup(UserProfile profile);
-    
-    public Profile() {
+
+    private DefaultListModel<String> PostsModel;
+    private ArrayList<Post> posts;
+    private User user;
+    private String userId ;
+
+    public Profile(User user) {
         setTitle("My Profile");
         initComponents();
         setSize(1000, 593);
         setResizable(false);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        
+        this.user = user;
+        this.userId = user.getUserID();
+        FriendsFileManager.getInstance(userId);
+        this.posts = new ArrayList<>();
+
+        friendsModel = new DefaultListModel<>();
+        friendsList.setModel(friendsModel);
+        populateFriends();
 
         // method to retrieve the info of the profile of the logged in user
         //startup(profile);
-
-        imagePaths =new ArrayList<>();
-        
-        imagePaths.add("C:/Users/habib/Documents/NetBeansProjects/ConnectHub/testScroll/images.jpg");
-        imagePaths.add("C:/Users/habib/Documents/NetBeansProjects/ConnectHub/testScroll/download.jpeg");
-        imagePaths.add("C:/Users/habib/Documents/NetBeansProjects/ConnectHub/testScroll/download(1).jpeg");
-        
-        JLabel jLabelTest=new JLabel("Here");
-        //Initialize the post panel
-        postPanel=new JPanel();
-        postPanel.add(jLabelTest);
-        postPanel.setLayout(new BoxLayout(postPanel, BoxLayout.Y_AXIS));
-        
-        // Add the scroll pane to the frame
-        JScrollPane scrollPane = new JScrollPane(postPanel);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        add(scrollPane, BorderLayout.CENTER);
-        
-//        // Create a button to load posts (images)
-//        JButton loadImagesButton = new JButton("Load Posts");
-//        loadImagesButton.addActionListener(e -> loadImagesFromArrayList());
-//        add(loadImagesButton, BorderLayout.SOUTH);
-    loadImagesFromArrayList();
-        setVisible(true);
-        //friendsModel = new DefaultListModel<>();
-        //friendsList.setModel(friendsModel);
-
-        //populateFriends();
     }
 
     public void populateFriends() {
-        friendsModel.addElement("John Doe");
-    
-    }
-    
-    // This method will be used to load images from the ArrayList and display them in postPanel
-    private void loadImagesFromArrayList() {
-        // Clear previous posts before adding new ones
-        postPanel.removeAll();
 
-        // Loop through the ArrayList and display images
-        for (String imagePath : imagePaths) {
-            // Create a panel for each post
-            JPanel singlePostPanel = new JPanel();
-            singlePostPanel.setLayout(new BoxLayout(singlePostPanel, BoxLayout.Y_AXIS));
-            singlePostPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-            // Check if the image file exists
-            File file = new File(imagePath);
-            if (file.exists()) {
-                // Load and resize the image
-                ImageIcon originalIcon = new ImageIcon(imagePath);
-                Image originalImage = originalIcon.getImage();
-                int width = 300;  // desired width
-                int height = 300;  // desired height
-                Image resizedImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-                ImageIcon resizedIcon = new ImageIcon(resizedImage);
-
-                // Add the resized image to the post panel
-                JLabel imageLabel = new JLabel(resizedIcon);
-                singlePostPanel.add(imageLabel);
-            } else {
-                // Display an error if the image is not found
-                JLabel errorLabel = new JLabel("Image not found: " + imagePath);
-                errorLabel.setForeground(Color.RED);
-                singlePostPanel.add(errorLabel);
+        ArrayList<User> friends = UserFileManager.getInstance().findUserByID(userId).getFriends();
+        if (friends == null) {
+            friendsModel.addElement("No Friends");
+        } else {
+            for (User friend : friends) {
+                String status;
+                if (friend.getStatus()) {
+                    status = "online";
+                } else {
+                    status = "offline";
+                }
+                String friendInfo = friend.getUsername() + " (" + status + ") ";
+                friendsModel.addElement(friendInfo);
             }
-
-            // Add the single post panel to the main post panel
-            postPanel.add(singlePostPanel);
-            postPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Add space between posts
         }
 
-        // Refresh the UI
-        postPanel.revalidate();
-        postPanel.repaint();
     }
-    
+
+    // This method will be used to load images from the ArrayList and display them in postPanel
+    private void populatePosts() {
+        JPanel postPanel = new JPanel();
+        postPanel.setLayout(new BoxLayout(postPanel, BoxLayout.Y_AXIS));
+        postPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+        for (Post post : posts) {
+            JPanel singlePostPanel = new JPanel();
+            singlePostPanel.setLayout(new BorderLayout());
+            singlePostPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            singlePostPanel.setPreferredSize(new Dimension(300, 80));
+
+            // adds the time Stamp
+            JLabel timestampLabel = new JLabel("Time: " + post.getUploadingTime());
+            timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Add padding
+            postPanel.add(timestampLabel, BorderLayout.SOUTH);
+
+            //adding content
+            //adding text
+            JLabel contentLabel = new JLabel("Content: " + post.getContentTxt());
+            contentLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Adding padding
+            postPanel.add(contentLabel, BorderLayout.NORTH);
+
+            // adding the image 
+            File imageFile = new File(post.getcontentPath());
+            if (imageFile.exists()) {
+                ImageIcon imageIcon = resizeImagePosts(post.getcontentPath());
+                JLabel imageLabel = new JLabel(imageIcon);
+                postPanel.add(imageLabel, BorderLayout.WEST);
+            } else {
+                JLabel noImageLabel = new JLabel("No image.");
+                postPanel.add(noImageLabel, BorderLayout.WEST);
+            }
+
+            postPanel.add(singlePostPanel);
+            System.out.println("post added to panel");
+            postPanel.add(Box.createRigidArea(new Dimension(0, 1))); // Add spacing between stories
+        }
+        PostPanel.setViewportView(postPanel);
+    }
+
+    private ImageIcon resizeImagePosts(String contentPath) {
+        ImageIcon imageIcon = new ImageIcon(contentPath);
+        Image image = imageIcon.getImage();
+        Image resizedImage = image.getScaledInstance(PostPanel.getWidth() - 10, 300, Image.SCALE_SMOOTH);
+        ImageIcon resizedImageIcon = new ImageIcon(resizedImage);
+        return resizedImageIcon;
+    }
 
     private String changeImage(javax.swing.JLabel imageLabel) {
 
@@ -139,6 +141,7 @@ public class Profile extends javax.swing.JFrame {
                     // Scale image to fit within the label
                     Image scaledImage = image.getScaledInstance(imageLabel.getWidth(), imageLabel.getHeight(), Image.SCALE_SMOOTH);
                     imageLabel.setIcon(new ImageIcon(scaledImage));
+                    
                     return imagePath; //TO BE SENT TO THE BACKEND TO SAVE IT 
                 } else {
                     JOptionPane.showMessageDialog(this, "The selected file is not a valid image.", "Invalid Image", JOptionPane.ERROR_MESSAGE);
@@ -172,6 +175,7 @@ public class Profile extends javax.swing.JFrame {
         friendsList = new javax.swing.JList<>();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        PostPanel = new javax.swing.JScrollPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1000, 600));
@@ -179,13 +183,11 @@ public class Profile extends javax.swing.JFrame {
         profileLabel.setBackground(new java.awt.Color(255, 255, 255));
         profileLabel.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         profileLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        profileLabel.setText("Insert a Photo");
         profileLabel.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 3, true));
 
         coverLabel.setBackground(new java.awt.Color(204, 255, 255));
         coverLabel.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         coverLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        coverLabel.setText("Insert a Cover");
         coverLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
         coverLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
@@ -268,39 +270,50 @@ public class Profile extends javax.swing.JFrame {
                                     .addComponent(profileLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
                                     .addComponent(profileButton))
                                 .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(coverButton)
-                                    .addComponent(coverLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(coverLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(coverButton))))
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 541, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(354, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(PostPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(21, 21, 21))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(142, 142, 142))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(coverLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(profileLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(profileButton)
-                    .addComponent(coverButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(bioLabel)
-                .addGap(12, 12, 12)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton3))
-                .addGap(34, 34, 34)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(coverLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(profileLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(coverButton)
+                            .addComponent(profileButton))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(bioLabel)
+                        .addGap(12, 12, 12)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton3))
+                        .addGap(34, 34, 34)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(PostPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 536, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -321,18 +334,10 @@ public class Profile extends javax.swing.JFrame {
 
     private void jTextArea1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextArea1FocusGained
         // TODO add your handling code here:
-        if (jTextArea1.getText().isEmpty()) {
-            jTextArea1.setText("Insert text");
-            jTextArea1.setForeground(Color.GRAY);
-        }
     }//GEN-LAST:event_jTextArea1FocusGained
 
     private void jTextArea1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextArea1FocusLost
         // TODO add your handling code here:
-        if (jTextArea1.getText().equals("Insert text")) {
-            jTextArea1.setText("");
-            jTextArea1.setForeground(Color.BLACK);
-        }
     }//GEN-LAST:event_jTextArea1FocusLost
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -342,7 +347,7 @@ public class Profile extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        new password().setVisible(true);
+        new password(this.user).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -384,13 +389,15 @@ public class Profile extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+           
             public void run() {
-                new Profile().setVisible(true);
+                //new Profile(this.userId).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane PostPanel;
     private javax.swing.JLabel bioLabel;
     private javax.swing.JButton coverButton;
     private javax.swing.JLabel coverLabel;
@@ -405,5 +412,5 @@ public class Profile extends javax.swing.JFrame {
     private javax.swing.JButton profileButton;
     private javax.swing.JLabel profileLabel;
     // End of variables declaration//GEN-END:variables
-     private javax.swing.JPanel  postPanel;
+     //private javax.swing.JPanel postPanel;
 }
