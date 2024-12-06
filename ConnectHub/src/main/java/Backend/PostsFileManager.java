@@ -24,7 +24,7 @@ public class PostsFileManager implements FileManager<Post> {
         readFromFile();
     }
 
-    public static PostsFileManager getInstance() {
+    public static synchronized PostsFileManager getInstance() {
         if (instance == null) {
             instance = new PostsFileManager();
         }

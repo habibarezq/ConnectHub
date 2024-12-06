@@ -54,5 +54,12 @@
         "userId": "7bef5d57-6a1b-48f0-960c-35a9cecf3610",
         "email": "k@gmail.com",
         "username": "khaled"
+    },
+    {
+        "password": "$2a$10$4ee8HhInJ1/h6Pf3aadpzO5s/mKRnDOBYWF9xii0sZam6dCxT8ST6",
+        "dob": "2024-12-04",
+        "userId": "82757b23-738c-4455-88a4-fa79d1c1ed5f",
+        "email": "l@gmail.com",
+        "username": "leina"
     }
 ]

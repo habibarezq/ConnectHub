@@ -5,14 +5,13 @@ import static java.lang.System.exit;
 
 public class ConnectHubMain extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Signup
-     */
+    
     protected UserFileManager userFileManager;
     
     public ConnectHubMain() {
         initComponents();
         setVisible(true);
+        setResizable(false);
         userFileManager = UserFileManager.getInstance();
         setTitle("Connect Hub");
     }

@@ -123,8 +123,9 @@ public class Login extends javax.swing.JFrame {
         }
         else if (u.loginValidation(email, password)) {
             User user=u.login(email, password);
-            new NewsfeedPage(user,connectHub).setVisible(true);
             this.dispose();
+            new NewsfeedPage(user,connectHub).setVisible(true);
+            
         } else {
             JOptionPane.showMessageDialog(this, "Wrong Email or Password", "Message", JOptionPane.ERROR_MESSAGE);
             emailText.setText("");

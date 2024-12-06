@@ -25,7 +25,7 @@ public class StoriesFileManager implements FileManager<Story> {
         readFromFile();
     }
 
-    public static StoriesFileManager getInstance() {
+    public static synchronized StoriesFileManager getInstance() {
         if (instance == null) {
             instance = new StoriesFileManager();
         }
