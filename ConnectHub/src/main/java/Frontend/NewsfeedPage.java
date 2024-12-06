@@ -42,6 +42,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
         friendsList.setModel(friendsModel);
         suggestedFriendsList.setModel(suggestedFriendsModel);
 
+        displayPosts();
 //        StoriesList.setCellRenderer(new CustomListCellRender());
 //        postsList.setCellRenderer(new CustomListCellRender());       
 //        populateFriends(); //arraylist missing
