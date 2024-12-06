@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.IOException;
 import Backend.*;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 
 public class Profile extends javax.swing.JFrame {
@@ -26,21 +28,22 @@ public class Profile extends javax.swing.JFrame {
     public Profile(User user) {
         setTitle("My Profile");
         initComponents();
-        setSize(1000, 593);
+        setSize(1300, 593);
         setResizable(false);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         this.user = user;
         this.userId = user.getUserID();
         FriendsFileManager.getInstance(userId);
-        this.posts = new ArrayList<>();
+        this.posts = PostsFileManager.getInstance().getPosts();
 
-        ProfileFileManager.getInstance(userId);
         UserProfile profile = ProfileFileManager.getInstance(userId).getUserProfile();
 
         friendsModel = new DefaultListModel<>();
         friendsList.setModel(friendsModel);
         populateFriends();
+
+        populatePosts();
 
         // method to retrieve the info of the profile of the logged in user
         startup(profile);
@@ -70,10 +73,10 @@ public class Profile extends javax.swing.JFrame {
 
         File coverFile = new File(profile.getCoverPic());
         File profileFile = new File(profile.getProfilePic());
+        System.out.println("File path " + coverFile.getAbsolutePath());
         if (coverFile.exists()) {
             try {
                 Image image1 = ImageIO.read(coverFile);
-                Image image2 = ImageIO.read(profileFile);
 
                 if (image1 != null) {
                     // Scale image to fit within the label
@@ -81,19 +84,27 @@ public class Profile extends javax.swing.JFrame {
                     coverLabel.setIcon(new ImageIcon(scaledImage));
 
                 }
-                if (image2 != null) {
-                    // Scale image to fit within the label
-                    Image scaledImage = image1.getScaledInstance(coverLabel.getWidth(), coverLabel.getHeight(), Image.SCALE_SMOOTH);
-                    profileLabel.setIcon(new ImageIcon(scaledImage));
-                } else {
-                    JOptionPane.showMessageDialog(this, "The selected file is not a valid image.", "Invalid Image", JOptionPane.ERROR_MESSAGE);
-                }
+
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(this, "Error loading image: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
+        if (profileFile.exists()) {
+            try {
+                Image image2 = ImageIO.read(profileFile);
+                if (image2 != null) {
+                    // Scale image to fit within the label
+                    Image scaledImage = image2.getScaledInstance(coverLabel.getWidth(), coverLabel.getHeight(), Image.SCALE_SMOOTH);
+                    profileLabel.setIcon(new ImageIcon(scaledImage));
+                } else {
+                    JOptionPane.showMessageDialog(this, "The selected file is not a valid image.", "Invalid Image", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(Profile.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         String bio = profile.getBio();
-        ProfileFileManager.getInstance(userId).getUserProfile().updateBio(bio);
+        jTextArea1.setText(bio);
     }
 
     // This method will be used to load images from the ArrayList and display them in postPanel

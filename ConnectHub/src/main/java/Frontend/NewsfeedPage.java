@@ -46,12 +46,7 @@ private ConnectHubMain connectHub;
         this.userId = user.getUserID();
         FriendsFileManager.getInstance(userId);
         this.posts = PostsFileManager.getInstance().getPosts();
-<<<<<<< Updated upstream
-        
-=======
-        //fillPosts();
 
->>>>>>> Stashed changes
         this.users = UserFileManager.getInstance().getUsers();
         //addUsers();
 
@@ -397,7 +392,9 @@ private ConnectHubMain connectHub;
     }//GEN-LAST:event_profileButtonActionPerformed
 
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
+        this.dispose();
         new ConnectHubMain().setVisible(true);
+        
     }//GEN-LAST:event_logoutButtonActionPerformed
 
     private void addStoryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStoryButtonActionPerformed
@@ -440,12 +437,7 @@ private ConnectHubMain connectHub;
                 int returnValue = fileChooser.showOpenDialog(this);
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
-
-<<<<<<< Updated upstream
-                    posts.add(new Post( userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
-=======
-                    posts.add(new Post(userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
->>>>>>> Stashed changes
+                posts.add(new Post( userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
                 } else {
                     String text = JOptionPane.showInputDialog(null, "Enter Text:");
                     posts.add(new Post(userId, text, null, LocalDateTime.now()));
