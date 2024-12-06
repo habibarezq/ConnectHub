@@ -110,8 +110,8 @@ public class Login extends javax.swing.JFrame {
         if (email.equals("") || password.equals("")) {
             JOptionPane.showMessageDialog(this, "Some fields are empty!", "Message", JOptionPane.ERROR_MESSAGE);
         } else if (u.loginValidation(email, password)) {
-            new Newsfeed().setVisible(true);
             u.login(email, password);
+            new Newsfeed().setVisible(true);
             this.dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Wrong Email or Password", "Message", JOptionPane.ERROR_MESSAGE);
