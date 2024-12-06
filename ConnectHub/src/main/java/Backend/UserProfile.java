@@ -67,34 +67,50 @@ package Backend;
 import Interfaces.*;
 import java.awt.Image;
 
-public class Profile implements ProfileManager {
+public class UserProfile implements ProfileManager {
 
     UserFileManager userManager = UserFileManager.getInstance();
 
     private String userId;
-    private Image profilePic;
-    private Image coverPic;
+    private String profilePic;
+    private String coverPic;
     private String bio;
 
-    public Profile(String userId, Image profilePic, Image coverPic, String bio) {
+    public UserProfile(String userId, String profilePic, String coverPic, String bio) {
         this.userId = userId;
         this.profilePic = profilePic;
         this.coverPic = coverPic;
         this.bio = bio;
     }
+
+    // getters 
+    
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    public String getCoverPic() {
+        return coverPic;
+    }
+
+    public String getBio() {
+        return bio;
+    }
     
     
     //method to update the profile photo
-    @Override
-    public void changeProfilePic(Image profile) {
+    public void changeProfilePic(String profile) {
         this.profilePic = profile;
 
         //SaveToFile
     }
 
     //method to update the cover photo
-    @Override
-    public void changeCoverPic(Image cover) {
+    public void changeCoverPic(String cover) {
         this.coverPic = cover;
 
         //SaveToFile
@@ -122,9 +138,19 @@ public class Profile implements ProfileManager {
         user.setPassword(hashedPass);
 
         // updating the users.txt file
-        userManager.saveToFile(UserFileManager.getInstance().getUsers(), FilePaths.USERS_FILE_PATH);
+        userManager.saveToFile(UserFileManager.getInstance().getUsers());
 
         return true;
+    }
+
+    @Override
+    public void changeProfilePic(Image profile) {
+        
+    }
+
+    @Override
+    public void changeCoverPic(Image cover) {
+        
     }
 
 }

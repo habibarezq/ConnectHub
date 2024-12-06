@@ -8,15 +8,15 @@ public abstract class Content implements ContentCreation{
     protected String contentId;
     protected String authorId;
     protected String contentTxt;
-    protected Image contentPng;
+    protected String contentPath;
     protected LocalDateTime uploadingTime;
     //protected User user;
 
-    public Content(String contentId, String authorId, String contentTxt, Image contentPng, LocalDateTime uploadingTime) {
+    public Content(String contentId, String authorId, String contentTxt, String contentPath, LocalDateTime uploadingTime) {
         this.contentId = contentId;
         this.authorId = authorId;
         this.contentTxt = contentTxt;
-        this.contentPng = contentPng;
+        this.contentPath = contentPath;
         this.uploadingTime = uploadingTime;
     }
 
@@ -49,12 +49,12 @@ public abstract class Content implements ContentCreation{
         this.contentTxt = contentTxt;
     }
 
-    public Image getContentPng() {
-        return contentPng;
+    public String getcontentPath() {
+        return contentPath;
     }
 
-    public void setContentPng(Image contentPng) {
-        this.contentPng = contentPng;
+    public void setcontentPath(String contentPng) {
+        this.contentPath = contentPng;
     }
 
     @Override
