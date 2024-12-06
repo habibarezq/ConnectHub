@@ -57,8 +57,8 @@ public class ProfileFileManager implements FileManager<UserProfile> {
                 JSONObject postJSON = postsArray.getJSONObject(i);
                 String userId = postJSON.getString("userId");
                 String bio = postJSON.getString("Bio");
-                String profilePath = postJSON.getString("Profile photo Path");
-                String coverPath = postJSON.getString("Cover photo Path");
+                String profilePath = postJSON.getString("ProfilePhotoPath");
+                String coverPath = postJSON.getString("CoverPhotoPath");
 
                 profiles.add(new UserProfile(userId, profilePath, coverPath , bio));
             }
@@ -83,8 +83,8 @@ public class ProfileFileManager implements FileManager<UserProfile> {
             JSONObject postJSON = new JSONObject();
             postJSON.put("userId", profile.getUserId());
             postJSON.put("Bio", profile.getBio());
-            postJSON.put("Profile photo Path", profile.getProfilePic());
-            postJSON.put("Cover photo Path", profile.getCoverPic());
+            postJSON.put("ProfilePhotoPath", profile.getProfilePic());
+            postJSON.put("CoverPhotoPath", profile.getCoverPic());
           
             postsArray.put(postJSON);
         }
