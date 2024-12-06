@@ -21,7 +21,7 @@ public class ContentManager {
     public static synchronized ContentManager getInstance(String userId) {
     if (instance != null && !instance.userId.equals(userId)) {
         // Clear the existing instance when the userId changes
-        instance = null; 
+        instance = null;  //SHOULD CALL CONSTRUCTOR HERE TO MAKE A NEW INSTANCE FOR NEW ID 
     }
     if (instance == null) {
         instance = new ContentManager(userId);
@@ -73,7 +73,8 @@ public class ContentManager {
     // Observer pattern
     public void refreshPosts() {
         this.posts = null; 
-        this.postsLoaded = false; 
+        this.postsLoaded = false;
+        //SHOULD RELOAD THE POSTS AND STORIES
         System.out.println("Posts refreshed.");
     }
 
@@ -87,7 +88,7 @@ public class ContentManager {
         refreshPosts();
         refreshStories();
         System.out.println("All content refreshed.");
-    }
+    } 
 
     // Add a post to the user's posts
     public void addPost(Post post) {
@@ -95,7 +96,10 @@ public class ContentManager {
             if (posts == null) {
                 posts = new ArrayList<>();
             }
-            posts.add(post);
+            posts.add(post); //Adds new Post to ArrayList of User's Posts
+            PostsFileManager.getInstance().getPosts().add(post); //Adds new Post to ArrayList of AllPosts
+            PostsFileManager.getInstance().saveToFile(PostsFileManager.getInstance().getPosts()); //Save to File
+            
             System.out.println("Post added: " + post.getContentTxt());
         } else {
             System.out.println("Cannot add post: Author ID mismatch.");
@@ -109,6 +113,9 @@ public class ContentManager {
                 stories = new ArrayList<>();
             }
             stories.add(story);
+            StoriesFileManager.getInstance().getStories().add(story);
+            StoriesFileManager.getInstance().saveToFile(StoriesFileManager.getInstance().getStories());
+            
             System.out.println("Story added: " + story.getContentTxt());
         } else {
             System.out.println("Cannot add story: Author ID mismatch.");
