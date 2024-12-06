@@ -21,7 +21,7 @@ public class Profile extends javax.swing.JFrame {
     private DefaultListModel<String> PostsModel;
     private ArrayList<Post> posts;
     private User user;
-    private String userId ;
+    private String userId;
 
     public Profile(User user) {
         setTitle("My Profile");
@@ -29,20 +29,21 @@ public class Profile extends javax.swing.JFrame {
         setSize(1000, 593);
         setResizable(false);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        
+
         this.user = user;
         this.userId = user.getUserID();
         FriendsFileManager.getInstance(userId);
         this.posts = new ArrayList<>();
-        
-         ProfileFileManager.getInstance(userId);
+
+        ProfileFileManager.getInstance(userId);
+        UserProfile profile = ProfileFileManager.getInstance(userId).getUserProfile();
 
         friendsModel = new DefaultListModel<>();
         friendsList.setModel(friendsModel);
         populateFriends();
 
         // method to retrieve the info of the profile of the logged in user
-        //startup(profile);
+        startup(profile);
     }
 
     public void populateFriends() {
@@ -65,8 +66,38 @@ public class Profile extends javax.swing.JFrame {
 
     }
 
+    public void startup(UserProfile profile) {
+
+        File coverFile = new File(profile.getCoverPic());
+        File profileFile = new File(profile.getProfilePic());
+        if (coverFile.exists()) {
+            try {
+                Image image1 = ImageIO.read(coverFile);
+                Image image2 = ImageIO.read(profileFile);
+
+                if (image1 != null) {
+                    // Scale image to fit within the label
+                    Image scaledImage = image1.getScaledInstance(coverLabel.getWidth(), coverLabel.getHeight(), Image.SCALE_SMOOTH);
+                    coverLabel.setIcon(new ImageIcon(scaledImage));
+
+                }
+                if (image2 != null) {
+                    // Scale image to fit within the label
+                    Image scaledImage = image1.getScaledInstance(coverLabel.getWidth(), coverLabel.getHeight(), Image.SCALE_SMOOTH);
+                    profileLabel.setIcon(new ImageIcon(scaledImage));
+                } else {
+                    JOptionPane.showMessageDialog(this, "The selected file is not a valid image.", "Invalid Image", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Error loading image: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        String bio = profile.getBio();
+        ProfileFileManager.getInstance(userId).getUserProfile().updateBio(bio);
+    }
+
     // This method will be used to load images from the ArrayList and display them in postPanel
-    private void populatePosts() {
+    public void populatePosts() {
         JPanel postPanel = new JPanel();
         postPanel.setLayout(new BoxLayout(postPanel, BoxLayout.Y_AXIS));
         postPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -143,7 +174,7 @@ public class Profile extends javax.swing.JFrame {
                     // Scale image to fit within the label
                     Image scaledImage = image.getScaledInstance(imageLabel.getWidth(), imageLabel.getHeight(), Image.SCALE_SMOOTH);
                     imageLabel.setIcon(new ImageIcon(scaledImage));
-                    
+
                     return imagePath; //TO BE SENT TO THE BACKEND TO SAVE IT 
                 } else {
                     JOptionPane.showMessageDialog(this, "The selected file is not a valid image.", "Invalid Image", JOptionPane.ERROR_MESSAGE);
@@ -185,12 +216,12 @@ public class Profile extends javax.swing.JFrame {
         profileLabel.setBackground(new java.awt.Color(255, 255, 255));
         profileLabel.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         profileLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        profileLabel.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 3, true));
+        profileLabel.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
         coverLabel.setBackground(new java.awt.Color(204, 255, 255));
         coverLabel.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         coverLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        coverLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        coverLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         coverLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         profileButton.setText("change");
@@ -222,7 +253,7 @@ public class Profile extends javax.swing.JFrame {
         bioLabel.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         bioLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         bioLabel.setText("Insert  a Bio ");
-        bioLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        bioLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jButton1.setText("save Bio");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -247,10 +278,11 @@ public class Profile extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
         jLabel2.setText("Friends ");
-        jLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
+        jLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("My Posts");
+        jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -326,14 +358,14 @@ public class Profile extends javax.swing.JFrame {
 
     private void profileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_profileButtonActionPerformed
         // TODO add your handling code here:
-       String path = changeImage(profileLabel);
-       ProfileFileManager.getInstance(userId).getUserProfile().changeProfilePic(path);
+        String path = changeImage(profileLabel);
+        ProfileFileManager.getInstance(userId).getUserProfile().changeProfilePic(path);
     }//GEN-LAST:event_profileButtonActionPerformed
 
     private void coverButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_coverButtonActionPerformed
         // TODO add your handling code here:
         String path = changeImage(coverLabel);
-         ProfileFileManager.getInstance(userId).getUserProfile().changeCoverPic(path);
+        ProfileFileManager.getInstance(userId).getUserProfile().changeCoverPic(path);
     }//GEN-LAST:event_coverButtonActionPerformed
 
     private void jTextArea1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextArea1FocusGained
@@ -394,7 +426,7 @@ public class Profile extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
-           
+
             public void run() {
                 //new Profile(this.userId).setVisible(true);
             }

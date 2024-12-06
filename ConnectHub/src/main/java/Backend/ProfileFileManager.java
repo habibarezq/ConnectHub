@@ -8,6 +8,7 @@ import org.json.*;
 
 // importing the FilePaths and FileManager interfaces
 import Interfaces.*;
+import static java.lang.System.exit;
 
 public class ProfileFileManager implements FileManager<UserProfile> {
 
@@ -67,8 +68,10 @@ public class ProfileFileManager implements FileManager<UserProfile> {
                 }
             }
         } catch (IOException ex) {
+            exit(-1);
             System.out.println("Error reading file: " + ex.getMessage());
         } catch (JSONException ex) {
+            exit(-1);
             System.out.println("Error parsing JSON: " + ex.getMessage());
         }
 
