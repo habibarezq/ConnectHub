@@ -17,12 +17,12 @@ public class Signup extends javax.swing.JFrame {
      * Creates new form Signup
      */
     protected ArrayList usersArray;
-
+    
     public Signup(UserFileManager userFileManager) {
         initComponents();
         setTitle("Signup");
         usersArray = userFileManager.getUsers();
-
+        
         populateDateComboBox();
 //        populateDayComboBox();
 //        populateMonthComboBox();
@@ -234,6 +234,7 @@ public class Signup extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "The user has been successfully created.", "Message", JOptionPane.PLAIN_MESSAGE);
             new Newsfeed().setVisible(true);
             this.dispose();
+            
         } else {
             JOptionPane.showMessageDialog(this, "Registration failed !!", "Message", JOptionPane.ERROR_MESSAGE);
         }
