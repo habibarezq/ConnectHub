@@ -16,7 +16,7 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
     //Each Friends,posts,stories will have its own database service
 
     private ContentManager contentManager;
-    private FriendsManager friendsManager;
+    private FriendsFileManager friendsManager;
     private HashMap<User, String> friendRequests;
 
 
@@ -29,9 +29,9 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
         status = false;
 
         this.friendRequests = new HashMap<>();
-
+//Might remove this bec i dont need it 
         this.contentManager=ContentManager.getInstance(userID);
-        this.friendsManager=friendsManager.getInstance(userID);
+        this.friendsManager=FriendsFileManager.getInstance(userID);
     }
 
     public boolean isStatus() {
@@ -42,7 +42,7 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
         return contentManager;
     }
     
-    public FriendsManager getFriendsManager()
+    public FriendsFileManager getFriendsManager()
     {
         return friendsManager;
     }
@@ -109,6 +109,8 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
             friendsManager.getFriends().remove(friend);
             friend.friendsManager.getFriends().remove(this);
             System.out.println(friend.getUsername() + " has been removed from your friend list.");
+//            FriendsFileManager.getInstance().saveToFile(friendsManager.getFriends());
+//           
         } else {
             System.out.println(friend.getUsername() + " is not in your friend list");
     }
@@ -121,6 +123,9 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
             friend.friendsManager.getFriends().remove(this);
             friendsManager.getBlocked().add(friend);
             System.out.println(friend.getUsername() + " has been blocked from.");
+//            FriendsFileManager.getInstance().saveToFile(friendsManager);
+//            FriendsFileManager.getInstance().saveToFile();
+           
         } else {
             System.out.println(friend.getUsername() + " is not in your friend list");
         }
@@ -128,21 +133,21 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
 
     @Override
     public void sendRequest(User recipient) {
-      //  Request friendRequest = new Request(this, recipient);
-       // friendRequest.processFriendRequest();
+        Request friendRequest = new Request(this, recipient);
+        friendRequest.processFriendRequest();
 
     }
 
     @Override
     public void acceptRequest(User sender) {
-       // Request friendRequest = new Request(sender, this);
-       // friendRequest.processAcceptFriendRequest();
+        Request friendRequest = new Request(sender, this);
+        friendRequest.processAcceptFriendRequest();
     }
   
     @Override
     public void declineRequest(User sender) {
-//        Request friendRequest = new Request(sender, this);
-//        friendRequest.processDeclineFriendRequest();
+        Request friendRequest = new Request(sender, this);
+        friendRequest.processDeclineFriendRequest();
     }
 
     @Override
