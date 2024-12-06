@@ -54,35 +54,7 @@ public class Signup extends javax.swing.JFrame {
 
         dateBox.setModel(dateModel); // Set the model for jComboBox1
     }
-//    private void populateDayComboBox() {
-//        DefaultComboBoxModel<String> dayModel = new DefaultComboBoxModel<>();
-//        dayModel.addElement("DD");
-//        Integer i;
-//        for (i = 1; i < 32; i++) {
-//            dayModel.addElement(i.toString());
-//        }
-//        dayBox.setModel(dayModel); // Set the model for day ComboBox       
-//    }
-//
-//    private void populateMonthComboBox() {
-//        DefaultComboBoxModel<String> monthModel = new DefaultComboBoxModel<>();
-//        monthModel.addElement("MM");
-//        Integer i;
-//        for (i = 1; i < 13; i++) {
-//            monthModel.addElement(i.toString());
-//        }
-//        monthBox.setModel(monthModel); // Set the model for month ComboBox
-//    }
-//
-//    private void populateYearComboBox() {
-//        DefaultComboBoxModel<String> yearModel = new DefaultComboBoxModel<>();
-//        yearModel.addElement("YYYY");
-//        Integer i;
-//        for (i = (Integer) LocalDate.now().getYear(); i >= 1924; i--) {
-//            yearModel.addElement(i.toString());
-//        }
-//        yearBox.setModel(yearModel); // Set the model for year ComboBox
-//    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -234,8 +206,9 @@ public class Signup extends javax.swing.JFrame {
             User user = u.signup(email, username, local, password);
             if (user != null) {
                 JOptionPane.showMessageDialog(this, "The user has been successfully created.", "Message", JOptionPane.PLAIN_MESSAGE);
-                new NewsfeedPage(user).setVisible(true);
                 this.dispose();
+                new NewsfeedPage(user).setVisible(true);
+                
             } else {
                 JOptionPane.showMessageDialog(this, "Registration failed !!", "Message", JOptionPane.ERROR_MESSAGE);
             }
