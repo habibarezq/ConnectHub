@@ -53,7 +53,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
         this.users = new ArrayList<>();
         //addUsers();
 
-        this.stories = new ArrayList<>();
+        this.stories = StoriesFileManager.getInstance().getStories();
         //fillstories();
 
         friendsModel = new DefaultListModel<>();
