@@ -1,9 +1,6 @@
 package Frontend;
 
-import Backend.CustomListCellRender;
-import Backend.Post;
-import Backend.Story;
-import Backend.User;
+import Backend.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -28,12 +25,20 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private DefaultListModel<String> storiesModel;
     private ArrayList<Post> posts;
     private ArrayList<Story> stories;
+    private String userId;
+    
 
-    public NewsfeedPage() {
+    public NewsfeedPage(User user) {
         initComponents();
         setTitle("Newsfeed");
         setContentPane(mainPanel);
 
+        this.userId=user.getUserID();
+        FriendsFileManager.getInstance(userId);
+        //PostsFileManager.getInstance();
+        //StoriesFileManager.getInstance();
+        
+        
         this.posts = new ArrayList<>();
         friendsModel = new DefaultListModel<>();
         suggestedFriendsModel = new DefaultListModel<>();
@@ -45,10 +50,10 @@ public class NewsfeedPage extends javax.swing.JFrame {
         displayPosts();
 //        StoriesList.setCellRenderer(new CustomListCellRender());
 //        postsList.setCellRenderer(new CustomListCellRender());       
-//        populateFriends(); //arraylist missing
-//        populateSuggestedFriends(); //arraylist missing
-        // populatePosts();
-        // populateStories();
+        populateFriends(); //arraylist missing
+       populateSuggestedFriends(); //arraylist missing
+    //    populatePosts();
+    //  populateStories();
     }
 
     private ArrayList<Post> fillPosts()
@@ -147,7 +152,13 @@ public class NewsfeedPage extends javax.swing.JFrame {
 //   jScrollPane1.setViewportView(storyPanel);
 //}
 
-    public void populateFriends(ArrayList<User> friends) {
+    public void populateFriends() {
+        ArrayList<User> friends=UserFileManager.getInstance().findUserByID(userId).getFriends();
+        for(User friend:friends)
+        {
+            System.out.println(friend.getUsername());
+        }
+        
         for (User friend : friends) {
             String status;
             if (friend.getStatus()) {
@@ -160,7 +171,10 @@ public class NewsfeedPage extends javax.swing.JFrame {
         }
     }
 
-    public void populateSuggestedFriends(ArrayList<User> suggestedFriends) {
+    public void populateSuggestedFriends() {
+        User user=UserFileManager.getInstance().findUserByID(userId);
+        ArrayList<User> allUsers=UserFileManager.getInstance().getUsers();
+        ArrayList<User> suggestedFriends=user.suggestFriends(allUsers);
         for (User suggestedFriend : suggestedFriends) {
             suggestedFriendsModel.addElement(suggestedFriend.getUsername());
         }
@@ -366,7 +380,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            new NewsfeedPage().setVisible(true);
+            //new NewsfeedPage().setVisible(true);
         });
     }
 

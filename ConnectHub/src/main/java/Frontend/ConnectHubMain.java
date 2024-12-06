@@ -12,6 +12,7 @@ public class ConnectHubMain extends javax.swing.JFrame {
     
     public ConnectHubMain() {
         initComponents();
+        setVisible(true);
         userFileManager = UserFileManager.getInstance();
         setTitle("Connect Hub");
     }
