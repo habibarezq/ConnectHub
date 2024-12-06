@@ -3,45 +3,65 @@ package Backend;
 import java.util.ArrayList;
 
 public class ContentManager {
+
+    private final String userId;
     private static ContentManager instance;
     private ArrayList<Post> posts; // Changed to lazy-loadable
     private ArrayList<Story> stories; // Changed to lazy-loadable
-    private final String userId;
 
+    private ArrayList<UserProfile> profiles;
+
+    private boolean profileLoaded = false;
     private boolean postsLoaded = false; // Tracks if posts are loaded
     private boolean storiesLoaded = false;
 
     // Private constructor to avoid instantiation
     private ContentManager(String userId) {
         this.userId = userId;
-        this.posts = null; 
-        this.stories = null; 
+        this.posts = null;
+        this.stories = null;
+
+        this.profiles = null;
     }
 
     public static synchronized ContentManager getInstance(String userId) {
-    if (instance != null && !instance.userId.equals(userId)) {
-        // Clear the existing instance when the userId changes
-        instance = null;  //SHOULD CALL CONSTRUCTOR HERE TO MAKE A NEW INSTANCE FOR NEW ID 
+        if (instance != null && !instance.userId.equals(userId)) {
+            // Clear the existing instance when the userId changes
+            instance = null;  //SHOULD CALL CONSTRUCTOR HERE TO MAKE A NEW INSTANCE FOR NEW ID 
+        }
+        if (instance == null) {
+            instance = new ContentManager(userId);
+        }
+        return instance;
     }
-    if (instance == null) {
-        instance = new ContentManager(userId);
-    }
-    return instance;
-}
 
+    public UserProfile getProfile() {
+
+        if (!profileLoaded) { // Ensure loading happens only once
+            this.profiles = new ArrayList<>();
+            ArrayList<UserProfile> allProfiles = ProfileFileManager.getInstance().getProfiles();
+            for (UserProfile profile : allProfiles) {
+                if (profile.getUserId().equals(userId)) {
+                    profileLoaded = true;
+                    return profile;
+                }
+            }
+        }
+        return null;
+    }
 
     public ArrayList<Post> getPosts() {
         if (!postsLoaded) {
-            loadUserPosts(); 
+            loadUserPosts();
         }
         return new ArrayList<>(posts); // return a copy to protect internal data
     }
 
     public ArrayList<Story> getStories() {
         if (!storiesLoaded) {
-            loadUserStories(); 
+            loadUserStories();
         }
-        return new ArrayList<>(stories); 
+        return new ArrayList<>(stories);
     }
 
     private void loadUserPosts() {
@@ -58,7 +78,7 @@ public class ContentManager {
     }
 
     private void loadUserStories() {
-        if (!storiesLoaded) { 
+        if (!storiesLoaded) {
             this.stories = new ArrayList<>();
             ArrayList<Story> allStories = StoriesFileManager.getInstance().getStories();
             for (Story story : allStories) {
@@ -72,15 +92,15 @@ public class ContentManager {
 
     // Observer pattern
     public void refreshPosts() {
-        this.posts = null; 
+        this.posts = null;
         this.postsLoaded = false;
         //SHOULD RELOAD THE POSTS AND STORIES
         System.out.println("Posts refreshed.");
     }
 
     public void refreshStories() {
-        this.stories = null;   
-        this.storiesLoaded = false; 
+        this.stories = null;
+        this.storiesLoaded = false;
         System.out.println("Stories refreshed.");
     }
 
@@ -88,7 +108,7 @@ public class ContentManager {
         refreshPosts();
         refreshStories();
         System.out.println("All content refreshed.");
-    } 
+    }
 
     // Add a post to the user's posts
     public void addPost(Post post) {
@@ -99,7 +119,7 @@ public class ContentManager {
             posts.add(post); //Adds new Post to ArrayList of User's Posts
             PostsFileManager.getInstance().getPosts().add(post); //Adds new Post to ArrayList of AllPosts
             PostsFileManager.getInstance().saveToFile(PostsFileManager.getInstance().getPosts()); //Save to File
-            
+
             System.out.println("Post added: " + post.getContentTxt());
         } else {
             System.out.println("Cannot add post: Author ID mismatch.");
@@ -115,7 +135,7 @@ public class ContentManager {
             stories.add(story);
             StoriesFileManager.getInstance().getStories().add(story);
             StoriesFileManager.getInstance().saveToFile(StoriesFileManager.getInstance().getStories());
-            
+
             System.out.println("Story added: " + story.getContentTxt());
         } else {
             System.out.println("Cannot add story: Author ID mismatch.");
