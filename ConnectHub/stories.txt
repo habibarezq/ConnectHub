@@ -1,16 +1,16 @@
 [
     {
-        "ImageContent": "sun.awt.image.ToolkitImage@2a098129",
-        "contentId": "story4",
-        "time": "2024-12-06T03:13:06.386410300",
-        "TextContent": "This is a new story",
-        "userId": "user4"
+        "userId": "8526bad8-b8a7-4b60-ac87-e481bcaffcbe",
+        "contentId": "story-1",
+        "TextContent": "This is the first story",
+        "imagePath": "C:/Users/habib/Documents/NetBeansProjects/ConnectHub/ConnectHub/download (1).jpeg",
+        "time": "2024-12-06T10:00:00"
     },
     {
-        "ImageContent": "sun.awt.image.ToolkitImage@2a098129",
-        "contentId": "story4",
-        "time": "2024-12-06T03:13:06.386410300",
-        "TextContent": "This is a new story",
-        "userId": "user4"
+        "userId": "457154dd-294b-43c4-a4a9-8ebb744e3e06",
+        "contentId": "story-2",
+        "TextContent": "This is the second story",
+        "imagePath": "C:/Users/habib/Documents/NetBeansProjects/ConnectHub/ConnectHub/download (2).jpeg",
+        "time": "2024-12-04T11:00:00"
     }
 ]

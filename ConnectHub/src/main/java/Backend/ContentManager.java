@@ -35,20 +35,7 @@ public class ContentManager {
         return instance;
     }
 
-    public UserProfile getProfile() {
-
-        if (!profileLoaded) { // Ensure loading happens only once
-            this.profiles = new ArrayList<>();
-            ArrayList<UserProfile> allProfiles = ProfileFileManager.getInstance().getProfiles();
-            for (UserProfile profile : allProfiles) {
-                if (profile.getUserId().equals(userId)) {
-                    profileLoaded = true;
-                    return profile;
-                }
-            }
-        }
-        return null;
-    }
+    
 
     public ArrayList<Post> getPosts() {
         if (!postsLoaded) {

@@ -20,6 +20,7 @@ public class UserManager implements UserManagerInterface {
     public User signup(String email, String username, LocalDate dateOfBirth, String password) {
         if (UserValidation.isEmailTaken(email, users)) {
             throw new IllegalArgumentException("Email is already taken");
+            
         } else if (UserValidation.isUsernameTaken(username, users)) {
             throw new IllegalArgumentException("UserName is already taken");
         }
