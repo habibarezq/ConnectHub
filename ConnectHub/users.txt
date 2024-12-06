@@ -40,5 +40,12 @@
         "userId": "8be566cf-d29b-4861-85ee-3b78fd44a626",
         "email": "b@gmail.com",
         "username": "amr"
+    },
+    {
+        "password": "$2a$10$Qs7g1K99HFWn3kLDZxDmRO9OTZpa2Ev2o.O/ol3Y9/hGJrKScYI6a",
+        "dob": "2000-06-17",
+        "userId": "9fc606f6-ee8a-45bc-ba48-0d4e59351ac8",
+        "email": "g@gmail.com",
+        "username": "farah"
     }
 ]
