@@ -1,16 +1,37 @@
 [
     {
-        "ImageContent": "sun.awt.image.ToolkitImage@2a098129",
-        "contentId": "story4",
-        "time": "2024-12-06T03:13:06.386410300",
-        "TextContent": "This is a new story",
-        "userId": "user4"
+        "userId": "8526bad8-b8a7-4b60-ac87-e481bcaffcbe",
+        "contentId": "story1",
+        "TextContent": "A beautiful sunrise!",
+        "ImagePath": "images/sunrise.jpg",
+        "time": "2024-12-06T08:30:00"
     },
     {
-        "ImageContent": "sun.awt.image.ToolkitImage@2a098129",
+        "userId": "457154dd-294b-43c4-a4a9-8ebb744e3e06",
+        "contentId": "story2",
+        "TextContent": "Enjoying a cup of coffee.",
+        "ImagePath": "images/coffee.jpg",
+        "time": "2024-12-06T10:15:00"
+    },
+    {
+        "userId": "5f8078ba-4213-4fac-93fc-a1ea9d560eb9",
+        "contentId": "story3",
+        "TextContent": "Exploring the mountains.",
+        "ImagePath": "images/mountains.jpg",
+        "time": "2024-12-06T14:45:00"
+    },
+    {
+        "userId": "e55d3f08-baed-4675-922f-c2af3769fc69",
         "contentId": "story4",
-        "time": "2024-12-06T03:13:06.386410300",
-        "TextContent": "This is a new story",
-        "userId": "user4"
+        "TextContent": "A rainy day at home.",
+        "ImagePath": "images/rain.jpg",
+        "time": "2024-12-06T17:00:00"
+    },
+    {
+        "userId": "14742de1-a179-4840-8794-63bc37dc2319",
+        "contentId": "story5",
+        "TextContent": "Reading a new book.",
+        "ImagePath": "images/book.jpg",
+        "time": "2024-12-06T19:30:00"
     }
 ]

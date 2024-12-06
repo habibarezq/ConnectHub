@@ -47,5 +47,12 @@
         "userId": "9fc606f6-ee8a-45bc-ba48-0d4e59351ac8",
         "email": "g@gmail.com",
         "username": "farah"
+    },
+    {
+        "password": "$2a$10$VhmucqwxevHOVscXZrGFTeijQ4uwnQtzs9xkCWlxKHLYpkzMWYQd.",
+        "dob": "2004-07-17",
+        "userId": "7bef5d57-6a1b-48f0-960c-35a9cecf3610",
+        "email": "k@gmail.com",
+        "username": "khaled"
     }
 ]
