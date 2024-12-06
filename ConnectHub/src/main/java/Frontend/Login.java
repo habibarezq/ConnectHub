@@ -14,20 +14,18 @@ public class Login extends javax.swing.JFrame {
      * Creates new form Login1
      */
     protected ArrayList usersArray;
-
-    public Login(UserFileManager userFileManager,ConnectHubMain connectWindow) {
+    private ConnectHubMain connectHub;
+    
+    public Login(UserFileManager userFileManager,ConnectHubMain connectHub) {
         initComponents();
         setTitle("Login");
         setResizable(false);
+        this.connectHub=connectHub;
+        
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         usersArray = userFileManager.getUsers();
         
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosed(WindowEvent e) {
-                connectWindow.setVisible(true);
-            }
-        });
+        
 
     }
 
@@ -125,7 +123,7 @@ public class Login extends javax.swing.JFrame {
         }
         else if (u.loginValidation(email, password)) {
             User user=u.login(email, password);
-            new NewsfeedPage(user).setVisible(true);
+            new NewsfeedPage(user,connectHub).setVisible(true);
             this.dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Wrong Email or Password", "Message", JOptionPane.ERROR_MESSAGE);

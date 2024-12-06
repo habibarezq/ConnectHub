@@ -21,6 +21,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import Backend.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class NewsfeedPage extends javax.swing.JFrame {
 
@@ -34,12 +36,15 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private ArrayList<User> friends;
     private ArrayList<User> SuggestedFriends;
     private String userId;
+    private ConnectHubMain connectHub;
 
-    public NewsfeedPage(User user) {
+    public NewsfeedPage(User user,ConnectHubMain connectHub) {
         initComponents();
         setTitle("Newsfeed");
         setContentPane(mainPanel);
-
+        this.connectHub=connectHub;
+        this.dispose();
+        
         this.userId = user.getUserID();
         FriendsFileManager.getInstance(userId);
         this.posts = new ArrayList<>();
@@ -62,6 +67,13 @@ public class NewsfeedPage extends javax.swing.JFrame {
         populateSuggestedFriends();
         populatePosts();
         populateStories();
+        
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                connectHub.setVisible(false);
+            }
+        });
     }
 
     public void populateSuggestedFriends() {
@@ -348,7 +360,8 @@ public class NewsfeedPage extends javax.swing.JFrame {
     }//GEN-LAST:event_profileButtonActionPerformed
 
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
-        new ConnectHubMain().setVisible(true);
+        this.connectHub.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_logoutButtonActionPerformed
 
     private void addStoryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStoryButtonActionPerformed
@@ -366,11 +379,11 @@ public class NewsfeedPage extends javax.swing.JFrame {
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
 
-                    stories.add(new Story("contentid", userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
+                    stories.add(new Story(userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
                 } else {
                     String text = JOptionPane.showInputDialog(null, "Enter Text:");
 
-                    stories.add(new Story("contentid", userId, text, null, LocalDateTime.now()));
+                    stories.add(new Story(userId, text, null, LocalDateTime.now()));
                 }
                 refresh();
             }
@@ -392,12 +405,13 @@ public class NewsfeedPage extends javax.swing.JFrame {
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
 
-                    posts.add(new Post("contentid", userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
+                    posts.add(new Post(userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
                 } else {
                     String text = JOptionPane.showInputDialog(null, "Enter Text:");
-                    posts.add(new Post("contentid", userId, text, null, LocalDateTime.now()));
+                    posts.add(new Post(userId, text, null, LocalDateTime.now()));
                     //!!!!!!!!!!SAVE TO FILE
                 }
+                refresh();
             }
         }
     }//GEN-LAST:event_addPostButtonActionPerformed
