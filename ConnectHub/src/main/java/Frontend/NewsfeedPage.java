@@ -35,11 +35,13 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private ArrayList<User> SuggestedFriends;
     private String userId;
 
-    public NewsfeedPage() {
+    public NewsfeedPage(User user) {
         initComponents();
         setTitle("Newsfeed");
         setContentPane(mainPanel);
 
+        this.userId = user.getUserID();
+        FriendsFileManager.getInstance(userId);
         this.posts = new ArrayList<>();
         //fillPosts();
 
@@ -56,27 +58,27 @@ public class NewsfeedPage extends javax.swing.JFrame {
         friendsList.setModel(friendsModel);
         suggestedFriendsList.setModel(suggestedFriendsModel);
 
+        populateFriends();
+        populateSuggestedFriends();
         populatePosts();
         populateStories();
     }
-    
+
     public void populateSuggestedFriends() {
-        User user=UserFileManager.getInstance().findUserByID(userId);
-        ArrayList<User> allUsers=UserFileManager.getInstance().getUsers();
-        ArrayList<User> suggestedFriends=user.suggestFriends(allUsers);
+        User user = UserFileManager.getInstance().findUserByID(userId);
+        ArrayList<User> allUsers = UserFileManager.getInstance().getUsers();
+        ArrayList<User> suggestedFriends = user.suggestFriends(allUsers);
         for (User suggestedFriend : suggestedFriends) {
             suggestedFriendsModel.addElement(suggestedFriend.getUsername());
         }
     }
 
-
     public void populateFriends() {
-        ArrayList<User> friends=UserFileManager.getInstance().findUserByID(userId).getFriends();
-        for(User friend:friends)
-        {
+        ArrayList<User> friends = UserFileManager.getInstance().findUserByID(userId).getFriends();
+        for (User friend : friends) {
             System.out.println(friend.getUsername());
         }
-        
+
         for (User friend : friends) {
             String status;
             if (friend.getStatus()) {
@@ -117,7 +119,6 @@ public class NewsfeedPage extends javax.swing.JFrame {
 //            JLabel UsernameLabel = new JLabel("Username: " + u.getUsername());
 //            UsernameLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 //            postPanel.add(UsernameLabel, BorderLayout.NORTH);
-
             // adds the time Stamp
             JLabel timestampLabel = new JLabel("Time: " + post.getUploadingTime());
             timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Add padding
@@ -175,7 +176,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
             singleStoryPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             singleStoryPanel.setPreferredSize(new Dimension(150, 200));
 
-        //adds username
+            //adds username
 //            User u = UserFileManager.getInstance().findUserByID(story.getAuthorId());
 //            JLabel UsernameLabel = new JLabel("Username: " + u.getUsername());
 //            UsernameLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -209,7 +210,6 @@ public class NewsfeedPage extends javax.swing.JFrame {
         }
         storiesScrollPane.setViewportView(storyPanel);
     }
-
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -376,6 +376,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
                     stories.add(new Story("contentid", userId, text, null, LocalDateTime.now()));
                 }
+                refresh();
             }
         }
     }//GEN-LAST:event_addStoryButtonActionPerformed
@@ -408,6 +409,8 @@ public class NewsfeedPage extends javax.swing.JFrame {
     public void refresh() {
         populateStories();
         populatePosts();
+        this.friendsModel.clear();
+        this.suggestedFriendsModel.clear();
         populateFriends();
         populateSuggestedFriends();
 
@@ -442,7 +445,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            new NewsfeedPage().setVisible(true);
+            //new NewsfeedPage().setVisible(true);
         });
     }
 
@@ -462,4 +465,3 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private javax.swing.JList<String> suggestedFriendsList;
     // End of variables declaration//GEN-END:variables
 }
-

@@ -26,7 +26,7 @@ public class Profile extends javax.swing.JFrame {
         initComponents();
         setSize(1000, 593);
         setResizable(false);
-        
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         // method to retrieve the info of the profile of the logged in user
         //startup(profile);

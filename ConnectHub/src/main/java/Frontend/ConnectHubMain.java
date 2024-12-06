@@ -104,13 +104,13 @@ public class ConnectHubMain extends javax.swing.JFrame {
 
     private void signupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signupButtonActionPerformed
         // TODO add your handling code here:
-        new Signup(userFileManager).setVisible(true);
+        new Signup(userFileManager,this).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_signupButtonActionPerformed
 
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
         // TODO add your handling code here:
-        new Login(userFileManager).setVisible(true);
+        new Login(userFileManager,this).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_loginButtonActionPerformed
 

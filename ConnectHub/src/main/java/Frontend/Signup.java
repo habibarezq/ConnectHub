@@ -4,6 +4,8 @@ import Backend.User;
 import Backend.UserFileManager;
 import Backend.UserManager;
 import Validation.UserValidation;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,15 +22,19 @@ public class Signup extends javax.swing.JFrame {
      */
     protected ArrayList usersArray;
 
-    public Signup(UserFileManager userFileManager) {
+    public Signup(UserFileManager userFileManager,ConnectHubMain connectWindow) {
         initComponents();
         setTitle("Signup");
         usersArray = userFileManager.getUsers();
-
+        setResizable(false);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         populateDateComboBox();
-//        populateDayComboBox();
-//        populateMonthComboBox();
-//        populateYearComboBox();
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                connectWindow.setVisible(true);
+            }
+        });
     }
 
     private void populateDateComboBox() {

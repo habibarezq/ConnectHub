@@ -4,6 +4,8 @@ package Frontend;
 import javax.swing.JOptionPane;
 import Backend.*;
 import Validation.UserValidation;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 public class Login extends javax.swing.JFrame {
@@ -13,10 +15,20 @@ public class Login extends javax.swing.JFrame {
      */
     protected ArrayList usersArray;
 
-    public Login(UserFileManager userFileManager) {
+    public Login(UserFileManager userFileManager,ConnectHubMain connectWindow) {
         initComponents();
         setTitle("Login");
+        setResizable(false);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         usersArray = userFileManager.getUsers();
+        
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                connectWindow.setVisible(true);
+            }
+        });
+
     }
 
     /**
