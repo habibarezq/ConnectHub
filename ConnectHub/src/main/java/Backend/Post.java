@@ -10,8 +10,6 @@ public class Post extends Content{
         // author id is the normal user id getUserId()
         
     }
-
-
    
     
 }
