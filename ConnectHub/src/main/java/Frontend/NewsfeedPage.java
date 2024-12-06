@@ -1,11 +1,14 @@
 package Frontend;
 
-import Backend.*;
+import Backend.Post;
+import Backend.Story;
+import Backend.User;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.io.File;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
@@ -13,9 +16,11 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import Backend.*;
 
 public class NewsfeedPage extends javax.swing.JFrame {
 
@@ -25,21 +30,25 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private DefaultListModel<String> storiesModel;
     private ArrayList<Post> posts;
     private ArrayList<Story> stories;
+    private ArrayList<User> users;
+    private ArrayList<User> friends;
+    private ArrayList<User> SuggestedFriends;
     private String userId;
-    
 
-    public NewsfeedPage(User user) {
+    public NewsfeedPage() {
         initComponents();
         setTitle("Newsfeed");
         setContentPane(mainPanel);
 
-        this.userId=user.getUserID();
-        FriendsFileManager.getInstance(userId);
-        //PostsFileManager.getInstance();
-        //StoriesFileManager.getInstance();
-        
-        
         this.posts = new ArrayList<>();
+        //fillPosts();
+
+        this.users = new ArrayList<>();
+        //addUsers();
+
+        this.stories = new ArrayList<>();
+        //fillstories();
+
         friendsModel = new DefaultListModel<>();
         suggestedFriendsModel = new DefaultListModel<>();
         postsModel = new DefaultListModel<>();
@@ -47,110 +56,19 @@ public class NewsfeedPage extends javax.swing.JFrame {
         friendsList.setModel(friendsModel);
         suggestedFriendsList.setModel(suggestedFriendsModel);
 
-        displayPosts();
-//        StoriesList.setCellRenderer(new CustomListCellRender());
-//        postsList.setCellRenderer(new CustomListCellRender());       
-        populateFriends(); //arraylist missing
-       populateSuggestedFriends(); //arraylist missing
-    //    populatePosts();
-    //  populateStories();
+        populatePosts();
+        populateStories();
     }
-
-    private ArrayList<Post> fillPosts()
-    {
-        this.posts.add(new Post("gsdhf", "ahmed123", "im ahmed", "C:/Users/hp/Downloads/Screenshot (73).png", LocalDateTime.now()));
-        this.posts.add(new Post("ehjew", "jana123", "hi", "C:/Users/hp/Downloads/Screenshot (73).png", LocalDateTime.now()));
-        this.posts.add(new Post("ehjew", "habiba123", "im ahmed", "C:/Users/hp/Downloads/Screenshot (73).png", LocalDateTime.now()));
-        this.posts.add(new Post("gsdefjhf", "malak123", "hi", "C:/Users/hp/Downloads/Screenshot (73).png", LocalDateTime.now()));
-        this.posts.add(new Post("kjefhejf", "malek123", "hi", "C:/Users/hp/Downloads/Screenshot (73).png", LocalDateTime.now()));
-        this.posts.add(new Post("fjfhkjkfh", "hamza123", "hi", "C:/Users/hp/Downloads/Screenshot (73).png", LocalDateTime.now()));
-        return posts;
-    }
-    private void displayPosts() {
-        JPanel postPanel = new JPanel();
-        //jScrollPane5 = new JScrollPane(postPanel);
-        postPanel.setLayout(new BoxLayout(postPanel, BoxLayout.Y_AXIS));
-        postPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-        for (Post post : posts) {
-            JPanel singlePostPanel = new JPanel();
-            singlePostPanel.setLayout(new BorderLayout());
-            singlePostPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-            singlePostPanel.setPreferredSize(new Dimension(150, 200));
-
-            //adds the caption
-            JLabel contentLabel = new JLabel("Content: " + post.getContentTxt());
-            contentLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Add padding
-            postPanel.add(contentLabel, BorderLayout.NORTH);
-
-            // adds the time Stamp
-            JLabel timestampLabel = new JLabel("Time: " + post.getUploadingTime());
-            timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Add padding
-            postPanel.add(timestampLabel, BorderLayout.SOUTH);
-
-            // adds the image 
-            File imageFile = new File(post.getcontentPath());
-            if (imageFile.exists()) {
-                ImageIcon imageIcon = resizeImage(post.getcontentPath(), 100, 100);
-                JLabel imageLabel = new JLabel(imageIcon);
-                postPanel.add(imageLabel, BorderLayout.WEST);
-            } else {
-                JLabel noImageLabel = new JLabel("No image available.");
-                postPanel.add(noImageLabel, BorderLayout.WEST);
-            }
-            postPanel.add(singlePostPanel);
-            postPanel.add(Box.createRigidArea(new Dimension(10, 0))); // Add spacing between stories
+    
+    public void populateSuggestedFriends() {
+        User user=UserFileManager.getInstance().findUserByID(userId);
+        ArrayList<User> allUsers=UserFileManager.getInstance().getUsers();
+        ArrayList<User> suggestedFriends=user.suggestFriends(allUsers);
+        for (User suggestedFriend : suggestedFriends) {
+            suggestedFriendsModel.addElement(suggestedFriend.getUsername());
         }
     }
 
-    private ImageIcon resizeImage(String contentPath, int x, int y) {
-        ImageIcon imageIcon = new ImageIcon(contentPath);
-        Image image = imageIcon.getImage();
-        Image resizedImage = image.getScaledInstance(jScrollPane1.getWidth() - 10, 300, Image.SCALE_SMOOTH);
-        ImageIcon resizedImageIcon = new ImageIcon(resizedImage);
-        return resizedImageIcon;
-    }
-//    private void displayStories() {
-//
-//    JPanel storyPanel = new JPanel();
-//    storyPanel.setLayout(new BoxLayout(storyPanel, BoxLayout.X_AXIS)); 
-//    storyPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); 
-//
-//    for (Story story :stories ) {
-//        if (story.getAuthorId().equals(userID)) {
-//            // Create a panel for each story
-//            JPanel singleStoryPanel = new JPanel();
-//            singleStoryPanel.setLayout(new BorderLayout());
-//            singleStoryPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK)); 
-//            singleStoryPanel.setPreferredSize(new Dimension(150, 200));
-//
-//          
-//            JLabel contentLabel = new JLabel("Content: " + story.getContentTxt());
-//            contentLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); 
-//            singleStoryPanel.add(contentLabel, BorderLayout.NORTH);
-//
-//            JLabel timestampLabel = new JLabel("Time: " + story.getUploadingTime());
-//            timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-//            singleStoryPanel.add(timestampLabel, BorderLayout.SOUTH);
-//
-//            File imageFile = new File(story.getImagePath());
-//            if (imageFile.exists()) {
-//                ImageIcon imageIcon = resizeImage(story.getImagePath(), 120, 120); // Resize for a smaller image
-//                JLabel imageLabel = new JLabel(imageIcon);
-//                singleStoryPanel.add(imageLabel, BorderLayout.CENTER);
-//            } else {
-//                JLabel noImageLabel = new JLabel("No image available.");
-//                noImageLabel.setHorizontalAlignment(JLabel.CENTER);
-//                singleStoryPanel.add(noImageLabel, BorderLayout.CENTER);
-//            }
-//
-//            storyPanel.add(singleStoryPanel);
-//            storyPanel.add(Box.createRigidArea(new Dimension(10, 0))); // Add spacing between stories
-//        }
-//    }
-//
-//   jScrollPane1.setViewportView(storyPanel);
-//}
 
     public void populateFriends() {
         ArrayList<User> friends=UserFileManager.getInstance().findUserByID(userId).getFriends();
@@ -171,34 +89,127 @@ public class NewsfeedPage extends javax.swing.JFrame {
         }
     }
 
-    public void populateSuggestedFriends() {
-        User user=UserFileManager.getInstance().findUserByID(userId);
-        ArrayList<User> allUsers=UserFileManager.getInstance().getUsers();
-        ArrayList<User> suggestedFriends=user.suggestFriends(allUsers);
-        for (User suggestedFriend : suggestedFriends) {
-            suggestedFriendsModel.addElement(suggestedFriend.getUsername());
+    //REMOVE
+    private void addUsers() {
+        ArrayList<User> users = new ArrayList<>();
+        LocalDate now = LocalDate.now();
+        this.users.add(new User("ahmed123", "ahmed@", "AHMED", now, "ghvgyvg"));
+        this.users.add(new User("jana123", "ahmed@", "JANA", now, "ghvgWEKJEKBFJKyvg"));
+        this.users.add(new User("habiba123", "ahmed@", "HABIBA", now, "ghFGEvgyvg"));
+        this.users.add(new User("malak123", "ahmed@", "MALAK", now, "ghvgyKvg"));
+        this.users.add(new User("malek123", "ahmed@", "MALEK", now, "RKJJNRKJRK"));
+        this.users.add(new User("hamza123", "ahmed@", "HAMZA", now, "ghvgyREKLERKvg"));
+    }
+
+    private void populatePosts() {
+        JPanel postPanel = new JPanel();
+        postPanel.setLayout(new BoxLayout(postPanel, BoxLayout.Y_AXIS));
+        postPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+        for (Post post : posts) {
+            JPanel singlePostPanel = new JPanel();
+            singlePostPanel.setLayout(new BorderLayout());
+            singlePostPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            singlePostPanel.setPreferredSize(new Dimension(300, 80));
+
+//            //adds username
+//            User u = UserFileManager.getInstance().findUserByID(post.getAuthorId());
+//            JLabel UsernameLabel = new JLabel("Username: " + u.getUsername());
+//            UsernameLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+//            postPanel.add(UsernameLabel, BorderLayout.NORTH);
+
+            // adds the time Stamp
+            JLabel timestampLabel = new JLabel("Time: " + post.getUploadingTime());
+            timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Add padding
+            postPanel.add(timestampLabel, BorderLayout.SOUTH);
+
+            //adds content
+            if (post.getcontentPath().contains(".txt")) {
+                //adds text
+                JLabel contentLabel = new JLabel("Content: " + post.getContentTxt());
+                contentLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Add padding
+                postPanel.add(contentLabel, BorderLayout.NORTH);
+            } // adds the image 
+            else {
+                File imageFile = new File(post.getcontentPath());
+                if (imageFile.exists()) {
+                    ImageIcon imageIcon = resizeImagePosts(post.getcontentPath());
+                    JLabel imageLabel = new JLabel(imageIcon);
+                    postPanel.add(imageLabel, BorderLayout.WEST);
+                } else {
+                    JLabel noImageLabel = new JLabel("No image available.");
+                    postPanel.add(noImageLabel, BorderLayout.WEST);
+                }
+            }
+            postPanel.add(singlePostPanel);
+            System.out.println("post added to panel");
+            postPanel.add(Box.createRigidArea(new Dimension(0, 1))); // Add spacing between stories
         }
+        postsScrollPane.setViewportView(postPanel);
     }
 
-    public void populatePosts() {
-
+    private ImageIcon resizeImagePosts(String contentPath) {
+        ImageIcon imageIcon = new ImageIcon(contentPath);
+        Image image = imageIcon.getImage();
+        Image resizedImage = image.getScaledInstance(postsScrollPane.getWidth() - 10, 300, Image.SCALE_SMOOTH);
+        ImageIcon resizedImageIcon = new ImageIcon(resizedImage);
+        return resizedImageIcon;
     }
 
-    public void populateStories() {
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
+    private ImageIcon resizeImageStories(String contentPath) {
+        ImageIcon imageIcon = new ImageIcon(contentPath);
+        Image image = imageIcon.getImage();
+        Image resizedImage = image.getScaledInstance(storiesScrollPane.getWidth() - 200, 300, Image.SCALE_SMOOTH);
+        ImageIcon resizedImageIcon = new ImageIcon(resizedImage);
+        return resizedImageIcon;
     }
+
+    private void populateStories() {
+        JPanel storyPanel = new JPanel();
+        storyPanel.setLayout(new BoxLayout(storyPanel, BoxLayout.X_AXIS));
+        storyPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+        for (Story story : stories) {
+            JPanel singleStoryPanel = new JPanel();
+            singleStoryPanel.setLayout(new BorderLayout());
+            singleStoryPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            singleStoryPanel.setPreferredSize(new Dimension(150, 200));
+
+        //adds username
+//            User u = UserFileManager.getInstance().findUserByID(story.getAuthorId());
+//            JLabel UsernameLabel = new JLabel("Username: " + u.getUsername());
+//            UsernameLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+//            storyPanel.add(UsernameLabel, BorderLayout.NORTH);
+            // adds the time Stamp
+            JLabel timestampLabel = new JLabel("Time: " + story.getUploadingTime());
+            timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Add padding
+            storyPanel.add(timestampLabel, BorderLayout.NORTH);
+
+            //adds content
+            if (story.getcontentPath().contains(".txt")) {
+                //adds text
+                JLabel contentLabel = new JLabel("Content: " + story.getContentTxt());
+                contentLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Add padding
+                storyPanel.add(contentLabel, BorderLayout.NORTH);
+            } // adds the image 
+            else {
+                File imageFile = new File(story.getcontentPath());
+                if (imageFile.exists()) {
+                    ImageIcon imageIcon = resizeImageStories(story.getcontentPath());
+                    JLabel imageLabel = new JLabel(imageIcon);
+                    storyPanel.add(imageLabel, BorderLayout.WEST);
+                } else {
+                    JLabel noImageLabel = new JLabel("No image available.");
+                    storyPanel.add(noImageLabel, BorderLayout.WEST);
+                }
+            }
+            storyPanel.add(singleStoryPanel);
+            System.out.println("post added to panel");
+            storyPanel.add(Box.createRigidArea(new Dimension(0, 1))); // Add spacing between stories
+        }
+        storiesScrollPane.setViewportView(storyPanel);
+    }
+
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -215,8 +226,8 @@ public class NewsfeedPage extends javax.swing.JFrame {
         logoutButton = new javax.swing.JButton();
         addStoryButton = new javax.swing.JButton();
         addPostButton = new javax.swing.JButton();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        jScrollPane6 = new javax.swing.JScrollPane();
+        postsScrollPane = new javax.swing.JScrollPane();
+        storiesScrollPane = new javax.swing.JScrollPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -280,8 +291,8 @@ public class NewsfeedPage extends javax.swing.JFrame {
                     .addComponent(profileButton))
                 .addGap(29, 29, 29)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 773, Short.MAX_VALUE)
-                    .addComponent(jScrollPane6))
+                    .addComponent(postsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 773, Short.MAX_VALUE)
+                    .addComponent(storiesScrollPane))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -306,9 +317,9 @@ public class NewsfeedPage extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane5)
+                        .addComponent(storiesScrollPane)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(postsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
                     .addGroup(mainPanelLayout.createSequentialGroup()
                         .addComponent(jLabel1)
@@ -337,19 +348,70 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
     private void profileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_profileButtonActionPerformed
         //goes to profile frame 
+        new Profile().setVisible(true);
     }//GEN-LAST:event_profileButtonActionPerformed
 
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
-
+        new ConnectHubMain().setVisible(true);
     }//GEN-LAST:event_logoutButtonActionPerformed
 
     private void addStoryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStoryButtonActionPerformed
         // add new story to newsfeed and arraylist of stories
+        String choice = JOptionPane.showInputDialog(null, "Choose Text or Image:");
+        if (choice.isEmpty())
+            JOptionPane.showMessageDialog(null, "Empty Field.", "Error", JOptionPane.ERROR_MESSAGE);
+        else if (!choice.equalsIgnoreCase("text") && !choice.equalsIgnoreCase("image"))
+            JOptionPane.showMessageDialog(null, "Invalid Answer.", "Error", JOptionPane.ERROR_MESSAGE);
+        else {
+            if (choice.equalsIgnoreCase("image")) {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                int returnValue = fileChooser.showOpenDialog(this);
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+
+                    stories.add(new Story("contentid", userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
+                } else {
+                    String text = JOptionPane.showInputDialog(null, "Enter Text:");
+
+                    stories.add(new Story("contentid", userId, text, null, LocalDateTime.now()));
+                }
+            }
+        }
     }//GEN-LAST:event_addStoryButtonActionPerformed
 
     private void addPostButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPostButtonActionPerformed
         // add new post to newsfeed and arraylist of posts
+        String choice = JOptionPane.showInputDialog(null, "Choose Text or Image:");
+        if (choice.isEmpty())
+            JOptionPane.showMessageDialog(null, "Empty Field.", "Error", JOptionPane.ERROR_MESSAGE);
+        else if (!choice.equalsIgnoreCase("text") && !choice.equalsIgnoreCase("image"))
+            JOptionPane.showMessageDialog(null, "Invalid Answer.", "Error", JOptionPane.ERROR_MESSAGE);
+        else {
+            if (choice.equalsIgnoreCase("image")) {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                int returnValue = fileChooser.showOpenDialog(this);
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+
+                    posts.add(new Post("contentid", userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
+                } else {
+                    String text = JOptionPane.showInputDialog(null, "Enter Text:");
+                    posts.add(new Post("contentid", userId, text, null, LocalDateTime.now()));
+                    //!!!!!!!!!!SAVE TO FILE
+                }
+            }
+        }
     }//GEN-LAST:event_addPostButtonActionPerformed
+
+    public void refresh() {
+        populateStories();
+        populatePosts();
+        populateFriends();
+        populateSuggestedFriends();
+
+    }
 
     /**
      * @param args the command line arguments
@@ -380,7 +442,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            //new NewsfeedPage().setVisible(true);
+            new NewsfeedPage().setVisible(true);
         });
     }
 
@@ -392,11 +454,12 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JButton logoutButton;
     private javax.swing.JPanel mainPanel;
+    private javax.swing.JScrollPane postsScrollPane;
     private javax.swing.JButton profileButton;
+    private javax.swing.JScrollPane storiesScrollPane;
     private javax.swing.JList<String> suggestedFriendsList;
     // End of variables declaration//GEN-END:variables
 }
+
