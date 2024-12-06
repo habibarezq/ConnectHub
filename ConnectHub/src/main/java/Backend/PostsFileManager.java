@@ -32,9 +32,6 @@ public class PostsFileManager implements FileManager<Post> {
     }
 
     public ArrayList<Post> getPosts() {
-        if (posts.isEmpty()) {
-            readFromFile(); //EH EL LOGIC HENAA
-        }
         return posts;
     }
 

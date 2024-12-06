@@ -34,10 +34,6 @@ public class StoriesFileManager implements FileManager<Story> {
     }
 
     public ArrayList<Story> getStories() {
-
-        if (stories.isEmpty()) {
-            readFromFile(); //EH EL LOGIC HENNAAAA
-        }
         return stories;
     }
 
