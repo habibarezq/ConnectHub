@@ -128,21 +128,21 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
 
     @Override
     public void sendRequest(User recipient) {
-        Request friendRequest = new Request(this, recipient);
-        friendRequest.processFriendRequest();
+      //  Request friendRequest = new Request(this, recipient);
+       // friendRequest.processFriendRequest();
 
     }
 
     @Override
     public void acceptRequest(User sender) {
-        Request friendRequest = new Request(sender, this);
-        friendRequest.processAcceptFriendRequest();
+       // Request friendRequest = new Request(sender, this);
+       // friendRequest.processAcceptFriendRequest();
     }
   
     @Override
     public void declineRequest(User sender) {
-        Request friendRequest = new Request(sender, this);
-        friendRequest.processDeclineFriendRequest();
+//        Request friendRequest = new Request(sender, this);
+//        friendRequest.processDeclineFriendRequest();
     }
 
     @Override

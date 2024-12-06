@@ -2,23 +2,22 @@ package Backend;
 
 import java.util.ArrayList;
 
-public class FriendsManager{
-    
+public class FriendsManager {
+
     private final String userId;
     private static FriendsManager instance;
     private ArrayList<User> friends; //List of User's Friends
     private ArrayList<User> blocked; //List of User's blocked
-    
-    private FriendsManager(String userId)
-    {
+
+    private FriendsManager(String userId) {
         this.userId = userId;
         this.friends = null;
         this.blocked = null;
+        getFriendsAndBlocked(this.userId);
     }
-    
-    public static synchronized FriendsManager getInstance(String userId)
-    {
-          if (instance != null && !instance.userId.equals(userId)) {
+
+    public static synchronized FriendsManager getInstance(String userId) {
+        if (instance != null && !instance.userId.equals(userId)) {
             // Clear the existing instance when the userId changes
             instance = null;  //SHOULD CALL CONSTRUCTOR HERE TO MAKE A NEW INSTANCE FOR NEW ID 
         }
@@ -27,8 +26,15 @@ public class FriendsManager{
         }
         return instance;
     }
+
+    public void getFriendsAndBlocked(String userId)
+    {
+        
+        
+        
+    }
     
- public ArrayList<User> getBlocked() {
+    public ArrayList<User> getBlocked() {
         return blocked;
     }
 
