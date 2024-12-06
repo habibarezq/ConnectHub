@@ -11,6 +11,6 @@ public interface ProfileManager {
 
     public void updateBio(String bio);
 
-    public boolean updatePassword(String userId, String password);
+    public void updatePassword(String userId, String password);
 
 }

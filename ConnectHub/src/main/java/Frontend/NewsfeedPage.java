@@ -47,7 +47,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
         
         this.userId = user.getUserID();
         FriendsFileManager.getInstance(userId);
-        this.posts = new ArrayList<>();
+        this.posts = PostsFileManager.getInstance().getPosts();
         //fillPosts();
 
         this.users = new ArrayList<>();
@@ -103,18 +103,6 @@ public class NewsfeedPage extends javax.swing.JFrame {
         }
     }
 
-    //REMOVE
-    private void addUsers() {
-        ArrayList<User> users = new ArrayList<>();
-        LocalDate now = LocalDate.now();
-        this.users.add(new User("ahmed123", "ahmed@", "AHMED", now, "ghvgyvg"));
-        this.users.add(new User("jana123", "ahmed@", "JANA", now, "ghvgWEKJEKBFJKyvg"));
-        this.users.add(new User("habiba123", "ahmed@", "HABIBA", now, "ghFGEvgyvg"));
-        this.users.add(new User("malak123", "ahmed@", "MALAK", now, "ghvgyKvg"));
-        this.users.add(new User("malek123", "ahmed@", "MALEK", now, "RKJJNRKJRK"));
-        this.users.add(new User("hamza123", "ahmed@", "HAMZA", now, "ghvgyREKLERKvg"));
-    }
-
     private void populatePosts() {
         JPanel postPanel = new JPanel();
         postPanel.setLayout(new BoxLayout(postPanel, BoxLayout.Y_AXIS));
@@ -126,11 +114,11 @@ public class NewsfeedPage extends javax.swing.JFrame {
             singlePostPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             singlePostPanel.setPreferredSize(new Dimension(300, 80));
 
-//            //adds username
-//            User u = UserFileManager.getInstance().findUserByID(post.getAuthorId());
-//            JLabel UsernameLabel = new JLabel("Username: " + u.getUsername());
-//            UsernameLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-//            postPanel.add(UsernameLabel, BorderLayout.NORTH);
+            //adds username
+            User u = UserFileManager.getInstance().findUserByID(post.getAuthorId());
+            JLabel UsernameLabel = new JLabel("Username: " + u.getUsername());
+            UsernameLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+            postPanel.add(UsernameLabel, BorderLayout.NORTH);
             // adds the time Stamp
             JLabel timestampLabel = new JLabel("Time: " + post.getUploadingTime());
             timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Add padding
@@ -189,10 +177,10 @@ public class NewsfeedPage extends javax.swing.JFrame {
             singleStoryPanel.setPreferredSize(new Dimension(150, 200));
 
             //adds username
-//            User u = UserFileManager.getInstance().findUserByID(story.getAuthorId());
-//            JLabel UsernameLabel = new JLabel("Username: " + u.getUsername());
-//            UsernameLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-//            storyPanel.add(UsernameLabel, BorderLayout.NORTH);
+            User u = UserFileManager.getInstance().findUserByID(story.getAuthorId());
+            JLabel UsernameLabel = new JLabel("Username: " + u.getUsername());
+            UsernameLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+            storyPanel.add(UsernameLabel, BorderLayout.NORTH);
             // adds the time Stamp
             JLabel timestampLabel = new JLabel("Time: " + story.getUploadingTime());
             timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Add padding
