@@ -75,11 +75,15 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
     public void populateFriends() {
         ArrayList<User> friends = UserFileManager.getInstance().findUserByID(userId).getFriends();
-        for (User friend : friends) {
-            System.out.println(friend.getUsername());
+        
+        if(friends == null)
+        {
+            friendsModel.addElement("No Friends");
         }
-
-        for (User friend : friends) {
+            
+        else
+        {
+              for (User friend : friends) {
             String status;
             if (friend.getStatus()) {
                 status = "online";
@@ -88,7 +92,9 @@ public class NewsfeedPage extends javax.swing.JFrame {
             }
             String friendInfo = friend.getUsername() + " (" + status + ") ";
             friendsModel.addElement(friendInfo);
-        }
+        }   
+                }
+       
     }
 
     //REMOVE
