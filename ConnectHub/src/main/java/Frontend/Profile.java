@@ -34,6 +34,8 @@ public class Profile extends javax.swing.JFrame {
         this.userId = user.getUserID();
         FriendsFileManager.getInstance(userId);
         this.posts = new ArrayList<>();
+        
+         ProfileFileManager.getInstance(userId);
 
         friendsModel = new DefaultListModel<>();
         friendsList.setModel(friendsModel);
@@ -324,12 +326,14 @@ public class Profile extends javax.swing.JFrame {
 
     private void profileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_profileButtonActionPerformed
         // TODO add your handling code here:
-        changeImage(profileLabel);
+       String path = changeImage(profileLabel);
+       ProfileFileManager.getInstance(userId).getUserProfile().changeProfilePic(path);
     }//GEN-LAST:event_profileButtonActionPerformed
 
     private void coverButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_coverButtonActionPerformed
         // TODO add your handling code here:
-        changeImage(coverLabel);
+        String path = changeImage(coverLabel);
+         ProfileFileManager.getInstance(userId).getUserProfile().changeCoverPic(path);
     }//GEN-LAST:event_coverButtonActionPerformed
 
     private void jTextArea1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextArea1FocusGained
@@ -343,6 +347,7 @@ public class Profile extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         String bio = saveBio(); //TO BE SENT TO THE BACKEND TO SAVE IT 
+        ProfileFileManager.getInstance(userId).getUserProfile().updateBio(bio);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed

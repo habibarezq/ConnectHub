@@ -123,7 +123,7 @@ public class password extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Umatched Passwords!!", "Failed!!", JOptionPane.ERROR_MESSAGE);
           } else {
             // Password change is successful
-            
+            ProfileFileManager.getInstance(user.getUserID()).getUserProfile().updatePassword(newPasswordStr);
             JOptionPane.showMessageDialog(this, "Password changed successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
      
         }
