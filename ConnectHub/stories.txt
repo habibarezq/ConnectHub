@@ -1,37 +1,16 @@
 [
     {
         "userId": "8526bad8-b8a7-4b60-ac87-e481bcaffcbe",
-        "contentId": "story1",
-        "TextContent": "A beautiful sunrise!",
-        "ImagePath": "images/sunrise.jpg",
-        "time": "2024-12-06T08:30:00"
+        "contentId": "story-1",
+        "TextContent": "This is the first story",
+        "ImagePath": "C:/Users/habib/Documents/NetBeansProjects/ConnectHub/ConnectHub/download (1).jpeg",
+        "time": "2024-12-06T10:00:00"
     },
     {
         "userId": "457154dd-294b-43c4-a4a9-8ebb744e3e06",
-        "contentId": "story2",
-        "TextContent": "Enjoying a cup of coffee.",
-        "ImagePath": "images/coffee.jpg",
-        "time": "2024-12-06T10:15:00"
-    },
-    {
-        "userId": "5f8078ba-4213-4fac-93fc-a1ea9d560eb9",
-        "contentId": "story3",
-        "TextContent": "Exploring the mountains.",
-        "ImagePath": "images/mountains.jpg",
-        "time": "2024-12-06T14:45:00"
-    },
-    {
-        "userId": "e55d3f08-baed-4675-922f-c2af3769fc69",
-        "contentId": "story4",
-        "TextContent": "A rainy day at home.",
-        "ImagePath": "images/rain.jpg",
-        "time": "2024-12-06T17:00:00"
-    },
-    {
-        "userId": "14742de1-a179-4840-8794-63bc37dc2319",
-        "contentId": "story5",
-        "TextContent": "Reading a new book.",
-        "ImagePath": "images/book.jpg",
-        "time": "2024-12-06T19:30:00"
+        "contentId": "story-2",
+        "TextContent": "This is the second story",
+        "ImagePath": "C:/Users/habib/Documents/NetBeansProjects/ConnectHub/ConnectHub/download (2).jpeg",
+        "time": "2024-12-06T11:00:00"
     }
 ]
