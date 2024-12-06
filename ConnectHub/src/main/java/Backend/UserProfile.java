@@ -20,6 +20,11 @@ public class UserProfile implements ProfileManager {
     }
 
     // getters 
+    
+    public String getUserId() {
+        return userId;
+    }
+
     public String getProfilePic() {
         return profilePic;
     }
