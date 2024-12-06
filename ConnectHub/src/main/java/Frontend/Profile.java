@@ -9,15 +9,21 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import Backend.*;
 
 public class Profile extends javax.swing.JFrame {
 
     //for the friends list
     private DefaultListModel<String> friendsModel;
 
+   //private void startup(UserProfile profile);
+
     public Profile() {
         setTitle("My Profile");
         initComponents();
+
+        // method to retrieve the info of the profile of the logged in user
+        //startup(profile);
 
         friendsModel = new DefaultListModel<>();
         friendsList.setModel(friendsModel);
@@ -40,6 +46,11 @@ public class Profile extends javax.swing.JFrame {
         friendsModel.addElement("John Doe");
         friendsModel.addElement("John Doe");
 
+    }
+    
+    private void startup(UserProfile profile){
+        //retrieving the data
+        
     }
 
     private String changeImage(javax.swing.JLabel imageLabel) {
@@ -100,7 +111,6 @@ public class Profile extends javax.swing.JFrame {
         bioLabel = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         friendsList = new javax.swing.JList<>();
         jLabel2 = new javax.swing.JLabel();
@@ -165,12 +175,6 @@ public class Profile extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                jLabel1FocusGained(evt);
-            }
-        });
-
         friendsList.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
@@ -204,7 +208,6 @@ public class Profile extends javax.swing.JFrame {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(coverButton)
                                 .addComponent(coverLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jScrollPane2))
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(523, Short.MAX_VALUE))
@@ -212,9 +215,7 @@ public class Profile extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(54, 54, 54)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(coverLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(profileLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -237,9 +238,7 @@ public class Profile extends javax.swing.JFrame {
                 .addGap(47, 47, 47))
         );
 
-        profileLabel.getAccessibleContext().setAccessibleName("Insert a Photo");
         profileLabel.getAccessibleContext().setAccessibleParent(profileLabel);
-        coverLabel.getAccessibleContext().setAccessibleName("Insert a Cover");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -280,10 +279,6 @@ public class Profile extends javax.swing.JFrame {
         new password().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jLabel1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jLabel1FocusGained
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jLabel1FocusGained
 
     private String saveBio() {
         String bio = jTextArea1.getText();
@@ -336,7 +331,6 @@ public class Profile extends javax.swing.JFrame {
     private javax.swing.JList<String> friendsList;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
