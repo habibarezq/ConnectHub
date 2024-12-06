@@ -1,44 +1,16 @@
 [
     {
-        "password": "password1",
-        "dob": "1990-05-15",
-        "userId": "user1",
-        "email": "user1@example.com",
-        "username": "user1"
+        "password": "$2a$10$8z90kZZG2o9SSc7tGpP2terODs4EApcl/E/2b2GtOF80V/T4VDz1a",
+        "dob": "2004-07-18",
+        "userId": "8526bad8-b8a7-4b60-ac87-e481bcaffcbe",
+        "email": "h@gmail.com",
+        "username": "habibarezq"
     },
     {
-        "password": "password2",
-        "dob": "1985-11-20",
-        "userId": "user2",
-        "email": "user2@example.com",
-        "username": "user2"
-    },
-    {
-        "password": "password3",
-        "dob": "2000-01-30",
-        "userId": "user3",
-        "email": "user3@example.com",
-        "username": "user3"
-    },
-    {
-        "password": "password123",
-        "dob": "1995-05-15",
-        "userId": "user4",
-        "email": "user4@example.com",
-        "username": "user4username"
-    },
-    {
-        "password": "password123",
-        "dob": "1995-05-15",
-        "userId": "user4",
-        "email": "user4@example.com",
-        "username": "user4username"
-    },
-    {
-        "password": "password123",
-        "dob": "1995-05-15",
-        "userId": "user5",
-        "email": "user5@example.com",
-        "username": "userusername"
+        "password": "$2a$10$4IfTtXnSrtU3Y9g2vl4fd.i1VLaAAGEQkLhFPlMeVkVeQKCCEkSXC",
+        "dob": "2009-08-17",
+        "userId": "457154dd-294b-43c4-a4a9-8ebb744e3e06",
+        "email": "h2@gmail.com",
+        "username": "habibaelghazouly"
     }
 ]
