@@ -3,10 +3,13 @@ package Frontend;
 import Backend.CustomListCellRender;
 import Backend.Post;
 import Backend.Story;
+import Backend.User;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -15,6 +18,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 public class NewsfeedPage extends javax.swing.JFrame {
 
@@ -24,30 +28,82 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private DefaultListModel<String> storiesModel;
     private ArrayList<Post> posts;
     private ArrayList<Story> stories;
-    
+
     public NewsfeedPage() {
         initComponents();
         setTitle("Newsfeed");
         setContentPane(mainPanel);
-        
+
+        this.posts = new ArrayList<>();
         friendsModel = new DefaultListModel<>();
         suggestedFriendsModel = new DefaultListModel<>();
         postsModel = new DefaultListModel<>();
-        
+
         friendsList.setModel(friendsModel);
         suggestedFriendsList.setModel(suggestedFriendsModel);
-        
+
 //        StoriesList.setCellRenderer(new CustomListCellRender());
 //        postsList.setCellRenderer(new CustomListCellRender());       
-        
-        populateFriends();
-        populateSuggestedFriends();
-       // populatePosts();
-       // populateStories();
-        
-                
+//        populateFriends(); //arraylist missing
+//        populateSuggestedFriends(); //arraylist missing
+        // populatePosts();
+        // populateStories();
     }
 
+    private ArrayList<Post> fillPosts()
+    {
+        this.posts.add(new Post("gsdhf", "ahmed123", "im ahmed", "C:/Users/hp/Downloads/Screenshot (73).png", LocalDateTime.now()));
+        this.posts.add(new Post("ehjew", "jana123", "hi", "C:/Users/hp/Downloads/Screenshot (73).png", LocalDateTime.now()));
+        this.posts.add(new Post("ehjew", "habiba123", "im ahmed", "C:/Users/hp/Downloads/Screenshot (73).png", LocalDateTime.now()));
+        this.posts.add(new Post("gsdefjhf", "malak123", "hi", "C:/Users/hp/Downloads/Screenshot (73).png", LocalDateTime.now()));
+        this.posts.add(new Post("kjefhejf", "malek123", "hi", "C:/Users/hp/Downloads/Screenshot (73).png", LocalDateTime.now()));
+        this.posts.add(new Post("fjfhkjkfh", "hamza123", "hi", "C:/Users/hp/Downloads/Screenshot (73).png", LocalDateTime.now()));
+        return posts;
+    }
+    private void displayPosts() {
+        JPanel postPanel = new JPanel();
+        //jScrollPane5 = new JScrollPane(postPanel);
+        postPanel.setLayout(new BoxLayout(postPanel, BoxLayout.Y_AXIS));
+        postPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+        for (Post post : posts) {
+            JPanel singlePostPanel = new JPanel();
+            singlePostPanel.setLayout(new BorderLayout());
+            singlePostPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            singlePostPanel.setPreferredSize(new Dimension(150, 200));
+
+            //adds the caption
+            JLabel contentLabel = new JLabel("Content: " + post.getContentTxt());
+            contentLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Add padding
+            postPanel.add(contentLabel, BorderLayout.NORTH);
+
+            // adds the time Stamp
+            JLabel timestampLabel = new JLabel("Time: " + post.getUploadingTime());
+            timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Add padding
+            postPanel.add(timestampLabel, BorderLayout.SOUTH);
+
+            // adds the image 
+            File imageFile = new File(post.getcontentPath());
+            if (imageFile.exists()) {
+                ImageIcon imageIcon = resizeImage(post.getcontentPath(), 100, 100);
+                JLabel imageLabel = new JLabel(imageIcon);
+                postPanel.add(imageLabel, BorderLayout.WEST);
+            } else {
+                JLabel noImageLabel = new JLabel("No image available.");
+                postPanel.add(noImageLabel, BorderLayout.WEST);
+            }
+            postPanel.add(singlePostPanel);
+            postPanel.add(Box.createRigidArea(new Dimension(10, 0))); // Add spacing between stories
+        }
+    }
+
+    private ImageIcon resizeImage(String contentPath, int x, int y) {
+        ImageIcon imageIcon = new ImageIcon(contentPath);
+        Image image = imageIcon.getImage();
+        Image resizedImage = image.getScaledInstance(jScrollPane1.getWidth() - 10, 300, Image.SCALE_SMOOTH);
+        ImageIcon resizedImageIcon = new ImageIcon(resizedImage);
+        return resizedImageIcon;
+    }
 //    private void displayStories() {
 //
 //    JPanel storyPanel = new JPanel();
@@ -90,62 +146,30 @@ public class NewsfeedPage extends javax.swing.JFrame {
 //   jScrollPane1.setViewportView(storyPanel);
 //}
 
-    
-    public void populateFriends()
-    {
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        
+    public void populateFriends(ArrayList<User> friends) {
+        for (User friend : friends) {
+            String status;
+            if (friend.getStatus()) {
+                status = "online";
+            } else {
+                status = "offline";
+            }
+            String friendInfo = friend.getUsername() + " (" + status + ") ";
+            friendsModel.addElement(friendInfo);
+        }
     }
-    
-    public void populateSuggestedFriends()
-    {
-        suggestedFriendsModel.addElement("John Doe");
-        suggestedFriendsModel.addElement("John Doe");
-        suggestedFriendsModel.addElement("John Doe");
-        suggestedFriendsModel.addElement("John Doe");
-        suggestedFriendsModel.addElement("John Doe");
-        suggestedFriendsModel.addElement("John Doe");
-        suggestedFriendsModel.addElement("John Doe");
-        suggestedFriendsModel.addElement("John Doe");
-        suggestedFriendsModel.addElement("John Doe");
-        suggestedFriendsModel.addElement("John Doe");
-        suggestedFriendsModel.addElement("John Doe");
-        suggestedFriendsModel.addElement("John Doe");
-        suggestedFriendsModel.addElement("John Doe");
+
+    public void populateSuggestedFriends(ArrayList<User> suggestedFriends) {
+        for (User suggestedFriend : suggestedFriends) {
+            suggestedFriendsModel.addElement(suggestedFriend.getUsername());
+        }
     }
-    
-    public void populatePosts()
-    {
-        postsModel.addElement("John Doe");
-        postsModel.addElement("John Doe");
-        postsModel.addElement("John Doe");
-        postsModel.addElement("John Doe");
-        postsModel.addElement("John Doe");
-        postsModel.addElement("John Doe");
-        postsModel.addElement("John Doe");
-        postsModel.addElement("John Doe");
-        postsModel.addElement("John Doe");
-        postsModel.addElement("John Doe");
-        postsModel.addElement("John Doe");
-        postsModel.addElement("John Doe");
-        postsModel.addElement("John Doe");
+
+    public void populatePosts() {
+
     }
-    
-    
-    public void populateStories()
-    {
+
+    public void populateStories() {
         friendsModel.addElement("John Doe");
         friendsModel.addElement("John Doe");
         friendsModel.addElement("John Doe");
@@ -160,6 +184,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
         friendsModel.addElement("John Doe");
         friendsModel.addElement("John Doe");
     }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -300,7 +325,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
     }//GEN-LAST:event_profileButtonActionPerformed
 
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
-        
+
     }//GEN-LAST:event_logoutButtonActionPerformed
 
     private void addStoryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStoryButtonActionPerformed
@@ -360,7 +385,3 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private javax.swing.JList<String> suggestedFriendsList;
     // End of variables declaration//GEN-END:variables
 }
-
-
-
-
