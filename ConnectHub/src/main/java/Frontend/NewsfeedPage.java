@@ -97,60 +97,49 @@ public class NewsfeedPage extends javax.swing.JFrame {
        
     }
 
-    //REMOVE
-    private void addUsers() {
-        ArrayList<User> users = new ArrayList<>();
-        LocalDate now = LocalDate.now();
-        this.users.add(new User("ahmed123", "ahmed@", "AHMED", now, "ghvgyvg"));
-        this.users.add(new User("jana123", "ahmed@", "JANA", now, "ghvgWEKJEKBFJKyvg"));
-        this.users.add(new User("habiba123", "ahmed@", "HABIBA", now, "ghFGEvgyvg"));
-        this.users.add(new User("malak123", "ahmed@", "MALAK", now, "ghvgyKvg"));
-        this.users.add(new User("malek123", "ahmed@", "MALEK", now, "RKJJNRKJRK"));
-        this.users.add(new User("hamza123", "ahmed@", "HAMZA", now, "ghvgyREKLERKvg"));
-    }
-
     private void populatePosts() {
         JPanel postPanel = new JPanel();
         postPanel.setLayout(new BoxLayout(postPanel, BoxLayout.Y_AXIS));
         postPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         for (Post post : posts) {
-            JPanel singlePostPanel = new JPanel();
-            singlePostPanel.setLayout(new BorderLayout());
-            singlePostPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-            singlePostPanel.setPreferredSize(new Dimension(300, 80));
+            //creating a panel for each post
+            JPanel everyPostPanel = new JPanel();
+            everyPostPanel.setLayout(new BorderLayout());
+            everyPostPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            everyPostPanel.setPreferredSize(new Dimension(300, 80));
 
-//            //adds username
-//            User u = UserFileManager.getInstance().findUserByID(post.getAuthorId());
-//            JLabel UsernameLabel = new JLabel("Username: " + u.getUsername());
-//            UsernameLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-//            postPanel.add(UsernameLabel, BorderLayout.NORTH);
-            // adds the time Stamp
+            
+            //adding username
+            User u = UserFileManager.getInstance().findUserByID(post.getAuthorId()); //returns user to get username
+            JLabel UsernameLabel = new JLabel("Username: " + u.getUsername());
+            UsernameLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+            postPanel.add(UsernameLabel, BorderLayout.NORTH);
+
+            // adding the time Stamp
             JLabel timestampLabel = new JLabel("Time: " + post.getUploadingTime());
-            timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Add padding
+            timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Adding padding
             postPanel.add(timestampLabel, BorderLayout.SOUTH);
 
-            //adds content
-            if (post.getcontentPath().contains(".txt")) {
-                //adds text
+            //adding content
+            //adding text
                 JLabel contentLabel = new JLabel("Content: " + post.getContentTxt());
-                contentLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Add padding
+                contentLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Adding padding
                 postPanel.add(contentLabel, BorderLayout.NORTH);
-            } // adds the image 
-            else {
+            
+            // adding the image 
                 File imageFile = new File(post.getcontentPath());
                 if (imageFile.exists()) {
                     ImageIcon imageIcon = resizeImagePosts(post.getcontentPath());
                     JLabel imageLabel = new JLabel(imageIcon);
                     postPanel.add(imageLabel, BorderLayout.WEST);
                 } else {
-                    JLabel noImageLabel = new JLabel("No image available.");
+                    JLabel noImageLabel = new JLabel("No image.");
                     postPanel.add(noImageLabel, BorderLayout.WEST);
                 }
-            }
-            postPanel.add(singlePostPanel);
-            System.out.println("post added to panel");
-            postPanel.add(Box.createRigidArea(new Dimension(0, 1))); // Add spacing between stories
+            
+            postPanel.add(everyPostPanel);
+            postPanel.add(Box.createRigidArea(new Dimension(0, 1))); // Adding spacing between stories
         }
         postsScrollPane.setViewportView(postPanel);
     }
@@ -177,28 +166,30 @@ public class NewsfeedPage extends javax.swing.JFrame {
         storyPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         for (Story story : stories) {
+            //creating a panel for each story
             JPanel singleStoryPanel = new JPanel();
             singleStoryPanel.setLayout(new BorderLayout());
             singleStoryPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             singleStoryPanel.setPreferredSize(new Dimension(150, 200));
 
-            //adds username
-//            User u = UserFileManager.getInstance().findUserByID(story.getAuthorId());
-//            JLabel UsernameLabel = new JLabel("Username: " + u.getUsername());
-//            UsernameLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-//            storyPanel.add(UsernameLabel, BorderLayout.NORTH);
-            // adds the time Stamp
+            //adding username
+            User u = UserFileManager.getInstance().findUserByID(story.getAuthorId()); //returns user to get username
+            JLabel UsernameLabel = new JLabel("Username: " + u.getUsername());
+            UsernameLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+            storyPanel.add(UsernameLabel, BorderLayout.NORTH);
+            
+            // adding the time Stamp
             JLabel timestampLabel = new JLabel("Time: " + story.getUploadingTime());
-            timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Add padding
+            timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Adding padding
             storyPanel.add(timestampLabel, BorderLayout.NORTH);
 
-            //adds content
+            //adding content
+            //adding text
             if (story.getcontentPath().contains(".txt")) {
-                //adds text
                 JLabel contentLabel = new JLabel("Content: " + story.getContentTxt());
-                contentLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Add padding
+                contentLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Adding padding
                 storyPanel.add(contentLabel, BorderLayout.NORTH);
-            } // adds the image 
+            } // adding the image 
             else {
                 File imageFile = new File(story.getcontentPath());
                 if (imageFile.exists()) {
@@ -211,8 +202,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
                 }
             }
             storyPanel.add(singleStoryPanel);
-            System.out.println("post added to panel");
-            storyPanel.add(Box.createRigidArea(new Dimension(0, 1))); // Add spacing between stories
+            storyPanel.add(Box.createRigidArea(new Dimension(0, 1))); // Adding spacing between stories
         }
         storiesScrollPane.setViewportView(storyPanel);
     }
