@@ -29,7 +29,7 @@ public class UserManager implements UserManagerInterface {
         User u = new User(UUID.randomUUID().toString(), email, username, dateOfBirth, hashPassword(password));
         users.add(u);
         u.setStatus(true);
-        UserFileManager.getInstance().saveToFile(users, FilePaths.USERS_FILE_PATH); // Save the updated list
+        UserFileManager.getInstance().saveToFile(users); // Save the updated list
         return u;
     }
 
@@ -40,6 +40,7 @@ public class UserManager implements UserManagerInterface {
                 u.setStatus(true);
             }
         }
+        return null;
     }
     
     public boolean loginValidation(String email, String password) {

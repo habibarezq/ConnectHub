@@ -5,9 +5,9 @@ import java.awt.*;
 public interface ProfileManager {
     // an Interface that has the methods of the Profile Management depending on the user ID
 
-    public void changeProfilePic(String profile);
+    public void changeProfilePic(Image profile);
 
-    public void changeCoverPic( String cover);
+    public void changeCoverPic( Image cover);
 
     public void updateBio(String bio);
 

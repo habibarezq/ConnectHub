@@ -34,7 +34,6 @@ public class UserProfile implements ProfileManager {
     
     
     //method to update the profile photo
-    @Override
     public void changeProfilePic(String profile) {
         this.profilePic = profile;
 
@@ -42,7 +41,6 @@ public class UserProfile implements ProfileManager {
     }
 
     //method to update the cover photo
-    @Override
     public void changeCoverPic(String cover) {
         this.coverPic = cover;
 
@@ -71,9 +69,19 @@ public class UserProfile implements ProfileManager {
         user.setPassword(hashedPass);
 
         // updating the users.txt file
-        userManager.saveToFile(UserFileManager.getInstance().getUsers(), FilePaths.USERS_FILE_PATH);
+        userManager.saveToFile(UserFileManager.getInstance().getUsers());
 
         return true;
+    }
+
+    @Override
+    public void changeProfilePic(Image profile) {
+        
+    }
+
+    @Override
+    public void changeCoverPic(Image cover) {
+        
     }
 
 }
