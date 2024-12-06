@@ -43,6 +43,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
         setTitle("Newsfeed");
         setContentPane(mainPanel);
 
+        
         this.posts = new ArrayList<>();
         fillPosts();
 
