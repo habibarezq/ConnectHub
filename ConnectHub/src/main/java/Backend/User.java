@@ -31,7 +31,8 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
         status = false;
 
         this.friendRequests = new HashMap<>();
-//Might remove this bec i dont need it 
+        this.friends=new ArrayList<>();
+        this.blocked=new ArrayList<>();
         this.contentManager=ContentManager.getInstance(userID);
         
     }

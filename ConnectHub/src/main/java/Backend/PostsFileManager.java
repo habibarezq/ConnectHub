@@ -50,7 +50,7 @@ public class PostsFileManager implements FileManager<Post> {
                 String TextContent = postJSON.getString("TextContent");
                 String imagePath = postJSON.getString("ImagePath");
                 LocalDateTime time = LocalDateTime.parse(postJSON.getString("time"));
-                posts.add(new Post(contentId, authorId, TextContent, imagePath, time));
+                posts.add(new Post( authorId, TextContent, imagePath, time));
             }
         } catch (IOException ex) {
             System.out.println("Error reading file: " + ex.getMessage());
