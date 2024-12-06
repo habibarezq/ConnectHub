@@ -15,25 +15,35 @@ import Interfaces.*;
 public class FriendsFileManager implements FileManager<User> {
 
     private static FriendsFileManager instance;
-    private String userId;
-    private ArrayList<User> friends;
-    private ArrayList<User> blocked;
     private String FILE_PATH = FilePaths.FRIENDS_FILE_PATH;
+    private String userId;
+    private ArrayList<User> friends; // List of the current user's friends
+    private ArrayList<User> blocked; // List of the current user's blocked users
 
-    // Private constructor to avoid direct instantiation
+    // Private constructor to avoid instantiation (singleton)
     private FriendsFileManager(String userId) {
         this.userId = userId;
         this.friends = new ArrayList<>();
         this.blocked = new ArrayList<>();
-        readFromFile();
+        readFromFile(); // Load the user's friends and blocked users on initialization
     }
 
-    // Singleton instance to ensure only one instance for a user
+    // Singleton pattern: getInstance method
     public static synchronized FriendsFileManager getInstance(String userId) {
-        if (instance == null || !instance.userId.equals(userId)) {
+        if (instance == null) {
             instance = new FriendsFileManager(userId);
         }
         return instance;
+    }
+
+    // Getter for friends
+    public ArrayList<User> getFriends() {
+        return friends;
+    }
+
+    // Getter for blocked users
+    public ArrayList<User> getBlocked() {
+        return blocked;
     }
 
     @Override
@@ -42,17 +52,22 @@ public class FriendsFileManager implements FileManager<User> {
             String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
             JSONArray allUsersFriendsArray = new JSONArray(json); // Parse the JSON array
 
+            // Iterate through each user in the friends file
             for (int i = 0; i < allUsersFriendsArray.length(); i++) {
                 JSONObject userFriendBlockedJSON = allUsersFriendsArray.getJSONObject(i);
-                String currentUserId = userFriendBlockedJSON.getString("userId");
+                String userId = userFriendBlockedJSON.getString("userId");
 
-                // Check if we are dealing with the current user's data
-                if (currentUserId.equals(this.userId)) {
-                    // Get friends and blocked lists
+                // Find the user using UserFileManager
+                User user = UserFileManager.getInstance().findUserByID(userId);
+                if (user != null) {
+                    // Get the friends and blocked arrays
                     JSONArray friendsArray = userFriendBlockedJSON.getJSONArray("friends");
                     JSONArray blockedArray = userFriendBlockedJSON.getJSONArray("blocked");
 
-                    // Convert friends and blocked users' JSON data to ArrayList<User>
+                    ArrayList<User> friends = new ArrayList<>();
+                    ArrayList<User> blocked = new ArrayList<>();
+
+                    // Populate the friends list
                     for (int j = 0; j < friendsArray.length(); j++) {
                         String friendId = friendsArray.getString(j);
                         User friend = UserFileManager.getInstance().findUserByID(friendId);
@@ -61,6 +76,10 @@ public class FriendsFileManager implements FileManager<User> {
                         }
                     }
 
+                    // Update the user's friends list
+                    user.setFriends(friends);
+
+                    // Populate the blocked list
                     for (int j = 0; j < blockedArray.length(); j++) {
                         String blockedId = blockedArray.getString(j);
                         User blockedUser = UserFileManager.getInstance().findUserByID(blockedId);
@@ -68,6 +87,9 @@ public class FriendsFileManager implements FileManager<User> {
                             blocked.add(blockedUser);
                         }
                     }
+
+                    // Update the user's blocked list
+                    user.setBlocked(blocked);
                 }
             }
         } catch (IOException | JSONException ex) {
@@ -91,14 +113,14 @@ public class FriendsFileManager implements FileManager<User> {
             userFriendBlockedJSON.put("userId", user.getUserID());
 
             JSONArray friendsArray = new JSONArray();
-            for (User friend : getFriends()) {
-                friendsArray.put(friend.getUserID()); // Add friend IDs to the JSON array
+            for (User friend : user.getFriends()) {
+                friendsArray.put(friend.getUserID());
             }
             userFriendBlockedJSON.put("friends", friendsArray);
 
             JSONArray blockedArray = new JSONArray();
-            for (User blockedUser : getBlocked()) {
-                blockedArray.put(blockedUser.getUserID()); // Add blocked user IDs to the JSON array
+            for (User blockedUser : user.getBlocked()) {
+                blockedArray.put(blockedUser.getUserID());
             }
             userFriendBlockedJSON.put("blocked", blockedArray);
 
@@ -113,42 +135,6 @@ public class FriendsFileManager implements FileManager<User> {
             System.out.println("Data Saved Successfully.");
         } catch (IOException e) {
             System.out.println("Error saving users: " + e.getMessage());
-        }
-    }
-
-    // Getter for friends
-    public ArrayList<User> getFriends() {
-        return friends;
-    }
-
-    // Setter for friends
-    public void setFriends(ArrayList<User> friends) {
-        this.friends = friends;
-    }
-
-    // Getter for blocked users
-    public ArrayList<User> getBlocked() {
-        return blocked;
-    }
-
-    // Setter for blocked users
-    public void setBlocked(ArrayList<User> blocked) {
-        this.blocked = blocked;
-    }
-
-    // Add a friend to the user's friends list
-    public void addFriend(User friend) {
-        if (!friends.contains(friend)) {
-            friends.add(friend);
-            saveToFile(new ArrayList<>());  // Make sure to save after modifying
-        }
-    }
-
-    // Add a user to the blocked list
-    public void addBlocked(User blockedUser) {
-        if (!blocked.contains(blockedUser)) {
-            blocked.add(blockedUser);
-            saveToFile(new ArrayList<>());  // Save after blocking someone
         }
     }
 }

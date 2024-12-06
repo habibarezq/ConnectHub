@@ -20,12 +20,12 @@ public class Request {
 
     public void processFriendRequest() {
         System.out.println("Processing Friend Request ...");
-        if (!recipient.getFriendRequests().containsKey(sender) && !recipient.getFriendsManager().getBlocked().contains(sender)) {
+        if (!recipient.getFriendRequests().containsKey(sender) && !recipient.getBlocked().contains(sender)) {
             recipient.getFriendRequests().put(sender, "Pending");
             System.out.println("Friend Request sent From " + sender.getUsername() + " --> " + recipient.getUsername());
         } else if (recipient.getFriendRequests().containsKey(sender)) {
             System.out.println("Friend request already sent.");
-        } else if (recipient.getFriendsManager().getBlocked().contains(sender)) {
+        } else if (recipient.getBlocked().contains(sender)) {
 
         }
 
@@ -34,8 +34,8 @@ public class Request {
     public void processAcceptFriendRequest() {
         if (recipient.getFriendRequests().containsKey(getSender()) && recipient.getFriendRequests().get(sender).equals("Pending")) {
             recipient.getFriendRequests().put(sender, "Accepted");
-            recipient.getFriendsManager().getFriends().add(sender);
-            sender.getFriendsManager().getFriends().add(recipient);
+            recipient.getFriends().add(sender);
+            sender.getFriends().add(recipient);
             System.out.println("Friend request from " + sender.getUsername() + " accepted.");
         } else {
             System.out.println("No pending friend request from " + sender.getUsername());
