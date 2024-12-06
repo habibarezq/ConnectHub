@@ -121,11 +121,11 @@ public class password extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Too Short !! Should be more than 4 characters", "Failed!!", JOptionPane.ERROR_MESSAGE);
         } else if (!newPasswordStr.equals(confirmPasswordStr)) {
             JOptionPane.showMessageDialog(this, "Umatched Passwords!!", "Failed!!", JOptionPane.ERROR_MESSAGE);
-        } else if (Password.verifyPassword(user.getPassword(), Password.hashPassword(newPasswordStr))) {
+          } else {
             // Password change is successful
+            
             JOptionPane.showMessageDialog(this, "Password changed successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(this, "Same Password!!", "Failed!!", JOptionPane.ERROR_MESSAGE);
+     
         }
         new Profile(this.user);
         this.dispose();
