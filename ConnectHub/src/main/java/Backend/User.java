@@ -16,8 +16,7 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
     //Each Friends,posts,stories will have its own database service
 
     private ContentManager contentManager;
-    private ArrayList<User> friends; //List of User's Friends
-    private ArrayList<User> blocked; //List of User's blocked
+    private FriendsManager friendsManager;
     private HashMap<User, String> friendRequests;
 
 
@@ -29,11 +28,10 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
         this.dateOfBirth = dateOfBirth;
         status = false;
 
-        this.friends = new ArrayList<>();
         this.friendRequests = new HashMap<>();
-        this.blocked=new ArrayList<>();
 
         this.contentManager=ContentManager.getInstance(userID);
+        this.friendsManager=friendsManager.getInstance(userID);
     }
 
     public boolean isStatus() {
@@ -43,21 +41,10 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
     public ContentManager getContentManager() {
         return contentManager;
     }
-
-    public ArrayList<User> getBlocked() {
-        return blocked;
-    }
-
-    public void setBlocked(ArrayList<User> blocked) {
-        this.blocked = blocked;
-    }
-
-    public ArrayList<User> getFriends() {
-        return friends;
-    }
-
-    public void setFriends(ArrayList<User> friends) {
-        this.friends = friends;
+    
+    public FriendsManager getFriendsManager()
+    {
+        return friendsManager;
     }
 
     public HashMap<User, String> getFriendRequests() {
@@ -118,9 +105,9 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
 
     @Override
     public void removeFriend(User friend) {
-        if (friends.contains(friend)) {
-            friends.remove(friend);
-            friend.getFriends().remove(this);
+        if (friendsManager.getFriends().contains(friend)) {
+            friendsManager.getFriends().remove(friend);
+            friend.friendsManager.getFriends().remove(this);
             System.out.println(friend.getUsername() + " has been removed from your friend list.");
         } else {
             System.out.println(friend.getUsername() + " is not in your friend list");
@@ -129,10 +116,10 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
 
     @Override
     public void blockFriend(User friend) {
-        if (friends.contains(friend)) {
-            friends.remove(friend);
-            friend.getFriends().remove(this);
-            blocked.add(friend);
+        if (friendsManager.getFriends().contains(friend)) {
+            friendsManager.getFriends().remove(friend);
+            friend.friendsManager.getFriends().remove(this);
+            friendsManager.getBlocked().add(friend);
             System.out.println(friend.getUsername() + " has been blocked from.");
         } else {
             System.out.println(friend.getUsername() + " is not in your friend list");
@@ -141,21 +128,21 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
 
     @Override
     public void sendRequest(User recipient) {
-        Request friendRequest = new Request(this, recipient);
-        friendRequest.processFriendRequest();
+      //  Request friendRequest = new Request(this, recipient);
+       // friendRequest.processFriendRequest();
 
     }
 
     @Override
     public void acceptRequest(User sender) {
-        Request friendRequest = new Request(sender, this);
-        friendRequest.processAcceptFriendRequest();
+       // Request friendRequest = new Request(sender, this);
+       // friendRequest.processAcceptFriendRequest();
     }
   
     @Override
     public void declineRequest(User sender) {
-        Request friendRequest = new Request(sender, this);
-        friendRequest.processDeclineFriendRequest();
+//        Request friendRequest = new Request(sender, this);
+//        friendRequest.processDeclineFriendRequest();
     }
 
     @Override
@@ -163,7 +150,7 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
         ArrayList<User> suggestions=new ArrayList<>();
         for(User user: allUsers)
         {
-            if(user !=this && !friends.contains(user) && !friendRequests.containsKey(user) && !blocked.contains(user))
+            if(user !=this && !friendsManager.getFriends().contains(user) && !friendRequests.containsKey(user) && !friendsManager.getBlocked().contains(user))
                 suggestions.add(user);
         }
         return suggestions;
@@ -176,6 +163,5 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
 
     @Override
     public void displayStatuses() {
-        
     }
 }
