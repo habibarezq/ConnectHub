@@ -57,34 +57,38 @@ public class PostCellRender extends JPanel implements ListCellRenderer<Post>{
         int result = fileChooser.showOpenDialog(this);
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            try {
-                Image image = ImageIO.read(selectedFile);
-                if (image != null) {
-                    // Scale image to fit within the label
-                    Image scaledImage = image.getScaledInstance(imageLabel.getWidth(), imageLabel.getHeight(), Image.SCALE_SMOOTH);
-                    imageLabel.setIcon(new ImageIcon(scaledImage));
-                } else {
-                    JOptionPane.showMessageDialog(this, "The selected file is not a valid image.", "Invalid Image", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, "Error loading image: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }  // Load the image dynamically
-        imageLabel.setIcon(icon);
+//            try {
+//                Image image = ImageIO.read(selectedFile);
+//                if (image != null) {
+//                    // Scale image to fit within the label
+//                    Image scaledImage = image.getScaledInstance(imageLabel.getWidth(), imageLabel.getHeight(), Image.SCALE_SMOOTH);
+//                    imageLabel.setIcon(new ImageIcon(scaledImage));
+//                } else {
+//                    JOptionPane.showMessageDialog(this, "The selected file is not a valid image.", "Invalid Image", JOptionPane.ERROR_MESSAGE);
+//                }
+//            } catch (IOException e) {
+//                JOptionPane.showMessageDialog(this, "Error loading image: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+//            }
+//        }
+//    }  // Load the image dynamically
+//        imageLabel.setIcon(icon);
+//
+//        // Handle selection colors
+//        if (isSelected) {
+//            setBackground(list.getSelectionBackground());
+//            setForeground(list.getSelectionForeground());
+//        } else {
+//            setBackground(list.getBackground());
+//            setForeground(list.getForeground());
+//        }
+//
+//        setOpaque(true);  // Make sure the background is visible
+//        return this;
+//    }
+//}
 
-        // Handle selection colors
-        if (isSelected) {
-            setBackground(list.getSelectionBackground());
-            setForeground(list.getSelectionForeground());
-        } else {
-            setBackground(list.getBackground());
-            setForeground(list.getForeground());
-        }
-
-        setOpaque(true);  // Make sure the background is visible
-        return this;
-    }
 }
-
+        return null;
+    }
+    }
 }

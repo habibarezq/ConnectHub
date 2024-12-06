@@ -42,53 +42,53 @@ public class NewsfeedPage extends javax.swing.JFrame {
         
         populateFriends();
         populateSuggestedFriends();
-        populatePosts();
-        populateStories();
+       // populatePosts();
+       // populateStories();
         
                 
     }
 
-    private void displayStories() {
-
-    JPanel storyPanel = new JPanel();
-    storyPanel.setLayout(new BoxLayout(storyPanel, BoxLayout.X_AXIS)); 
-    storyPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); 
-
-    for (Story story :stories ) {
-        if (story.getAuthorId().equals(userID)) {
-            // Create a panel for each story
-            JPanel singleStoryPanel = new JPanel();
-            singleStoryPanel.setLayout(new BorderLayout());
-            singleStoryPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK)); 
-            singleStoryPanel.setPreferredSize(new Dimension(150, 200));
-
-          
-            JLabel contentLabel = new JLabel("Content: " + story.getContentTxt());
-            contentLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); 
-            singleStoryPanel.add(contentLabel, BorderLayout.NORTH);
-
-            JLabel timestampLabel = new JLabel("Time: " + story.getUploadingTime());
-            timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-            singleStoryPanel.add(timestampLabel, BorderLayout.SOUTH);
-
-            File imageFile = new File(story.getImagePath());
-            if (imageFile.exists()) {
-                ImageIcon imageIcon = resizeImage(story.getImagePath(), 120, 120); // Resize for a smaller image
-                JLabel imageLabel = new JLabel(imageIcon);
-                singleStoryPanel.add(imageLabel, BorderLayout.CENTER);
-            } else {
-                JLabel noImageLabel = new JLabel("No image available.");
-                noImageLabel.setHorizontalAlignment(JLabel.CENTER);
-                singleStoryPanel.add(noImageLabel, BorderLayout.CENTER);
-            }
-
-            storyPanel.add(singleStoryPanel);
-            storyPanel.add(Box.createRigidArea(new Dimension(10, 0))); // Add spacing between stories
-        }
-    }
-
-   jScrollPane1.setViewportView(storyPanel);
-}
+//    private void displayStories() {
+//
+//    JPanel storyPanel = new JPanel();
+//    storyPanel.setLayout(new BoxLayout(storyPanel, BoxLayout.X_AXIS)); 
+//    storyPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); 
+//
+//    for (Story story :stories ) {
+//        if (story.getAuthorId().equals(userID)) {
+//            // Create a panel for each story
+//            JPanel singleStoryPanel = new JPanel();
+//            singleStoryPanel.setLayout(new BorderLayout());
+//            singleStoryPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK)); 
+//            singleStoryPanel.setPreferredSize(new Dimension(150, 200));
+//
+//          
+//            JLabel contentLabel = new JLabel("Content: " + story.getContentTxt());
+//            contentLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); 
+//            singleStoryPanel.add(contentLabel, BorderLayout.NORTH);
+//
+//            JLabel timestampLabel = new JLabel("Time: " + story.getUploadingTime());
+//            timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+//            singleStoryPanel.add(timestampLabel, BorderLayout.SOUTH);
+//
+//            File imageFile = new File(story.getImagePath());
+//            if (imageFile.exists()) {
+//                ImageIcon imageIcon = resizeImage(story.getImagePath(), 120, 120); // Resize for a smaller image
+//                JLabel imageLabel = new JLabel(imageIcon);
+//                singleStoryPanel.add(imageLabel, BorderLayout.CENTER);
+//            } else {
+//                JLabel noImageLabel = new JLabel("No image available.");
+//                noImageLabel.setHorizontalAlignment(JLabel.CENTER);
+//                singleStoryPanel.add(noImageLabel, BorderLayout.CENTER);
+//            }
+//
+//            storyPanel.add(singleStoryPanel);
+//            storyPanel.add(Box.createRigidArea(new Dimension(10, 0))); // Add spacing between stories
+//        }
+//    }
+//
+//   jScrollPane1.setViewportView(storyPanel);
+//}
 
     
     public void populateFriends()
@@ -232,14 +232,15 @@ public class NewsfeedPage extends javax.swing.JFrame {
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
                 .addGap(25, 25, 25)
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(profileButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(logoutButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(addStoryButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(addPostButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(logoutButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(addStoryButton, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
+                        .addComponent(addPostButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(profileButton))
                 .addGap(29, 29, 29)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 687, Short.MAX_VALUE)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 773, Short.MAX_VALUE)
                     .addComponent(jScrollPane6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -252,9 +253,9 @@ public class NewsfeedPage extends javax.swing.JFrame {
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
-                .addGap(39, 39, 39)
+                .addGap(33, 33, 33)
                 .addComponent(profileButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(logoutButton)
                 .addGap(101, 101, 101)
                 .addComponent(addStoryButton)
@@ -272,29 +273,23 @@ public class NewsfeedPage extends javax.swing.JFrame {
                     .addGroup(mainPanelLayout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(19, Short.MAX_VALUE))))
+                        .addContainerGap(113, Short.MAX_VALUE))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(86, 86, 86)
-                .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(214, Short.MAX_VALUE))
+            .addComponent(mainPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(79, 79, 79)
-                .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(121, Short.MAX_VALUE))
+            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();

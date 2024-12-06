@@ -2,7 +2,6 @@ package Backend;
 
 import static Backend.Password.*;
 //import static Backend.UserFileManager.readUsers;
-import Interfaces.FilePaths;
 import Validation.UserValidation;
 import java.time.LocalDate;
 import java.util.ArrayList;
