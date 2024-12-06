@@ -15,11 +15,11 @@ public class ProfileFileManager implements FileManager<UserProfile> {
     private String FILE_PATH = FilePaths.PROFILES_FILE_PATH;
     private UserProfile userProfile;
     private String userId;
+    private ArrayList<UserProfile> profiles;
 
-   
     private ProfileFileManager(String userId) {
         this.userId = userId;
-        this.userProfile = null; 
+        this.userProfile = null;
         readFromFile();
     }
 
@@ -36,6 +36,14 @@ public class ProfileFileManager implements FileManager<UserProfile> {
             readFromFile(); // Load the profile if not already loaded
         }
         return userProfile;
+    }
+
+    public ArrayList<UserProfile> getProfiles() {
+
+        if (profiles.isEmpty()) {
+            readFromFile();
+        }
+        return profiles;
     }
 
     @Override

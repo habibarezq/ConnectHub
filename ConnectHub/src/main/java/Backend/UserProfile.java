@@ -2,21 +2,25 @@ package Backend;
 
 import Interfaces.*;
 import java.awt.Image;
+import java.util.ArrayList;
 
 public class UserProfile implements ProfileManager {
 
     UserFileManager userManager = UserFileManager.getInstance();
-
+    ProfileFileManager profileManager;
     private String userId;
     private String profilePic;
     private String coverPic;
     private String bio;
+    private ArrayList<UserProfile> profiles;
 
     public UserProfile(String userId, String profilePic, String coverPic, String bio) {
         this.userId = userId;
         this.profilePic = profilePic;
         this.coverPic = coverPic;
         this.bio = bio;
+        this.profileManager = ProfileFileManager.getInstance(userId);
+        profiles = profileManager.getProfiles();
     }
 
     // getters 
@@ -37,17 +41,18 @@ public class UserProfile implements ProfileManager {
     }
 
     //method to update the profile photo
+    @Override
     public void changeProfilePic(String profile) {
         this.profilePic = profile;
-
-        //SaveToFile
+        profileManager.saveToFile(profiles);
     }
 
     //method to update the cover photo
+    @Override
     public void changeCoverPic(String cover) {
         this.coverPic = cover;
 
-        //SaveToFile
+        profileManager.saveToFile(profiles);
     }
 
     // method to enable the user to update the current bio
@@ -56,11 +61,12 @@ public class UserProfile implements ProfileManager {
         this.bio = bio;
 
         //SaveToFile
+        profileManager.saveToFile(profiles);
     }
 
     // method to enable the user to update the current password
     @Override
-    public void updatePassword(String userId, String password) {
+    public void updatePassword(String password) {
 
         User user = userManager.findUserByID(userId);
         String hashedPass = Password.hashPassword(password);
@@ -70,15 +76,4 @@ public class UserProfile implements ProfileManager {
         userManager.saveToFile(UserFileManager.getInstance().getUsers());
 
     }
-
-    @Override
-    public void changeProfilePic(Image profile) {
-
-    }
-
-    @Override
-    public void changeCoverPic(Image cover) {
-
-    }
-
 }
