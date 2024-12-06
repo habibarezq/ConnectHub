@@ -232,7 +232,7 @@ public class Signup extends javax.swing.JFrame {
             //} else if(validations){
         } else if (u.signup(email, username, local, password) != null) {
             JOptionPane.showMessageDialog(this, "The user has been successfully created.", "Message", JOptionPane.PLAIN_MESSAGE);
-            new Newsfeed().setVisible(true);
+            new NewsfeedPage().setVisible(true);
             this.dispose();
             
         } else {

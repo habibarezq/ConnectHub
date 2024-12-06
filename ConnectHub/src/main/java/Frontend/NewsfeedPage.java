@@ -37,58 +37,59 @@ public class NewsfeedPage extends javax.swing.JFrame {
         friendsList.setModel(friendsModel);
         suggestedFriendsList.setModel(suggestedFriendsModel);
         
+        
 //        StoriesList.setCellRenderer(new CustomListCellRender());
 //        postsList.setCellRenderer(new CustomListCellRender());       
         
         populateFriends();
         populateSuggestedFriends();
-        populatePosts();
-        populateStories();
+       // populatePosts();
+       // populateStories();
         
                 
     }
 
-    private void displayStories() {
-
-    JPanel storyPanel = new JPanel();
-    storyPanel.setLayout(new BoxLayout(storyPanel, BoxLayout.X_AXIS)); 
-    storyPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); 
-
-    for (Story story :stories ) {
-        if (story.getAuthorId().equals(userID)) {
-            // Create a panel for each story
-            JPanel singleStoryPanel = new JPanel();
-            singleStoryPanel.setLayout(new BorderLayout());
-            singleStoryPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK)); 
-            singleStoryPanel.setPreferredSize(new Dimension(150, 200));
-
-          
-            JLabel contentLabel = new JLabel("Content: " + story.getContentTxt());
-            contentLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); 
-            singleStoryPanel.add(contentLabel, BorderLayout.NORTH);
-
-            JLabel timestampLabel = new JLabel("Time: " + story.getUploadingTime());
-            timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-            singleStoryPanel.add(timestampLabel, BorderLayout.SOUTH);
-
-            File imageFile = new File(story.getImagePath());
-            if (imageFile.exists()) {
-                ImageIcon imageIcon = resizeImage(story.getImagePath(), 120, 120); // Resize for a smaller image
-                JLabel imageLabel = new JLabel(imageIcon);
-                singleStoryPanel.add(imageLabel, BorderLayout.CENTER);
-            } else {
-                JLabel noImageLabel = new JLabel("No image available.");
-                noImageLabel.setHorizontalAlignment(JLabel.CENTER);
-                singleStoryPanel.add(noImageLabel, BorderLayout.CENTER);
-            }
-
-            storyPanel.add(singleStoryPanel);
-            storyPanel.add(Box.createRigidArea(new Dimension(10, 0))); // Add spacing between stories
-        }
-    }
-
-   jScrollPane1.setViewportView(storyPanel);
-}
+//    private void displayStories() {
+//
+//    JPanel storyPanel = new JPanel();
+//    storyPanel.setLayout(new BoxLayout(storyPanel, BoxLayout.X_AXIS)); 
+//    storyPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); 
+//
+//    for (Story story :stories ) {
+//        if (story.getAuthorId().equals(userID)) {
+//            // Create a panel for each story
+//            JPanel singleStoryPanel = new JPanel();
+//            singleStoryPanel.setLayout(new BorderLayout());
+//            singleStoryPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK)); 
+//            singleStoryPanel.setPreferredSize(new Dimension(150, 200));
+//
+//          
+//            JLabel contentLabel = new JLabel("Content: " + story.getContentTxt());
+//            contentLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); 
+//            singleStoryPanel.add(contentLabel, BorderLayout.NORTH);
+//
+//            JLabel timestampLabel = new JLabel("Time: " + story.getUploadingTime());
+//            timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+//            singleStoryPanel.add(timestampLabel, BorderLayout.SOUTH);
+//
+//            File imageFile = new File(story.getImagePath());
+//            if (imageFile.exists()) {
+//                ImageIcon imageIcon = resizeImage(story.getImagePath(), 120, 120); // Resize for a smaller image
+//                JLabel imageLabel = new JLabel(imageIcon);
+//                singleStoryPanel.add(imageLabel, BorderLayout.CENTER);
+//            } else {
+//                JLabel noImageLabel = new JLabel("No image available.");
+//                noImageLabel.setHorizontalAlignment(JLabel.CENTER);
+//                singleStoryPanel.add(noImageLabel, BorderLayout.CENTER);
+//            }
+//
+//            storyPanel.add(singleStoryPanel);
+//            storyPanel.add(Box.createRigidArea(new Dimension(10, 0))); // Add spacing between stories
+//        }
+//    }
+//
+//   jScrollPane1.setViewportView(storyPanel);
+//}
 
     
     public void populateFriends()
@@ -302,6 +303,8 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
     private void profileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_profileButtonActionPerformed
         //goes to profile frame 
+        new Profile().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_profileButtonActionPerformed
 
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
