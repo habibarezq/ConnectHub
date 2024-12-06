@@ -33,19 +33,7 @@ public class Profile extends javax.swing.JFrame {
 
     public void populateFriends() {
         friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-        friendsModel.addElement("John Doe");
-
+    
     }
     
     private void startup(UserProfile profile){

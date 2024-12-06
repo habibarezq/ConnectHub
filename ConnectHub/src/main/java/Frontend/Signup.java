@@ -1,38 +1,80 @@
 package Frontend;
 
+import Backend.UserFileManager;
+import Backend.UserManager;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Calendar;
 import javax.swing.DefaultComboBoxModel;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import javax.swing.JOptionPane;
 
 public class Signup extends javax.swing.JFrame {
 
     /**
      * Creates new form Signup
      */
-    public Signup() {
+    protected ArrayList usersArray;
+
+    public Signup(UserFileManager userFileManager) {
         initComponents();
         setTitle("Signup");
+        usersArray = userFileManager.getUsers();
+
         populateDateComboBox();
+//        populateDayComboBox();
+//        populateMonthComboBox();
+//        populateYearComboBox();
     }
-    
+
     private void populateDateComboBox() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         Calendar start = Calendar.getInstance();
         start.set(1924, Calendar.JANUARY, 1);
-        
+
         Calendar end = Calendar.getInstance();
-        end.set(LocalDate.now().getYear(), LocalDate.now().getMonthValue(), LocalDate.now().getDayOfMonth());
+        end.set(LocalDate.now().getYear(), LocalDate.now().getMonthValue()-1,LocalDate.now().getDayOfMonth());
 
         DefaultComboBoxModel<String> dateModel = new DefaultComboBoxModel<>();
 
-        while (start.before(end) || start.equals(end)) {
-            dateModel.addElement(sdf.format(start.getTime()));
-            start.add(Calendar.DATE, 1);
+        while (end.after(start) || end.equals(start)) {
+            dateModel.addElement(sdf.format(end.getTime()));
+            end.add(Calendar.DATE, -1);
         }
 
-        DOBcomboBox.setModel(dateModel); // Set the model for DOBcomboBox
+        dateBox.setModel(dateModel); // Set the model for jComboBox1
     }
+//    private void populateDayComboBox() {
+//        DefaultComboBoxModel<String> dayModel = new DefaultComboBoxModel<>();
+//        dayModel.addElement("DD");
+//        Integer i;
+//        for (i = 1; i < 32; i++) {
+//            dayModel.addElement(i.toString());
+//        }
+//        dayBox.setModel(dayModel); // Set the model for day ComboBox       
+//    }
+//
+//    private void populateMonthComboBox() {
+//        DefaultComboBoxModel<String> monthModel = new DefaultComboBoxModel<>();
+//        monthModel.addElement("MM");
+//        Integer i;
+//        for (i = 1; i < 13; i++) {
+//            monthModel.addElement(i.toString());
+//        }
+//        monthBox.setModel(monthModel); // Set the model for month ComboBox
+//    }
+//
+//    private void populateYearComboBox() {
+//        DefaultComboBoxModel<String> yearModel = new DefaultComboBoxModel<>();
+//        yearModel.addElement("YYYY");
+//        Integer i;
+//        for (i = (Integer) LocalDate.now().getYear(); i >= 1924; i--) {
+//            yearModel.addElement(i.toString());
+//        }
+//        yearBox.setModel(yearModel); // Set the model for year ComboBox
+//    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -50,9 +92,9 @@ public class Signup extends javax.swing.JFrame {
         PasswordField = new javax.swing.JPasswordField();
         usernameText = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        DOBcomboBox = new javax.swing.JComboBox<>();
         cancelButton = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
+        dateBox = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -76,8 +118,6 @@ public class Signup extends javax.swing.JFrame {
 
         jLabel4.setText("Date of birth:");
 
-        DOBcomboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Choose date" }));
-
         cancelButton.setBackground(new java.awt.Color(204, 204, 204));
         cancelButton.setText("Cancel");
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
@@ -87,6 +127,13 @@ public class Signup extends javax.swing.JFrame {
         });
 
         jLabel2.setText("E-mail:");
+
+        dateBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Choose date of birth" }));
+        dateBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dateBoxActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -108,10 +155,10 @@ public class Signup extends javax.swing.JFrame {
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(60, 60, 60)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(PasswordField, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(PasswordField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
                     .addComponent(emailText, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(DOBcomboBox, 0, 258, Short.MAX_VALUE)
-                    .addComponent(usernameText))
+                    .addComponent(usernameText)
+                    .addComponent(dateBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(122, 122, 122))
         );
         layout.setVerticalGroup(
@@ -129,10 +176,13 @@ public class Signup extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(PasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(36, 36, 36)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(DOBcomboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(36, 36, 36)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(35, 35, 35)
+                        .addComponent(dateBox, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(signupButton, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -149,7 +199,44 @@ public class Signup extends javax.swing.JFrame {
 
     private void signupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signupButtonActionPerformed
         // TODO add your handling code here:
-        
+        String username = usernameText.getText();
+        String email = emailText.getText();
+        String password = PasswordField.getText();
+//        String day = (String) dayBox.getSelectedItem();
+//        String month = (String) monthBox.getSelectedItem();
+//        String year = (String) yearBox.getSelectedItem();
+        String date = (String) dateBox.getSelectedItem();
+        LocalDate local = null;
+        UserManager u = new UserManager(usersArray);
+
+        if (date != null) {
+            try {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                local = LocalDate.parse(date, formatter);
+            } catch (DateTimeParseException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+//        if (day != null && month != null && year != null) {
+//            try {
+//                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+//                local = LocalDate.parse(day + "-" + month + "-" + year, formatter);
+//
+//            } catch (DateTimeParseException ex) {
+//                ex.printStackTrace();
+//            }
+//        }
+        if (email.equals("") || password.equals("") || username.equals("")) {
+            JOptionPane.showMessageDialog(this, "Some fields are empty!", "Message", JOptionPane.ERROR_MESSAGE);
+            //} else if(validations){
+        } else if (u.signup(email, username, local, password) != null) {
+            JOptionPane.showMessageDialog(this, "The user has been successfully created.", "Message", JOptionPane.PLAIN_MESSAGE);
+            new Newsfeed().setVisible(true);
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Registration failed !!", "Message", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_signupButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
@@ -157,6 +244,10 @@ public class Signup extends javax.swing.JFrame {
         new ConnectHubMain().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void dateBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dateBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_dateBoxActionPerformed
 
     /**
      * @param args the command line arguments
@@ -189,15 +280,15 @@ public class Signup extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Signup().setVisible(true);
+                //new Signup(userFileManager).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> DOBcomboBox;
     private javax.swing.JPasswordField PasswordField;
     private javax.swing.JButton cancelButton;
+    private javax.swing.JComboBox<String> dateBox;
     private javax.swing.JTextField emailText;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
