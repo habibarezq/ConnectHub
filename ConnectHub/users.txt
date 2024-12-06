@@ -33,5 +33,12 @@
         "userId": "user4",
         "email": "user4@example.com",
         "username": "user4username"
+    },
+    {
+        "password": "password123",
+        "dob": "1995-05-15",
+        "userId": "user5",
+        "email": "user5@example.com",
+        "username": "userusername"
     }
 ]

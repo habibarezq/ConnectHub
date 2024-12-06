@@ -1,7 +1,16 @@
-[{
-    "ImageContent": "sun.awt.image.ToolkitImage@2a098129",
-    "contentId": "story4",
-    "time": "2024-12-05T21:18:06.481711400",
-    "TextContent": "This is a new story",
-    "userId": "user4"
-}]
+[
+    {
+        "ImageContent": "sun.awt.image.ToolkitImage@2a098129",
+        "contentId": "story4",
+        "time": "2024-12-06T03:13:06.386410300",
+        "TextContent": "This is a new story",
+        "userId": "user4"
+    },
+    {
+        "ImageContent": "sun.awt.image.ToolkitImage@2a098129",
+        "contentId": "story4",
+        "time": "2024-12-06T03:13:06.386410300",
+        "TextContent": "This is a new story",
+        "userId": "user4"
+    }
+]
