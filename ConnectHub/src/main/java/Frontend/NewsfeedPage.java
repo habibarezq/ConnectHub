@@ -46,7 +46,12 @@ private ConnectHubMain connectHub;
         this.userId = user.getUserID();
         FriendsFileManager.getInstance(userId);
         this.posts = PostsFileManager.getInstance().getPosts();
+<<<<<<< Updated upstream
         
+=======
+        //fillPosts();
+
+>>>>>>> Stashed changes
         this.users = UserFileManager.getInstance().getUsers();
         //addUsers();
 
@@ -436,7 +441,11 @@ private ConnectHubMain connectHub;
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
 
+<<<<<<< Updated upstream
                     posts.add(new Post( userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
+=======
+                    posts.add(new Post(userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
+>>>>>>> Stashed changes
                 } else {
                     String text = JOptionPane.showInputDialog(null, "Enter Text:");
                     posts.add(new Post(userId, text, null, LocalDateTime.now()));
