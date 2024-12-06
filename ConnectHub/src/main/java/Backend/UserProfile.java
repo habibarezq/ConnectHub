@@ -1,4 +1,3 @@
-
 package Backend;
 
 import Interfaces.*;
@@ -21,7 +20,6 @@ public class UserProfile implements ProfileManager {
     }
 
     // getters 
-    
     public String getUserId() {
         return userId;
     }
@@ -37,8 +35,7 @@ public class UserProfile implements ProfileManager {
     public String getBio() {
         return bio;
     }
-    
-    
+
     //method to update the profile photo
     public void changeProfilePic(String profile) {
         this.profilePic = profile;
@@ -63,32 +60,25 @@ public class UserProfile implements ProfileManager {
 
     // method to enable the user to update the current password
     @Override
-    public boolean updatePassword(String userId, String password) {
+    public void updatePassword(String userId, String password) {
 
         User user = userManager.findUserByID(userId);
         String hashedPass = Password.hashPassword(password);
 
-        //confirm updating passwords only if it does not match the old one
-        if (Password.verifyPassword(user.getPassword(), hashedPass)) {
-            return false;
-        }
         user.setPassword(hashedPass);
 
-        // updating the users.txt file
         userManager.saveToFile(UserFileManager.getInstance().getUsers());
 
-        return true;
     }
 
     @Override
     public void changeProfilePic(Image profile) {
-        
+
     }
 
     @Override
     public void changeCoverPic(Image cover) {
-        
+
     }
 
 }
-
