@@ -1,25 +1,24 @@
 package Backend;
 
+import Interfaces.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import org.json.*;
 
-// importing the FilePaths and FileManager interfaces
-import Interfaces.*;
-import static java.lang.System.exit;
-
 public class ProfileFileManager implements FileManager<UserProfile> {
 
     private static ProfileFileManager instance;
     private String FILE_PATH = FilePaths.PROFILES_FILE_PATH;
-    private UserProfile userProfile;
-    private String userId;
     private ArrayList<UserProfile> profiles;
+    private String userId;
+    private UserProfile userProfile;
 
+    // Private constructor, accepts userId to load the specific user profile
     private ProfileFileManager(String userId) {
         this.userId = userId;
+        this.profiles = new ArrayList<>();
         this.userProfile = null;
         readFromFile();
     }
@@ -27,11 +26,12 @@ public class ProfileFileManager implements FileManager<UserProfile> {
     // Singleton pattern with userId specificity
     public static synchronized ProfileFileManager getInstance(String userId) {
         if (instance == null || !instance.userId.equals(userId)) {
-            instance = new ProfileFileManager(userId);
+            instance = new ProfileFileManager(userId); // Create a new instance for the specific userId
         }
         return instance;
     }
 
+    // Method to get the profile of the user
     public UserProfile getUserProfile() {
         if (userProfile == null) {
             readFromFile(); // Load the profile if not already loaded
@@ -39,10 +39,10 @@ public class ProfileFileManager implements FileManager<UserProfile> {
         return userProfile;
     }
 
+    // Method to get all profiles
     public ArrayList<UserProfile> getProfiles() {
-
         if (profiles.isEmpty()) {
-            readFromFile();
+            readFromFile(); // If profiles are empty, load from file
         }
         return profiles;
     }
@@ -55,9 +55,10 @@ public class ProfileFileManager implements FileManager<UserProfile> {
 
             for (int i = 0; i < profilesArray.length(); i++) {
                 JSONObject profileJSON = profilesArray.getJSONObject(i);
+                String currentUserId = profileJSON.getString("userId");
 
-                // Check if the userId matches
-                if (profileJSON.getString("userId").equals(userId)) {
+                // Only load the profile if the userId matches
+                if (currentUserId.equals(userId)) {
                     String bio = profileJSON.getString("Bio");
                     String profilePath = profileJSON.getString("ProfilePhotoPath");
                     String coverPath = profileJSON.getString("CoverPhotoPath");
@@ -67,12 +68,8 @@ public class ProfileFileManager implements FileManager<UserProfile> {
                     break; // Exit the loop as the profile has been found
                 }
             }
-        } catch (IOException ex) {
-            exit(-1);
+        } catch (IOException | JSONException ex) {
             System.out.println("Error reading file: " + ex.getMessage());
-        } catch (JSONException ex) {
-            exit(-1);
-            System.out.println("Error parsing JSON: " + ex.getMessage());
         }
 
         // If the profile was not found, initialize with default values
@@ -104,12 +101,10 @@ public class ProfileFileManager implements FileManager<UserProfile> {
 
         try {
             FileWriter file = new FileWriter(FILE_PATH);
-            file.write(profilesArray.toString(4));
+            file.write(profilesArray.toString(4)); // Pretty print with indentation
             file.flush();
             file.close();
             System.out.println("Data Saved Successfully.");
-        } catch (FileNotFoundException e) {
-            System.out.println("File Not Found: " + e.getMessage());
         } catch (IOException e) {
             System.out.println("Error saving profiles: " + e.getMessage());
         }
