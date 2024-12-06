@@ -3,18 +3,12 @@ package Backend;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import org.json.*;
 
 //importing the FilePaths and FileManager interfaces
 import Interfaces.*;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
-import java.time.LocalDateTime;
-import java.util.Base64;
-import javax.imageio.ImageIO;
+
 
 public class ProfileFileManager implements FileManager<UserProfile> {
 
