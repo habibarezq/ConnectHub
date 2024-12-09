@@ -107,6 +107,8 @@ public class UserFileManager implements FileManager<User> {
         }
         return null;
     }
+
+
     public User findUserByUsername(String username)
     {
         for(User u : users)
