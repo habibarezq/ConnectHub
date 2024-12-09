@@ -64,6 +64,8 @@ public class NewsfeedPage extends javax.swing.JFrame {
         populatePosts();
         populateStories();
         ActionEvent evt = null;
+        
+        ContentManager.getInstance(userId).refreshPosts();
 
         requestsComboBoxActionPerformed(evt);
     }
@@ -375,28 +377,45 @@ public class NewsfeedPage extends javax.swing.JFrame {
     }//GEN-LAST:event_addStoryButtonActionPerformed
 
     private void addPostButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPostButtonActionPerformed
-        // add new post to newsfeed and arraylist of posts
-        String choice = JOptionPane.showInputDialog(null, "Choose Text or Image:");
-        if (choice.isEmpty())
-            JOptionPane.showMessageDialog(null, "Empty Field.", "Error", JOptionPane.ERROR_MESSAGE);
-        else if (!choice.equalsIgnoreCase("text") && !choice.equalsIgnoreCase("image"))
-            JOptionPane.showMessageDialog(null, "Invalid Answer.", "Error", JOptionPane.ERROR_MESSAGE);
-        else {
-            if (choice.equalsIgnoreCase("image")) {
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                int returnValue = fileChooser.showOpenDialog(this);
-                if (returnValue == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = fileChooser.getSelectedFile();
-                    posts.add(new Post(userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
-                } else {
-                    String text = JOptionPane.showInputDialog(null, "Enter Text:");
-                    posts.add(new Post(userId, text, null, LocalDateTime.now()));
-                    //!!!!!!!!!!SAVE TO FILE
-                }
-                refresh();
-            }
-        }
+
+        new postCreation(this.userId , this).setVisible(true);
+        this.dispose();
+        
+//        String text = JOptionPane.showInputDialog(null, "Enter Text :");
+//
+//        JFileChooser fileChooser = new JFileChooser();
+//        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+//        int returnValue = fileChooser.showOpenDialog(this);
+//        if (returnValue == JFileChooser.APPROVE_OPTION) {
+//            File selectedFile = fileChooser.getSelectedFile();
+//            posts.add(new Post(userId, text, selectedFile.getAbsolutePath(), LocalDateTime.now()));
+//        } else {
+//            posts.add(new Post(userId, text, null, LocalDateTime.now()));
+//        }
+//        refresh();
+
+// add new post to newsfeed and arraylist of posts
+//        String choice = JOptionPane.showInputDialog(null, "Choose Text or Image:");
+//        if (choice.isEmpty())
+//            JOptionPane.showMessageDialog(null, "Empty Field.", "Error", JOptionPane.ERROR_MESSAGE);
+//        else if (!choice.equalsIgnoreCase("text") && !choice.equalsIgnoreCase("image"))
+//            JOptionPane.showMessageDialog(null, "Invalid Answer.", "Error", JOptionPane.ERROR_MESSAGE);
+//        else {
+//            if (choice.equalsIgnoreCase("image")) {
+//                JFileChooser fileChooser = new JFileChooser();
+//                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+//                int returnValue = fileChooser.showOpenDialog(this);
+//                if (returnValue == JFileChooser.APPROVE_OPTION) {
+//                    File selectedFile = fileChooser.getSelectedFile();
+//                    posts.add(new Post(userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
+//                } else {
+//                    String text = JOptionPane.showInputDialog(null, "Enter Text:");
+//                    posts.add(new Post(userId, text, null, LocalDateTime.now()));
+//                    //!!!!!!!!!!SAVE TO FILE
+//                }
+//                refresh();
+//            }
+
     }//GEN-LAST:event_addPostButtonActionPerformed
 
     private void newRefreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newRefreshButtonActionPerformed
