@@ -1,0 +1,32 @@
+[
+    {
+        "userId": "8526bad8-b8a7-4b60-ac87-e481bcaffcbe",
+        "friends": ["457154dd-294b-43c4-a4a9-8ebb744e3e06", "5f8078ba-4213-4fac-93fc-a1ea9d560eb9"],
+        "blocked": ["e55d3f08-baed-4675-922f-c2af3769fc69"]
+    },
+    {
+        "userId": "457154dd-294b-43c4-a4a9-8ebb744e3e06",
+        "friends": ["8526bad8-b8a7-4b60-ac87-e481bcaffcbe", "8be566cf-d29b-4861-85ee-3b78fd44a626"],
+        "blocked": ["5f8078ba-4213-4fac-93fc-a1ea9d560eb9"]
+    },
+    {
+        "userId": "5f8078ba-4213-4fac-93fc-a1ea9d560eb9",
+        "friends": ["8526bad8-b8a7-4b60-ac87-e481bcaffcbe", "457154dd-294b-43c4-a4a9-8ebb744e3e06"],
+        "blocked": []
+    },
+    {
+        "userId": "e55d3f08-baed-4675-922f-c2af3769fc69",
+        "friends": ["14742de1-a179-4840-8794-63bc37dc2319"],
+        "blocked": ["8526bad8-b8a7-4b60-ac87-e481bcaffcbe"]
+    },
+    {
+        "userId": "14742de1-a179-4840-8794-63bc37dc2319",
+        "friends": ["e55d3f08-baed-4675-922f-c2af3769fc69", "8be566cf-d29b-4861-85ee-3b78fd44a626"],
+        "blocked": ["8526bad8-b8a7-4b60-ac87-e481bcaffcbe"]
+    },
+    {
+        "userId": "8be566cf-d29b-4861-85ee-3b78fd44a626",
+        "friends": ["457154dd-294b-43c4-a4a9-8ebb744e3e06", "14742de1-a179-4840-8794-63bc37dc2319"],
+        "blocked": []
+    }
+]

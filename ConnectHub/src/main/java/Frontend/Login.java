@@ -1,17 +1,32 @@
 package Frontend;
 
-import javax.swing.JOptionPane;
-import Backend.UserManager;
 
+import javax.swing.JOptionPane;
+import Backend.*;
+import Validation.UserValidation;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 public class Login extends javax.swing.JFrame {
 
     /**
      * Creates new form Login1
      */
-    public Login() {
+    protected ArrayList usersArray;
+    private ConnectHubMain connectHub;
+    
+    public Login(UserFileManager userFileManager,ConnectHubMain connectHub) {
         initComponents();
         setTitle("Login");
+        setResizable(false);
+        this.connectHub=connectHub;
+        
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        usersArray = userFileManager.getUsers();
+        
+        
+
     }
 
     /**
@@ -99,25 +114,24 @@ public class Login extends javax.swing.JFrame {
 
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
         // TODO add your handling code here:
-        String email= emailText.getText();
-        String password= PasswordField.getText();
-        
-        UserManager u=new UserManager();
-        if(email.equals("") || password.equals("")){
+        String email = emailText.getText();
+        String password = PasswordField.getText();
+
+        UserManager u = new UserManager(usersArray);
+        if (email.equals("") || password.equals("")) {
             JOptionPane.showMessageDialog(this, "Some fields are empty!", "Message", JOptionPane.ERROR_MESSAGE);
         }
-        else if(u.loginValidation(email,password))
-        {
-            //new NewsFeed().setVisible(true);
-            u.login(email,password);
+        else if (u.loginValidation(email, password)) {
+            User user=u.login(email, password);
             this.dispose();
-        }
-        else{
-            JOptionPane.showMessageDialog(this, "Wrong Username or Password", "Message", JOptionPane.ERROR_MESSAGE);
+            new NewsfeedPage(user,connectHub).setVisible(true);
+            
+        } else {
+            JOptionPane.showMessageDialog(this, "Wrong Email or Password", "Message", JOptionPane.ERROR_MESSAGE);
             emailText.setText("");
             PasswordField.setText("");
         }
-        
+
     }//GEN-LAST:event_loginButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
@@ -157,7 +171,7 @@ public class Login extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Login().setVisible(true);
+               // new Login(userFileManager).setVisible(true);
             }
         });
     }
@@ -170,4 +184,5 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JButton loginButton;
     // End of variables declaration//GEN-END:variables
+
 }
