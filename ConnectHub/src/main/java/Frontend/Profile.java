@@ -508,7 +508,7 @@ public class Profile extends javax.swing.JFrame {
 
     private void backFeedButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backFeedButtonActionPerformed
         // TODO add your handling code here:
-       feed.setVisible(true);
+        feed.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backFeedButtonActionPerformed
 
