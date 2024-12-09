@@ -5,7 +5,9 @@
 package Frontend;
 
 import Backend.Password;
+import Backend.ProfileFileManager;
 import javax.swing.JOptionPane;
+import Backend.*;
 
 /**
  *
@@ -13,11 +15,13 @@ import javax.swing.JOptionPane;
  */
 public class password extends javax.swing.JFrame {
 
-    /**
-     * Creates new form pass
-     */
-    public password() {
+    private User user;
+
+    public password(User user) {
+        setTitle("Password update");
         initComponents();
+        this.user = user;
+
     }
 
     /**
@@ -117,14 +121,13 @@ public class password extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Too Short !! Should be more than 4 characters", "Failed!!", JOptionPane.ERROR_MESSAGE);
         } else if (!newPasswordStr.equals(confirmPasswordStr)) {
             JOptionPane.showMessageDialog(this, "Umatched Passwords!!", "Failed!!", JOptionPane.ERROR_MESSAGE);
-//        } else if(if (Password.verifyPassword(user.getPassword(), hashedPass))) {
-//    THE BACKENDDDDD
-//        }
-        } else {
+          } else {
             // Password change is successful
+            ProfileFileManager.getInstance(user.getUserID()).getUserProfile().updatePassword(newPasswordStr);
             JOptionPane.showMessageDialog(this, "Password changed successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+     
         }
-        new Profile().setVisible(true);
+        new Profile(this.user);
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -159,7 +162,7 @@ public class password extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new password().setVisible(true);
+
             }
         });
     }

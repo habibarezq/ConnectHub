@@ -17,9 +17,9 @@ public interface ContentCreation {
 
     public void setContentTxt(String contentTxt);
     
-    public Image getContentPng();
+    public String getcontentPath();
     
-    public void setContentPng(Image contentPng);
+    public void setcontentPath(String contentPath);
 
     public LocalDateTime getUploadingTime();
 

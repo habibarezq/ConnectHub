@@ -1,25 +1,30 @@
 package Backend;
 
 import Interfaces.*;
-import java.awt.Image;
+
+import java.util.ArrayList;
 
 public class UserProfile implements ProfileManager {
-
-    UserFileManager userManager = UserFileManager.getInstance();
 
     private String userId;
     private String profilePic;
     private String coverPic;
     private String bio;
+    private ProfileFileManager profileManager;
 
     public UserProfile(String userId, String profilePic, String coverPic, String bio) {
         this.userId = userId;
         this.profilePic = profilePic;
         this.coverPic = coverPic;
         this.bio = bio;
+        //this.profileManager = ProfileFileManager.getInstance(userId);
     }
 
-    // getters 
+    // Getters
+    public String getUserId() {
+        return userId;
+    }
+
     public String getProfilePic() {
         return profilePic;
     }
@@ -31,57 +36,31 @@ public class UserProfile implements ProfileManager {
     public String getBio() {
         return bio;
     }
-    
-    
-    //method to update the profile photo
+
+    // Methods to update profile data
+    @Override
     public void changeProfilePic(String profile) {
         this.profilePic = profile;
-
-        //SaveToFile
+       // profileManager.saveToFile(profileManager.getProfiles());
     }
 
-    //method to update the cover photo
+    @Override
     public void changeCoverPic(String cover) {
         this.coverPic = cover;
-
-        //SaveToFile
+       // profileManager.saveToFile(profileManager.getProfiles());
     }
 
-    // method to enable the user to update the current bio
     @Override
     public void updateBio(String bio) {
         this.bio = bio;
-
-        //SaveToFile
+       // profileManager.saveToFile(profileManager.getProfiles());
     }
 
-    // method to enable the user to update the current password
     @Override
-    public boolean updatePassword(String userId, String password) {
-
-        User user = userManager.findUserByID(userId);
+    public void updatePassword(String password) {
+        User user = UserFileManager.getInstance().findUserByID(userId);
         String hashedPass = Password.hashPassword(password);
-
-        //confirm updating passwords only if it does not match the old one
-        if (Password.verifyPassword(user.getPassword(), hashedPass)) {
-            return false;
-        }
         user.setPassword(hashedPass);
-
-        // updating the users.txt file
-        userManager.saveToFile(UserFileManager.getInstance().getUsers());
-
-        return true;
+        UserFileManager.getInstance().saveToFile(UserFileManager.getInstance().getUsers());
     }
-
-    @Override
-    public void changeProfilePic(Image profile) {
-        
-    }
-
-    @Override
-    public void changeCoverPic(Image cover) {
-        
-    }
-
 }
