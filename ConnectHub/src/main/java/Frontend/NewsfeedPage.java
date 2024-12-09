@@ -99,59 +99,10 @@ private ConnectHubMain connectHub;
     }
 
     private void populatePosts() {
-        JPanel postPanel = new JPanel();
-        postPanel.setLayout(new BoxLayout(postPanel, BoxLayout.Y_AXIS));
-        postPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-        for (Post post : posts) {
-            //creating a panel for each post
-            JPanel everyPostPanel = new JPanel();
-            everyPostPanel.setLayout(new BorderLayout());
-            everyPostPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-            everyPostPanel.setPreferredSize(new Dimension(300, 80));
-
-            //adding username
-            User u = UserFileManager.getInstance().findUserByID(post.getAuthorId()); //returns user to get username
-            JLabel UsernameLabel = new JLabel("Username: " + u.getUsername());
-            UsernameLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-            postPanel.add(UsernameLabel, BorderLayout.NORTH);
-
-            // adding the time Stamp
-            JLabel timestampLabel = new JLabel("Time: " + post.getUploadingTime());
-            timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Adding padding
-            postPanel.add(timestampLabel, BorderLayout.SOUTH);
-
-            //adding content
-            //adding text
-            JLabel contentLabel = new JLabel("Content: " + post.getContentTxt());
-            contentLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Adding padding
-            postPanel.add(contentLabel, BorderLayout.NORTH);
-
-            // adding the image 
-            File imageFile = new File(post.getcontentPath());
-            if (imageFile.exists()) {
-                ImageIcon imageIcon = resizeImagePosts(post.getcontentPath());
-                JLabel imageLabel = new JLabel(imageIcon);
-                postPanel.add(imageLabel, BorderLayout.WEST);
-            } else {
-                JLabel noImageLabel = new JLabel("No image.");
-                postPanel.add(noImageLabel, BorderLayout.WEST);
-            }
-
-            postPanel.add(everyPostPanel);
-            postPanel.add(Box.createRigidArea(new Dimension(0, 1))); // Adding spacing between stories
-        }
-        postsScrollPane.setViewportView(postPanel);
+        // uploading all posts in the posts ArrayList
+        new UploadPosts(postsScrollPane, posts);
     }
-
-    private ImageIcon resizeImagePosts(String contentPath) {
-        ImageIcon imageIcon = new ImageIcon(contentPath);
-        Image image = imageIcon.getImage();
-        Image resizedImage = image.getScaledInstance(postsScrollPane.getWidth() - 10, 300, Image.SCALE_SMOOTH);
-        ImageIcon resizedImageIcon = new ImageIcon(resizedImage);
-        return resizedImageIcon;
-    }
-
+    
     private ImageIcon resizeImageStories(String contentPath) {
         ImageIcon imageIcon = new ImageIcon(contentPath);
         Image image = imageIcon.getImage();
