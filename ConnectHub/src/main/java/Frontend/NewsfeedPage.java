@@ -37,6 +37,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private String userId;
     private ConnectHubMain connectHub;
     private User user;
+    
 
     public NewsfeedPage(User user, ConnectHubMain connectHub) {
         initComponents();
@@ -45,8 +46,8 @@ public class NewsfeedPage extends javax.swing.JFrame {
         setContentPane(mainPanel);
         this.connectHub = connectHub;
         this.dispose();
-
         this.user=user;
+
         this.userId = user.getUserID();
         FriendsFileManager.getInstance(userId);
         this.posts = PostsFileManager.getInstance().getPosts();
@@ -68,8 +69,8 @@ public class NewsfeedPage extends javax.swing.JFrame {
         populatePosts();
         populateStories();
         populateRequestsComboBox();
-        ActionEvent evt = null;
-
+        ActionEvent evt = null;        
+        ContentManager.getInstance(userId).refreshPosts();
         requestsComboBoxActionPerformed(evt);
     }
 
@@ -108,65 +109,15 @@ public class NewsfeedPage extends javax.swing.JFrame {
     }
 
     private void populatePosts() {
-        JPanel postPanel = new JPanel();
-        postPanel.setLayout(new BoxLayout(postPanel, BoxLayout.Y_AXIS));
-        postPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-        for (Post post : posts) {
-            //creating a panel for each post
-            JPanel everyPostPanel = new JPanel();
-            everyPostPanel.setLayout(new BorderLayout());
-            everyPostPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-            everyPostPanel.setPreferredSize(new Dimension(300, 80));
-
-            //adding username
-            User u = UserFileManager.getInstance().findUserByID(post.getAuthorId()); //returns user to get username
-            JLabel UsernameLabel = new JLabel("Username: " + u.getUsername());
-            UsernameLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-            postPanel.add(UsernameLabel, BorderLayout.NORTH);
-
-            // adding the time Stamp
-            JLabel timestampLabel = new JLabel("Time: " + post.getUploadingTime());
-            timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Adding padding
-            postPanel.add(timestampLabel, BorderLayout.SOUTH);
-
-            //adding content
-            //adding text
-            JLabel contentLabel = new JLabel("Content: " + post.getContentTxt());
-            contentLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Adding padding
-            postPanel.add(contentLabel, BorderLayout.NORTH);
-
-            // adding the image 
-            File imageFile = new File(post.getcontentPath());
-            if (imageFile.exists()) {
-                ImageIcon imageIcon = resizeImagePosts(post.getcontentPath());
-                JLabel imageLabel = new JLabel(imageIcon);
-                postPanel.add(imageLabel, BorderLayout.WEST);
-            } else {
-                JLabel noImageLabel = new JLabel("No image.");
-                postPanel.add(noImageLabel, BorderLayout.WEST);
-            }
-
-            postPanel.add(everyPostPanel);
-            postPanel.add(Box.createRigidArea(new Dimension(0, 1))); // Adding spacing between stories
-        }
-        postsScrollPane.setViewportView(postPanel);
+        // uploading all posts in the posts ArrayList
+        new UploadPosts(postsScrollPane, posts);
     }
 
-    private ImageIcon resizeImagePosts(String contentPath) {
-        ImageIcon imageIcon = new ImageIcon(contentPath);
-        Image image = imageIcon.getImage();
-        Image resizedImage = image.getScaledInstance(postsScrollPane.getWidth() - 10, 300, Image.SCALE_SMOOTH);
-        ImageIcon resizedImageIcon = new ImageIcon(resizedImage);
-        return resizedImageIcon;
-    }
-
-    private ImageIcon resizeImageStories(String contentPath) {
-        ImageIcon imageIcon = new ImageIcon(contentPath);
-        Image image = imageIcon.getImage();
-        Image resizedImage = image.getScaledInstance(storiesScrollPane.getWidth() - 200, 300, Image.SCALE_SMOOTH);
-        ImageIcon resizedImageIcon = new ImageIcon(resizedImage);
-        return resizedImageIcon;
+    private ImageIcon resizeImageStories(String imagePath) {
+        ImageIcon originalIcon = new ImageIcon(imagePath);
+        Image originalImage = originalIcon.getImage();
+        Image resizedImage = originalImage.getScaledInstance(160, 160, Image.SCALE_SMOOTH);
+        return new ImageIcon(resizedImage);
     }
 
     private void populateStories() {
@@ -198,6 +149,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
                 File imageFile = new File(story.getcontentPath());
                 if (imageFile.exists()) {
                     ImageIcon imageIcon = resizeImageStories(story.getcontentPath());
+
                     JLabel imageLabel = new JLabel(imageIcon);
                     storyPanel.add(imageLabel, BorderLayout.WEST);
                 } else {
@@ -397,7 +349,8 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
     private void profileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_profileButtonActionPerformed
         //goes to profile frame 
-        new Profile(UserFileManager.getInstance().findUserByID(userId)).setVisible(true);
+        new Profile(UserFileManager.getInstance().findUserByID(userId), this).setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_profileButtonActionPerformed
 
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
@@ -433,6 +386,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
     }//GEN-LAST:event_addStoryButtonActionPerformed
 
     private void addPostButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPostButtonActionPerformed
+
         // add new post to newsfeed and arraylist of posts
         String choice = JOptionPane.showInputDialog(null, "Choose Text or Image:");
         if (choice.isEmpty())
@@ -455,6 +409,33 @@ public class NewsfeedPage extends javax.swing.JFrame {
                 refresh();
             }
         }
+
+        new postCreation(this.userId , this).setVisible(true);
+        this.dispose();
+        
+// add new post to newsfeed and arraylist of posts
+//        String choice = JOptionPane.showInputDialog(null, "Choose Text or Image:");
+//        if (choice.isEmpty())
+//            JOptionPane.showMessageDialog(null, "Empty Field.", "Error", JOptionPane.ERROR_MESSAGE);
+//        else if (!choice.equalsIgnoreCase("text") && !choice.equalsIgnoreCase("image"))
+//            JOptionPane.showMessageDialog(null, "Invalid Answer.", "Error", JOptionPane.ERROR_MESSAGE);
+//        else {
+//            if (choice.equalsIgnoreCase("image")) {
+//                JFileChooser fileChooser = new JFileChooser();
+//                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+//                int returnValue = fileChooser.showOpenDialog(this);
+//                if (returnValue == JFileChooser.APPROVE_OPTION) {
+//                    File selectedFile = fileChooser.getSelectedFile();
+//                    posts.add(new Post(userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
+//                } else {
+//                    String text = JOptionPane.showInputDialog(null, "Enter Text:");
+//                    posts.add(new Post(userId, text, null, LocalDateTime.now()));
+//                    //!!!!!!!!!!SAVE TO FILE
+//                }
+//                refresh();
+//            }
+
+
     }//GEN-LAST:event_addPostButtonActionPerformed
 
     private void newRefreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newRefreshButtonActionPerformed
@@ -463,7 +444,6 @@ public class NewsfeedPage extends javax.swing.JFrame {
     }//GEN-LAST:event_newRefreshButtonActionPerformed
 
     private void requestsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestsComboBoxActionPerformed
-
     }//GEN-LAST:event_requestsComboBoxActionPerformed
 
     public void populateRequestsComboBox() {
@@ -476,6 +456,17 @@ public class NewsfeedPage extends javax.swing.JFrame {
         {
             System.out.println("usernameeee helloo :"+r.getSender().getUsername());
             System.out.println("usernameee helloo "+r.getRecipient().getUsername());
+        User u = UserFileManager.getInstance().findUserByID(userId);
+        HashMap<User, String> friendRequests = u.getFriendRequests();
+
+        //to make sure it removes any old requests and re-writes the actually-existing ones
+        requestsComboBox.removeAll();
+
+        //adding the elements to the comboBox username(status)
+        for (Map.Entry<User, String> entry : friendRequests.entrySet()) {
+            User user = entry.getKey();  // The User object (key)
+            String request = entry.getValue();  // The request message (value)
+            requestsComboBox.addItem(user.getUsername() + " (" + request + ") ");
         }
         for (Request request : userRequests) {
             if (request.getRecipient().getUserID().equals(user.getUserID())) {
@@ -495,6 +486,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
             }
         });
     }
+}
 
     private void handleFriendRequest(String senderUsername, User loggedInUser) {
         User sender = UserFileManager.getInstance().findUserByUsername(senderUsername);
@@ -530,6 +522,8 @@ public class NewsfeedPage extends javax.swing.JFrame {
         populateRequestsComboBox();
         refresh();
     }
+     //GEN-LAST:event_requestsComboBoxActionPerformed
+
 
     public void refresh() {
         populateStories();
