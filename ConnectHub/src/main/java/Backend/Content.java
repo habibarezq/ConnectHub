@@ -3,6 +3,7 @@ package Backend;
 import Interfaces.ContentCreation;
 import java.awt.Image;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public abstract class Content implements ContentCreation{
     protected String contentId;
@@ -12,8 +13,8 @@ public abstract class Content implements ContentCreation{
     protected LocalDateTime uploadingTime;
     //protected User user;
 
-    public Content(String contentId, String authorId, String contentTxt, String contentPath, LocalDateTime uploadingTime) {
-        this.contentId = contentId;
+    public Content(String authorId, String contentTxt, String contentPath, LocalDateTime uploadingTime) {
+        this.contentId=UUID.randomUUID().toString();
         this.authorId = authorId;
         this.contentTxt = contentTxt;
         this.contentPath = contentPath;

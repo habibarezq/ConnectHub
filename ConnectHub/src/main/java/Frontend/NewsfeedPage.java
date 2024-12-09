@@ -20,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import Backend.*;
+import java.awt.event.ActionEvent;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,23 +33,26 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private ArrayList<Story> stories;
     private ArrayList<User> users;
     private String userId;
+private ConnectHubMain connectHub;
 
-    public NewsfeedPage(User user) {
+    public NewsfeedPage(User user,ConnectHubMain connectHub) {
         initComponents();
         setTitle("Newsfeed");
+        setSize(1300,627);
         setContentPane(mainPanel);
-
+        this.connectHub=connectHub;
+        this.dispose();
+        
         this.userId = user.getUserID();
         FriendsFileManager.getInstance(userId);
+        this.posts = PostsFileManager.getInstance().getPosts();
 
-        this.posts = new ArrayList<>();
-        //fillPosts();
-
-        this.users = new ArrayList<>();
+        this.users = UserFileManager.getInstance().getUsers();
         //addUsers();
 
-        this.stories = new ArrayList<>();
+        this.stories = StoriesFileManager.getInstance().getStories();
         //fillstories();
+
 
         friendsModel = new DefaultListModel<>();
         suggestedFriendsModel = new DefaultListModel<>();
@@ -60,6 +64,9 @@ public class NewsfeedPage extends javax.swing.JFrame {
         populateSuggestedFriends();
         populatePosts();
         populateStories();
+        ActionEvent evt = null;
+        
+        requestsComboBoxActionPerformed(evt);
     }
 
     public void populateSuggestedFriends() {
@@ -196,12 +203,12 @@ public class NewsfeedPage extends javax.swing.JFrame {
     }
 
     private boolean checkExpiryStory(Story story) {
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime time = story.getUploadingTime();
 
         LocalDateTime expiryTime = time.plusDays(1);
-        if (time.isAfter(expiryTime) || time.isEqual(expiryTime)) {
-            this.stories.remove(story);
+        if (LocalDateTime.now().isAfter(expiryTime)) {
+            //this.stories.remove(story);
             return false;
         }
         return true;
@@ -369,7 +376,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -381,11 +388,13 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
     private void profileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_profileButtonActionPerformed
         //goes to profile frame 
-        new Profile().setVisible(true);
+        new Profile(UserFileManager.getInstance().findUserByID(userId)).setVisible(true);
     }//GEN-LAST:event_profileButtonActionPerformed
 
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
+        this.dispose();
         new ConnectHubMain().setVisible(true);
+        
     }//GEN-LAST:event_logoutButtonActionPerformed
 
     private void addStoryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStoryButtonActionPerformed
@@ -403,11 +412,11 @@ public class NewsfeedPage extends javax.swing.JFrame {
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
 
-                    stories.add(new Story("contentid", userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
+                    stories.add(new Story( userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
                 } else {
                     String text = JOptionPane.showInputDialog(null, "Enter Text:");
 
-                    stories.add(new Story("contentid", userId, text, null, LocalDateTime.now()));
+                    stories.add(new Story( userId, text, null, LocalDateTime.now()));
                 }
                 refresh();
             }
@@ -428,11 +437,10 @@ public class NewsfeedPage extends javax.swing.JFrame {
                 int returnValue = fileChooser.showOpenDialog(this);
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
-
-                    posts.add(new Post("contentid", userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
+                posts.add(new Post( userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
                 } else {
                     String text = JOptionPane.showInputDialog(null, "Enter Text:");
-                    posts.add(new Post("contentid", userId, text, null, LocalDateTime.now()));
+                    posts.add(new Post(userId, text, null, LocalDateTime.now()));
                     //!!!!!!!!!!SAVE TO FILE
                 }
                 refresh();
@@ -481,7 +489,6 @@ public class NewsfeedPage extends javax.swing.JFrame {
                         friendRequests.put(acceptedFriend, acceptedFriendId);
                         requestsComboBox.removeItem(selectedItem);
                         refresh();
-                        u.setFriendRequests(friendRequests);
                     }
                         
                     else if(answer == 1)
@@ -490,8 +497,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
                         String declinedFriendId = declinedFriend.getUserID();
                         friendRequests.remove(declinedFriend);
                         requestsComboBox.removeItem(selectedItem);
-                        refresh();
-                        u.setFriendRequests(friendRequests);
+                        refresh(); 
                     }  
                     else 
                     JOptionPane.showMessageDialog(null, "No action taken.");    

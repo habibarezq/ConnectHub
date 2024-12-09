@@ -36,15 +36,20 @@ public class FriendsFileManager implements FileManager<User> {
         return instance;
     }
 
-    // Getter for friends
     public ArrayList<User> getFriends() {
-        return friends;
+    if (friends == null) {
+        friends = new ArrayList<>();
     }
+    return friends;
+}
 
-    // Getter for blocked users
-    public ArrayList<User> getBlocked() {
-        return blocked;
+public ArrayList<User> getBlocked() {
+    if (blocked == null) {
+        blocked = new ArrayList<>();
     }
+    return blocked;
+}
+
 
     @Override
     public void readFromFile() {

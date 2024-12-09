@@ -5,7 +5,7 @@ import java.time.*;
 import java.util.*;
 import Interfaces.*;
 
-public class User implements UserInterface, FriendshipManager, FriendRequestService {
+public class User implements FriendshipManager, FriendRequestService {
 
     private String userID;
     private String email;
@@ -31,7 +31,8 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
         status = false;
 
         this.friendRequests = new HashMap<>();
-//Might remove this bec i dont need it 
+        this.friends=new ArrayList<>();
+        this.blocked=new ArrayList<>();
         this.contentManager=ContentManager.getInstance(userID);
         
     }
@@ -179,7 +180,6 @@ public class User implements UserInterface, FriendshipManager, FriendRequestServ
         return suggestions;
     }
 
-    @Override
     public void logout() {
         setStatus(false);
     }

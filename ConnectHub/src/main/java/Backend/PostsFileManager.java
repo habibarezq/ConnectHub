@@ -24,7 +24,7 @@ public class PostsFileManager implements FileManager<Post> {
         readFromFile();
     }
 
-    public static PostsFileManager getInstance() {
+    public static synchronized PostsFileManager getInstance() {
         if (instance == null) {
             instance = new PostsFileManager();
         }
@@ -48,9 +48,9 @@ public class PostsFileManager implements FileManager<Post> {
                 String authorId = postJSON.getString("userId");
                 String contentId = postJSON.getString("contentId");
                 String TextContent = postJSON.getString("TextContent");
-                String imagePath = postJSON.getString("ImagePath");
+                String imagePath = postJSON.getString("imagePath");
                 LocalDateTime time = LocalDateTime.parse(postJSON.getString("time"));
-                posts.add(new Post(contentId, authorId, TextContent, imagePath, time));
+                posts.add(new Post( authorId, TextContent, imagePath, time));
             }
         } catch (IOException ex) {
             System.out.println("Error reading file: " + ex.getMessage());
@@ -74,7 +74,7 @@ public class PostsFileManager implements FileManager<Post> {
             postJSON.put("userId", post.getAuthorId());
             postJSON.put("contentId", post.getContentId());
             postJSON.put("TextContent", post.getContentTxt());
-            postJSON.put("ImagePath", post.getcontentPath()); // Convert image to Base64
+            postJSON.put("imagePath", post.getcontentPath()); // Convert image to Base64
             postJSON.put("time", post.getUploadingTime());
             postsArray.put(postJSON);
         }

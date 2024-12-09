@@ -21,20 +21,18 @@ public class Signup extends javax.swing.JFrame {
      * Creates new form Signup
      */
     protected ArrayList usersArray;
-
-    public Signup(UserFileManager userFileManager,ConnectHubMain connectWindow) {
+    private ConnectHubMain connectHub;
+    
+    public Signup(UserFileManager userFileManager,ConnectHubMain connectHub) {
         initComponents();
         setTitle("Signup");
+        this.connectHub=connectHub;
+        
         usersArray = userFileManager.getUsers();
         setResizable(false);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         populateDateComboBox();
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosed(WindowEvent e) {
-                connectWindow.setVisible(true);
-            }
-        });
+        
     }
 
     private void populateDateComboBox() {
@@ -207,7 +205,7 @@ public class Signup extends javax.swing.JFrame {
             if (user != null) {
                 JOptionPane.showMessageDialog(this, "The user has been successfully created.", "Message", JOptionPane.PLAIN_MESSAGE);
                 this.dispose();
-                new NewsfeedPage(user).setVisible(true);
+                new NewsfeedPage(user,connectHub).setVisible(true);
                 
             } else {
                 JOptionPane.showMessageDialog(this, "Registration failed !!", "Message", JOptionPane.ERROR_MESSAGE);
