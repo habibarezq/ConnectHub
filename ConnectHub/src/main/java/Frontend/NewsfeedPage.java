@@ -33,16 +33,16 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private ArrayList<Story> stories;
     private ArrayList<User> users;
     private String userId;
-private ConnectHubMain connectHub;
+    private ConnectHubMain connectHub;
 
-    public NewsfeedPage(User user,ConnectHubMain connectHub) {
+    public NewsfeedPage(User user, ConnectHubMain connectHub) {
         initComponents();
         setTitle("Newsfeed");
-        setSize(1300,627);
+        setSize(1300, 627);
         setContentPane(mainPanel);
-        this.connectHub=connectHub;
+        this.connectHub = connectHub;
         this.dispose();
-        
+
         this.userId = user.getUserID();
         FriendsFileManager.getInstance(userId);
         this.posts = PostsFileManager.getInstance().getPosts();
@@ -52,7 +52,6 @@ private ConnectHubMain connectHub;
 
         this.stories = StoriesFileManager.getInstance().getStories();
         //fillstories();
-
 
         friendsModel = new DefaultListModel<>();
         suggestedFriendsModel = new DefaultListModel<>();
@@ -65,7 +64,7 @@ private ConnectHubMain connectHub;
         populatePosts();
         populateStories();
         ActionEvent evt = null;
-        
+
         requestsComboBoxActionPerformed(evt);
     }
 
@@ -102,13 +101,12 @@ private ConnectHubMain connectHub;
         // uploading all posts in the posts ArrayList
         new UploadPosts(postsScrollPane, posts);
     }
-    
-    private ImageIcon resizeImageStories(String contentPath) {
-        ImageIcon imageIcon = new ImageIcon(contentPath);
-        Image image = imageIcon.getImage();
-        Image resizedImage = image.getScaledInstance(storiesScrollPane.getWidth() - 200, 300, Image.SCALE_SMOOTH);
-        ImageIcon resizedImageIcon = new ImageIcon(resizedImage);
-        return resizedImageIcon;
+
+    private ImageIcon resizeImageStories(String imagePath) {
+        ImageIcon originalIcon = new ImageIcon(imagePath);
+        Image originalImage = originalIcon.getImage();
+        Image resizedImage = originalImage.getScaledInstance(160, 160, Image.SCALE_SMOOTH);
+        return new ImageIcon(resizedImage);
     }
 
     private void populateStories() {
@@ -140,6 +138,7 @@ private ConnectHubMain connectHub;
                 File imageFile = new File(story.getcontentPath());
                 if (imageFile.exists()) {
                     ImageIcon imageIcon = resizeImageStories(story.getcontentPath());
+
                     JLabel imageLabel = new JLabel(imageIcon);
                     storyPanel.add(imageLabel, BorderLayout.WEST);
                 } else {
@@ -339,14 +338,14 @@ private ConnectHubMain connectHub;
 
     private void profileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_profileButtonActionPerformed
         //goes to profile frame 
-        new Profile(UserFileManager.getInstance().findUserByID(userId) , this).setVisible(true);
+        new Profile(UserFileManager.getInstance().findUserByID(userId), this).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_profileButtonActionPerformed
 
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
         this.dispose();
         new ConnectHubMain().setVisible(true);
-        
+
     }//GEN-LAST:event_logoutButtonActionPerformed
 
     private void addStoryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStoryButtonActionPerformed
@@ -364,11 +363,11 @@ private ConnectHubMain connectHub;
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
 
-                    stories.add(new Story( userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
+                    stories.add(new Story(userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
                 } else {
                     String text = JOptionPane.showInputDialog(null, "Enter Text:");
 
-                    stories.add(new Story( userId, text, null, LocalDateTime.now()));
+                    stories.add(new Story(userId, text, null, LocalDateTime.now()));
                 }
                 refresh();
             }
@@ -389,7 +388,7 @@ private ConnectHubMain connectHub;
                 int returnValue = fileChooser.showOpenDialog(this);
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
-                posts.add(new Post( userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
+                    posts.add(new Post(userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
                 } else {
                     String text = JOptionPane.showInputDialog(null, "Enter Text:");
                     posts.add(new Post(userId, text, null, LocalDateTime.now()));
@@ -408,55 +407,51 @@ private ConnectHubMain connectHub;
     private void requestsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestsComboBoxActionPerformed
         User u = UserFileManager.getInstance().findUserByID(userId);
         HashMap<User, String> friendRequests = u.getFriendRequests();
-        
+
         //to make sure it removes any old requests and re-writes the actually-existing ones
         requestsComboBox.removeAll();
-        
+
         //adding the elements to the comboBox username(status)
         for (Map.Entry<User, String> entry : friendRequests.entrySet()) {
             User user = entry.getKey();  // The User object (key)
             String request = entry.getValue();  // The request message (value)
-            requestsComboBox.addItem(user.getUsername()+" ("+request+") ");
+            requestsComboBox.addItem(user.getUsername() + " (" + request + ") ");
         }
         requestsComboBox.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 User u = UserFileManager.getInstance().findUserByID(userId);
                 HashMap<User, String> friendRequests = u.getFriendRequests();
-                
+
                 String selectedItem = (String) requestsComboBox.getSelectedItem();
                 if (selectedItem != null && !selectedItem.isEmpty()) {
                     // Parse the selected item to extract the username
                     String selectedUsername = selectedItem.split(" ")[0]; // Extract username before '('
-                    
+
                     // Create a dialog to show more information
                     Object[] requestAnswer = {"Accept", "Decline"};
                     int answer = JOptionPane.showOptionDialog(null, "Do you want to accept or decline?", "Friend Request", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, requestAnswer, requestAnswer[0]);
                     //no default option and no custom icon 
-                    
-                    if(answer == 0) 
-                    {
+
+                    if (answer == 0) {
                         User acceptedFriend = UserFileManager.getInstance().findUserByUsername(selectedUsername);
                         String acceptedFriendId = acceptedFriend.getUserID();
                         friendRequests.put(acceptedFriend, acceptedFriendId);
                         requestsComboBox.removeItem(selectedItem);
                         refresh();
-                    }
-                        
-                    else if(answer == 1)
-                    {
+                    } else if (answer == 1) {
                         User declinedFriend = UserFileManager.getInstance().findUserByUsername(selectedUsername);
                         String declinedFriendId = declinedFriend.getUserID();
                         friendRequests.remove(declinedFriend);
                         requestsComboBox.removeItem(selectedItem);
-                        refresh(); 
-                    }  
-                    else 
-                    JOptionPane.showMessageDialog(null, "No action taken.");    
+                        refresh();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "No action taken.");
+                    }
                 }
             }
-        }); 
-        
+        });
+
     }//GEN-LAST:event_requestsComboBoxActionPerformed
 
     public void refresh() {
