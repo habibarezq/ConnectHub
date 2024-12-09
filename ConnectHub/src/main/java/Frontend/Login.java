@@ -4,9 +4,6 @@ package Frontend;
 import Backend.FileManagers.UserFileManager;
 import javax.swing.JOptionPane;
 import Backend.*;
-import Validation.UserValidation;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 public class Login extends javax.swing.JFrame {

@@ -4,9 +4,6 @@ import Backend.FileManagers.StoriesFileManager;
 import Backend.FileManagers.PostsFileManager;
 import Backend.FileManagers.FriendsFileManager;
 import Backend.FileManagers.UserFileManager;
-import Backend.Post;
-import Backend.Story;
-import Backend.User;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -444,41 +441,30 @@ public class NewsfeedPage extends javax.swing.JFrame {
     }//GEN-LAST:event_newRefreshButtonActionPerformed
 
     private void requestsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestsComboBoxActionPerformed
-    }//GEN-LAST:event_requestsComboBoxActionPerformed
+    }                                                
 
     public void populateRequestsComboBox() {
         requestsComboBox.removeAllItems();
 
         ArrayList<Request> userRequests = user.getFriendRequests();
+       
         
-        // Filter requests where the logged-in user is the recipient
-        for(Request r:userRequests)
-        {
-            System.out.println("usernameeee helloo :"+r.getSender().getUsername());
-            System.out.println("usernameee helloo "+r.getRecipient().getUsername());
-        User u = UserFileManager.getInstance().findUserByID(userId);
-        HashMap<User, String> friendRequests = u.getFriendRequests();
-
         //to make sure it removes any old requests and re-writes the actually-existing ones
         requestsComboBox.removeAll();
 
         //adding the elements to the comboBox username(status)
-        for (Map.Entry<User, String> entry : friendRequests.entrySet()) {
-            User user = entry.getKey();  // The User object (key)
-            String request = entry.getValue();  // The request message (value)
-            requestsComboBox.addItem(user.getUsername() + " (" + request + ") ");
-        }
         for (Request request : userRequests) {
             if (request.getRecipient().getUserID().equals(user.getUserID())) {
                 requestsComboBox.addItem(request.getSender().getUsername() + " (" + request.getRequestStat() + ")");
             }
         }
-
+        
         // Add action listener to handle the combo box selection
         requestsComboBox.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 String selectedItem = (String) requestsComboBox.getSelectedItem();
+                requestsComboBox.removeItem(selectedItem);
                 if (selectedItem != null && !selectedItem.isEmpty()) {
                     String selectedUsername = selectedItem.split(" ")[0]; // Extract username
                     handleFriendRequest(selectedUsername, user);
@@ -486,7 +472,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
             }
         });
     }
-}
+
 
     private void handleFriendRequest(String senderUsername, User loggedInUser) {
         User sender = UserFileManager.getInstance().findUserByUsername(senderUsername);
@@ -519,10 +505,9 @@ public class NewsfeedPage extends javax.swing.JFrame {
         }
 
         // Refresh combo box
-        populateRequestsComboBox();
         refresh();
     }
-     //GEN-LAST:event_requestsComboBoxActionPerformed
+//GEN-LAST:event_requestsComboBoxActionPerformed
 
 
     public void refresh() {
@@ -532,7 +517,8 @@ public class NewsfeedPage extends javax.swing.JFrame {
         this.suggestedFriendsModel.clear();
         populateFriends();
         populateSuggestedFriends();
-
+        populateRequestsComboBox();
+        
     }
 
     public static void main(String args[]) {
