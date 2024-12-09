@@ -339,7 +339,8 @@ private ConnectHubMain connectHub;
 
     private void profileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_profileButtonActionPerformed
         //goes to profile frame 
-        new Profile(UserFileManager.getInstance().findUserByID(userId)).setVisible(true);
+        new Profile(UserFileManager.getInstance().findUserByID(userId) , this).setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_profileButtonActionPerformed
 
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed

@@ -16,10 +16,13 @@ import Backend.*;
 public class password extends javax.swing.JFrame {
 
     private User user;
+    private NewsfeedPage feed;
 
-    public password(User user) {
+    public password(User user, NewsfeedPage feed) {
         setTitle("Password update");
         initComponents();
+
+        this.feed = feed;
         this.user = user;
 
     }
@@ -121,13 +124,13 @@ public class password extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Too Short !! Should be more than 4 characters", "Failed!!", JOptionPane.ERROR_MESSAGE);
         } else if (!newPasswordStr.equals(confirmPasswordStr)) {
             JOptionPane.showMessageDialog(this, "Umatched Passwords!!", "Failed!!", JOptionPane.ERROR_MESSAGE);
-          } else {
+        } else {
             // Password change is successful
             ProfileFileManager.getInstance(user.getUserID()).getUserProfile().updatePassword(newPasswordStr);
             JOptionPane.showMessageDialog(this, "Password changed successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-     
+
         }
-        new Profile(this.user);
+        new Profile(this.user, feed);
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
