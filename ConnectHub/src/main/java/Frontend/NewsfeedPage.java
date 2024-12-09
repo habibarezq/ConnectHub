@@ -381,19 +381,6 @@ public class NewsfeedPage extends javax.swing.JFrame {
         new postCreation(this.userId , this).setVisible(true);
         this.dispose();
         
-//        String text = JOptionPane.showInputDialog(null, "Enter Text :");
-//
-//        JFileChooser fileChooser = new JFileChooser();
-//        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-//        int returnValue = fileChooser.showOpenDialog(this);
-//        if (returnValue == JFileChooser.APPROVE_OPTION) {
-//            File selectedFile = fileChooser.getSelectedFile();
-//            posts.add(new Post(userId, text, selectedFile.getAbsolutePath(), LocalDateTime.now()));
-//        } else {
-//            posts.add(new Post(userId, text, null, LocalDateTime.now()));
-//        }
-//        refresh();
-
 // add new post to newsfeed and arraylist of posts
 //        String choice = JOptionPane.showInputDialog(null, "Choose Text or Image:");
 //        if (choice.isEmpty())
