@@ -196,7 +196,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
     }
 
     private boolean checkExpiryStory(Story story) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime time = story.getUploadingTime();
 
         LocalDateTime expiryTime = time.plusDays(1);
@@ -481,6 +481,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
                         friendRequests.put(acceptedFriend, acceptedFriendId);
                         requestsComboBox.removeItem(selectedItem);
                         refresh();
+                        u.setFriendRequests(friendRequests);
                     }
                         
                     else if(answer == 1)
@@ -489,7 +490,8 @@ public class NewsfeedPage extends javax.swing.JFrame {
                         String declinedFriendId = declinedFriend.getUserID();
                         friendRequests.remove(declinedFriend);
                         requestsComboBox.removeItem(selectedItem);
-                        refresh(); 
+                        refresh();
+                        u.setFriendRequests(friendRequests);
                     }  
                     else 
                     JOptionPane.showMessageDialog(null, "No action taken.");    
