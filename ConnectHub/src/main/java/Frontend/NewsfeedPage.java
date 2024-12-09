@@ -1,5 +1,9 @@
 package Frontend;
 
+import Backend.FileManagers.StoriesFileManager;
+import Backend.FileManagers.PostsFileManager;
+import Backend.FileManagers.FriendsFileManager;
+import Backend.FileManagers.UserFileManager;
 import Backend.Post;
 import Backend.Story;
 import Backend.User;
@@ -22,8 +26,6 @@ import javax.swing.JPanel;
 import Backend.*;
 import java.awt.event.ActionEvent;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
 
 public class NewsfeedPage extends javax.swing.JFrame {
 
@@ -33,16 +35,18 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private ArrayList<Story> stories;
     private ArrayList<User> users;
     private String userId;
-private ConnectHubMain connectHub;
+    private ConnectHubMain connectHub;
+    private User user;
 
-    public NewsfeedPage(User user,ConnectHubMain connectHub) {
+    public NewsfeedPage(User user, ConnectHubMain connectHub) {
         initComponents();
         setTitle("Newsfeed");
-        setSize(1300,627);
+        setSize(1300, 627);
         setContentPane(mainPanel);
-        this.connectHub=connectHub;
+        this.connectHub = connectHub;
         this.dispose();
-        
+
+        this.user=user;
         this.userId = user.getUserID();
         FriendsFileManager.getInstance(userId);
         this.posts = PostsFileManager.getInstance().getPosts();
@@ -52,7 +56,6 @@ private ConnectHubMain connectHub;
 
         this.stories = StoriesFileManager.getInstance().getStories();
         //fillstories();
-
 
         friendsModel = new DefaultListModel<>();
         suggestedFriendsModel = new DefaultListModel<>();
@@ -64,14 +67,20 @@ private ConnectHubMain connectHub;
         populateSuggestedFriends();
         populatePosts();
         populateStories();
+        populateRequestsComboBox();
         ActionEvent evt = null;
-        
+
         requestsComboBoxActionPerformed(evt);
     }
 
     public void populateSuggestedFriends() {
-        User user = UserFileManager.getInstance().findUserByID(userId);
+        
+        suggestedFriendsModel.clear();
         ArrayList<User> allUsers = UserFileManager.getInstance().getUsers();
+        for(User u:allUsers)
+        {
+            System.out.println("Username :"+u.getUsername());
+        }
         ArrayList<User> suggestedFriends = user.suggestFriends(allUsers);
         for (User suggestedFriend : suggestedFriends) {
             suggestedFriendsModel.addElement(suggestedFriend.getUsername());
@@ -394,7 +403,7 @@ private ConnectHubMain connectHub;
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
         this.dispose();
         new ConnectHubMain().setVisible(true);
-        
+
     }//GEN-LAST:event_logoutButtonActionPerformed
 
     private void addStoryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStoryButtonActionPerformed
@@ -412,11 +421,11 @@ private ConnectHubMain connectHub;
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
 
-                    stories.add(new Story( userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
+                    stories.add(new Story(userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
                 } else {
                     String text = JOptionPane.showInputDialog(null, "Enter Text:");
 
-                    stories.add(new Story( userId, text, null, LocalDateTime.now()));
+                    stories.add(new Story(userId, text, null, LocalDateTime.now()));
                 }
                 refresh();
             }
@@ -437,7 +446,7 @@ private ConnectHubMain connectHub;
                 int returnValue = fileChooser.showOpenDialog(this);
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
-                posts.add(new Post( userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
+                    posts.add(new Post(userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
                 } else {
                     String text = JOptionPane.showInputDialog(null, "Enter Text:");
                     posts.add(new Post(userId, text, null, LocalDateTime.now()));
@@ -454,58 +463,73 @@ private ConnectHubMain connectHub;
     }//GEN-LAST:event_newRefreshButtonActionPerformed
 
     private void requestsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestsComboBoxActionPerformed
-        User u = UserFileManager.getInstance().findUserByID(userId);
-        HashMap<User, String> friendRequests = u.getFriendRequests();
+
+    }//GEN-LAST:event_requestsComboBoxActionPerformed
+
+    public void populateRequestsComboBox() {
+        requestsComboBox.removeAllItems();
+
+        ArrayList<Request> userRequests = user.getFriendRequests();
         
-        //to make sure it removes any old requests and re-writes the actually-existing ones
-        requestsComboBox.removeAll();
-        
-        //adding the elements to the comboBox username(status)
-        for (Map.Entry<User, String> entry : friendRequests.entrySet()) {
-            User user = entry.getKey();  // The User object (key)
-            String request = entry.getValue();  // The request message (value)
-            requestsComboBox.addItem(user.getUsername()+" ("+request+") ");
+        // Filter requests where the logged-in user is the recipient
+        for(Request r:userRequests)
+        {
+            System.out.println("usernameeee helloo :"+r.getSender().getUsername());
+            System.out.println("usernameee helloo "+r.getRecipient().getUsername());
         }
+        for (Request request : userRequests) {
+            if (request.getRecipient().getUserID().equals(user.getUserID())) {
+                requestsComboBox.addItem(request.getSender().getUsername() + " (" + request.getRequestStat() + ")");
+            }
+        }
+
+        // Add action listener to handle the combo box selection
         requestsComboBox.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                User u = UserFileManager.getInstance().findUserByID(userId);
-                HashMap<User, String> friendRequests = u.getFriendRequests();
-                
                 String selectedItem = (String) requestsComboBox.getSelectedItem();
                 if (selectedItem != null && !selectedItem.isEmpty()) {
-                    // Parse the selected item to extract the username
-                    String selectedUsername = selectedItem.split(" ")[0]; // Extract username before '('
-                    
-                    // Create a dialog to show more information
-                    Object[] requestAnswer = {"Accept", "Decline"};
-                    int answer = JOptionPane.showOptionDialog(null, "Do you want to accept or decline?", "Friend Request", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, requestAnswer, requestAnswer[0]);
-                    //no default option and no custom icon 
-                    
-                    if(answer == 0) 
-                    {
-                        User acceptedFriend = UserFileManager.getInstance().findUserByUsername(selectedUsername);
-                        String acceptedFriendId = acceptedFriend.getUserID();
-                        friendRequests.put(acceptedFriend, acceptedFriendId);
-                        requestsComboBox.removeItem(selectedItem);
-                        refresh();
-                    }
-                        
-                    else if(answer == 1)
-                    {
-                        User declinedFriend = UserFileManager.getInstance().findUserByUsername(selectedUsername);
-                        String declinedFriendId = declinedFriend.getUserID();
-                        friendRequests.remove(declinedFriend);
-                        requestsComboBox.removeItem(selectedItem);
-                        refresh(); 
-                    }  
-                    else 
-                    JOptionPane.showMessageDialog(null, "No action taken.");    
+                    String selectedUsername = selectedItem.split(" ")[0]; // Extract username
+                    handleFriendRequest(selectedUsername, user);
                 }
             }
-        }); 
-        
-    }//GEN-LAST:event_requestsComboBoxActionPerformed
+        });
+    }
+
+    private void handleFriendRequest(String senderUsername, User loggedInUser) {
+        User sender = UserFileManager.getInstance().findUserByUsername(senderUsername);
+        if (sender == null) {
+            JOptionPane.showMessageDialog(null, "User not found!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Object[] options = {"Accept", "Decline"};
+        int choice = JOptionPane.showOptionDialog(
+                null,
+                "Do you want to accept or decline the friend request from " + sender.getUsername() + "?",
+                "Friend Request",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+
+        //FriendsFileManager friendsManager = FriendsFileManager.getInstance(loggedInUser.getUserID());
+        ArrayList<Request> requests = loggedInUser.getFriendRequests();
+
+        if (choice == 0) { // Accept
+            loggedInUser.acceptRequest(sender);
+            JOptionPane.showMessageDialog(null, "Friend request accepted.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } else if (choice == 1) { // Decline
+            loggedInUser.declineRequest(sender);
+            JOptionPane.showMessageDialog(null, "Friend request declined.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        }
+
+        // Refresh combo box
+        populateRequestsComboBox();
+        refresh();
+    }
 
     public void refresh() {
         populateStories();

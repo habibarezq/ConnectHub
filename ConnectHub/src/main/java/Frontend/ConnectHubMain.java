@@ -1,6 +1,6 @@
 package Frontend;
 
-import Backend.UserFileManager;
+import Backend.FileManagers.UserFileManager;
 import static java.lang.System.exit;
 
 public class ConnectHubMain extends javax.swing.JFrame {

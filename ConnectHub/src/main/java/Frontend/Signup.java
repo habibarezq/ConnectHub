@@ -1,7 +1,7 @@
 package Frontend;
 
 import Backend.User;
-import Backend.UserFileManager;
+import Backend.FileManagers.UserFileManager;
 import Backend.UserManager;
 import Validation.UserValidation;
 import java.awt.event.WindowAdapter;

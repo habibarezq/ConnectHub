@@ -1,5 +1,9 @@
 package Frontend;
 
+import Backend.FileManagers.ProfileFileManager;
+import Backend.FileManagers.PostsFileManager;
+import Backend.FileManagers.FriendsFileManager;
+import Backend.FileManagers.UserFileManager;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -114,36 +118,38 @@ public class Profile extends javax.swing.JFrame {
         postPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         for (Post post : posts) {
-            JPanel singlePostPanel = new JPanel();
-            singlePostPanel.setLayout(new BorderLayout());
-            singlePostPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-            singlePostPanel.setPreferredSize(new Dimension(300, 80));
+            if (post.getAuthorId().equals(userId)) {
+                JPanel singlePostPanel = new JPanel();
+                singlePostPanel.setLayout(new BorderLayout());
+                singlePostPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                singlePostPanel.setPreferredSize(new Dimension(300, 80));
 
-            // adds the time Stamp
-            JLabel timestampLabel = new JLabel("Time: " + post.getUploadingTime());
-            timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Add padding
-            postPanel.add(timestampLabel, BorderLayout.SOUTH);
+                // adds the time Stamp
+                JLabel timestampLabel = new JLabel("Time: " + post.getUploadingTime());
+                timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Add padding
+                postPanel.add(timestampLabel, BorderLayout.SOUTH);
 
-            //adding content
-            //adding text
-            JLabel contentLabel = new JLabel("Content: " + post.getContentTxt());
-            contentLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Adding padding
-            postPanel.add(contentLabel, BorderLayout.NORTH);
+                //adding content
+                //adding text
+                JLabel contentLabel = new JLabel("Content: " + post.getContentTxt());
+                contentLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Adding padding
+                postPanel.add(contentLabel, BorderLayout.NORTH);
 
-            // adding the image 
-            File imageFile = new File(post.getcontentPath());
-            if (imageFile.exists()) {
-                ImageIcon imageIcon = resizeImagePosts(post.getcontentPath());
-                JLabel imageLabel = new JLabel(imageIcon);
-                postPanel.add(imageLabel, BorderLayout.WEST);
-            } else {
-                JLabel noImageLabel = new JLabel("No image.");
-                postPanel.add(noImageLabel, BorderLayout.WEST);
+                // adding the image 
+                File imageFile = new File(post.getcontentPath());
+                if (imageFile.exists()) {
+                    ImageIcon imageIcon = resizeImagePosts(post.getcontentPath());
+                    JLabel imageLabel = new JLabel(imageIcon);
+                    postPanel.add(imageLabel, BorderLayout.WEST);
+                } else {
+                    JLabel noImageLabel = new JLabel("No image.");
+                    postPanel.add(noImageLabel, BorderLayout.WEST);
+                }
+
+                postPanel.add(singlePostPanel);
+                System.out.println("post added to panel");
+                postPanel.add(Box.createRigidArea(new Dimension(0, 1))); // Add spacing between stories
             }
-
-            postPanel.add(singlePostPanel);
-            System.out.println("post added to panel");
-            postPanel.add(Box.createRigidArea(new Dimension(0, 1))); // Add spacing between stories
         }
         PostPanel.setViewportView(postPanel);
     }
