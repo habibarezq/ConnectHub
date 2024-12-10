@@ -140,6 +140,19 @@ public class postCreation extends javax.swing.JFrame {
         // Open file chooser to select an image
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File("."));
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                String filename = file.getName().toLowerCase();
+                return file.isDirectory() || filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".png") || filename.endsWith(".gif");
+            }
+
+            @Override
+            public String getDescription() {
+                return "Image Files (*.jpg, *.jpeg, *.png, *.gif)";
+            }
+        });
+
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         int returnValue = fileChooser.showOpenDialog(this);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
