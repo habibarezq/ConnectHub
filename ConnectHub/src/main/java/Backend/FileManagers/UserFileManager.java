@@ -15,7 +15,7 @@ public class UserFileManager implements FileManager<User> {
 
     private static UserFileManager instance;
     private ArrayList<User> users;
-    private String FILE_PATH=FilePaths.USERS_FILE_PATH;
+    private String FILE_PATH = FilePaths.USERS_FILE_PATH;
 
     //private constructor to avoid instantiation
     private UserFileManager() {
@@ -40,7 +40,9 @@ public class UserFileManager implements FileManager<User> {
 
     @Override
     public void readFromFile() {
-        if(!users.isEmpty()) return; //to avoid reloading
+        if (!users.isEmpty()) {
+            return; //to avoid reloading
+        }
         try {
             String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
             JSONArray usersArray = new JSONArray(json); // Parse the JSON array
@@ -53,6 +55,7 @@ public class UserFileManager implements FileManager<User> {
                 String username = userJSON.getString("username");
                 LocalDate dateOfBirth = LocalDate.parse(userJSON.getString("dob"));
                 String password = userJSON.getString("password");
+                boolean isOnline = userJSON.getBoolean("isOnline");
 
                 User user = new User(id, email, username, dateOfBirth, password);
                 this.users.add(user); // Add to the instance variable, not local
@@ -77,11 +80,14 @@ public class UserFileManager implements FileManager<User> {
 
         for (User user : users) {
             JSONObject userJSON = new JSONObject();
+            
             userJSON.put("userId", user.getUserID());
             userJSON.put("email", user.getEmail());
             userJSON.put("username", user.getUsername());
             userJSON.put("dob", user.getDateOfBirth().toString());
             userJSON.put("password", user.getPassword());
+            userJSON.put("isOnline", user.getStatus());
+
             usersArray.put(userJSON);
         }
 
@@ -110,15 +116,20 @@ public class UserFileManager implements FileManager<User> {
     }
 
 
-    public User findUserByUsername(String username)
-    {
-        for(User u : users)
-        {
+    public User findUserByUsername(String username) {
+        for (User u : users) {
             if (username.equals(u.getUsername())) {
                 return u;
             }
         }
-        
-            return null;
+
+        return null;
+    }
+
+    public void refreshUserStatus() {
+        for (User user : getUsers()) {
+            boolean isOnline = user.getStatus();
+            // Update UI accordingly
+        }
     }
 }

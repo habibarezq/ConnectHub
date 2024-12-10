@@ -23,6 +23,7 @@ import javax.swing.JPanel;
 import Backend.*;
 import java.awt.event.ActionEvent;
 import java.time.format.DateTimeFormatter;
+import javax.swing.SwingConstants;
 
 public class NewsfeedPage extends javax.swing.JFrame {
 
@@ -34,6 +35,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private String userId;
     private ConnectHubMain connectHub;
     private User user;
+    private UserManager userManager;
     
 
     public NewsfeedPage(User user, ConnectHubMain connectHub) {
@@ -44,6 +46,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
         this.connectHub = connectHub;
         this.dispose();
         this.user=user;
+        this.userManager=new UserManager();
 
         this.userId = user.getUserID();
         FriendsFileManager.getInstance(userId);
@@ -60,25 +63,25 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
         friendsList.setModel(friendsModel);
         suggestedFriendsList.setModel(suggestedFriendsModel);
-
+        //suggestedFriendsList.setVisibleRowCount();
+        
+        
         populateFriends();
         populateSuggestedFriends();
+        
         populatePosts();
         populateStories();
-        populateRequestsComboBox();
+        //populateRequestsComboBox();
+        
         ActionEvent evt = null;        
         ContentManager.getInstance(userId).refreshPosts();
-        requestsComboBoxActionPerformed(evt);
+        //requestsComboBoxActionPerformed(evt);
     }
 
     public void populateSuggestedFriends() {
         
         suggestedFriendsModel.clear();
         ArrayList<User> allUsers = UserFileManager.getInstance().getUsers();
-        for(User u:allUsers)
-        {
-            System.out.println("Username :"+u.getUsername());
-        }
         ArrayList<User> suggestedFriends = user.suggestFriends(allUsers);
         for (User suggestedFriend : suggestedFriends) {
             suggestedFriendsModel.addElement(suggestedFriend.getUsername());
@@ -179,21 +182,30 @@ public class NewsfeedPage extends javax.swing.JFrame {
         mainPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        friendsList = new javax.swing.JList<>();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        suggestedFriendsList = new javax.swing.JList<>();
-        profileButton = new javax.swing.JButton();
-        logoutButton = new javax.swing.JButton();
-        addStoryButton = new javax.swing.JButton();
-        addPostButton = new javax.swing.JButton();
         postsScrollPane = new javax.swing.JScrollPane();
         storiesScrollPane = new javax.swing.JScrollPane();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        friendsList = new javax.swing.JList<>();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        suggestedFriendsList = new javax.swing.JList<>();
+        jLabel4 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        requestsList = new javax.swing.JList<>();
+        jPanel4 = new javax.swing.JPanel();
+        profileButton = new javax.swing.JButton();
+        logoutButton = new javax.swing.JButton();
         newRefreshButton = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
-        requestsComboBox = new javax.swing.JComboBox<>();
+        jPanel5 = new javax.swing.JPanel();
+        addStoryButton = new javax.swing.JButton();
+        addPostButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(1168, 1000));
+
+        mainPanel.setPreferredSize(new java.awt.Dimension(1168, 1000));
 
         jLabel1.setText("Friends:");
 
@@ -206,12 +218,68 @@ public class NewsfeedPage extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(friendsList);
 
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1)
+                .addContainerGap())
+        );
+
         suggestedFriendsList.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
         jScrollPane2.setViewportView(suggestedFriendsList);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(3, 3, 3)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jLabel4.setText("Requests:");
+
+        requestsList.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane3.setViewportView(requestsList);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
+        );
 
         profileButton.setText("My Profile");
         profileButton.addActionListener(new java.awt.event.ActionListener() {
@@ -227,6 +295,37 @@ public class NewsfeedPage extends javax.swing.JFrame {
             }
         });
 
+        newRefreshButton.setText("Refresh");
+        newRefreshButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newRefreshButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(profileButton, javax.swing.GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE)
+                    .addComponent(logoutButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(newRefreshButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(profileButton)
+                .addGap(18, 18, 18)
+                .addComponent(logoutButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(newRefreshButton)
+                .addContainerGap(18, Short.MAX_VALUE))
+        );
+
         addStoryButton.setText("Add Story");
         addStoryButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -241,55 +340,58 @@ public class NewsfeedPage extends javax.swing.JFrame {
             }
         });
 
-        newRefreshButton.setText("Refresh");
-        newRefreshButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newRefreshButtonActionPerformed(evt);
-            }
-        });
-
-        jLabel3.setText("Requests:");
-
-        requestsComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                requestsComboBoxActionPerformed(evt);
-            }
-        });
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(addPostButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(addStoryButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(47, 47, 47)
+                .addComponent(addStoryButton)
+                .addGap(30, 30, 30)
+                .addComponent(addPostButton)
+                .addContainerGap(60, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(requestsComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(mainPanelLayout.createSequentialGroup()
-                                .addGap(25, 25, 25)
-                                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(logoutButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(addStoryButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(addPostButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(profileButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(newRefreshButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addGroup(mainPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 38, Short.MAX_VALUE)))
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(storiesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE)
                     .addComponent(postsScrollPane))
                 .addGap(18, 18, 18)
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2))
-                .addGap(22, 22, 22))
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(mainPanelLayout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(mainPanelLayout.createSequentialGroup()
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(138, 138, 138))
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(28, 28, 28))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -297,37 +399,31 @@ public class NewsfeedPage extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(mainPanelLayout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(storiesScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(mainPanelLayout.createSequentialGroup()
-                                .addGap(15, 15, 15)
-                                .addComponent(profileButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(logoutButton)
-                                .addGap(60, 60, 60)
-                                .addComponent(newRefreshButton)
-                                .addGap(18, 18, 18)
-                                .addComponent(addStoryButton)
-                                .addGap(18, 18, 18)
-                                .addComponent(addPostButton)
-                                .addGap(57, 57, 57)
-                                .addComponent(jLabel3)
+                                .addGap(7, 7, 7)
+                                .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(requestsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(mainPanelLayout.createSequentialGroup()
-                                .addComponent(storiesScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(postsScrollPane)))
-                        .addContainerGap())
-                    .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(113, Short.MAX_VALUE))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(postsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 407, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -338,31 +434,75 @@ public class NewsfeedPage extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 664, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void profileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_profileButtonActionPerformed
-        //goes to profile frame 
-        new Profile(UserFileManager.getInstance().findUserByID(userId), this).setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_profileButtonActionPerformed
+    private void newRefreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newRefreshButtonActionPerformed
+        //refreshing feed
+        refresh();
+    }//GEN-LAST:event_newRefreshButtonActionPerformed
 
-    private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
-        this.dispose();
-        new ConnectHubMain().setVisible(true);
+    private void addPostButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPostButtonActionPerformed
+        //
+        //        // add new post to newsfeed and arraylist of posts
+        //        String choice = JOptionPane.showInputDialog(null, "Choose Text or Image:");
+        //        if (choice.isEmpty())
+        //            JOptionPane.showMessageDialog(null, "Empty Field.", "Error", JOptionPane.ERROR_MESSAGE);
+        //        else if (!choice.equalsIgnoreCase("text") && !choice.equalsIgnoreCase("image"))
+        //            JOptionPane.showMessageDialog(null, "Invalid Answer.", "Error", JOptionPane.ERROR_MESSAGE);
+        //        else {
+            //            if (choice.equalsIgnoreCase("image")) {
+                //                JFileChooser fileChooser = new JFileChooser();
+                //                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                //                int returnValue = fileChooser.showOpenDialog(this);
+                //                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    //                    File selectedFile = fileChooser.getSelectedFile();
+                    //                    posts.add(new Post(userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
+                    //                } else {
+                    //                    String text = JOptionPane.showInputDialog(null, "Enter Text:");
+                    //                    posts.add(new Post(userId, text, null, LocalDateTime.now()));
+                    //                    //!!!!!!!!!!SAVE TO FILE
+                    //                }
+                //                refresh();
+                //            }
+            //        }
 
-    }//GEN-LAST:event_logoutButtonActionPerformed
+        new postCreation(this.userId , this).setVisible(true);
+        this.dispose();
+
+        // add new post to newsfeed and arraylist of posts
+        //        String choice = JOptionPane.showInputDialog(null, "Choose Text or Image:");
+        //        if (choice.isEmpty())
+        //            JOptionPane.showMessageDialog(null, "Empty Field.", "Error", JOptionPane.ERROR_MESSAGE);
+        //        else if (!choice.equalsIgnoreCase("text") && !choice.equalsIgnoreCase("image"))
+        //            JOptionPane.showMessageDialog(null, "Invalid Answer.", "Error", JOptionPane.ERROR_MESSAGE);
+        //        else {
+            //            if (choice.equalsIgnoreCase("image")) {
+                //                JFileChooser fileChooser = new JFileChooser();
+                //                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                //                int returnValue = fileChooser.showOpenDialog(this);
+                //                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    //                    File selectedFile = fileChooser.getSelectedFile();
+                    //                    posts.add(new Post(userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
+                    //                } else {
+                    //                    String text = JOptionPane.showInputDialog(null, "Enter Text:");
+                    //                    posts.add(new Post(userId, text, null, LocalDateTime.now()));
+                    //                    //!!!!!!!!!!SAVE TO FILE
+                    //                }
+                //                refresh();
+                //            }
+    }//GEN-LAST:event_addPostButtonActionPerformed
 
     private void addStoryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStoryButtonActionPerformed
         // add new story to newsfeed and arraylist of stories
         String choice = JOptionPane.showInputDialog(null, "Choose Text or Image:");
         if (choice.isEmpty())
-            JOptionPane.showMessageDialog(null, "Empty Field.", "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, "Empty Field.", "Error", JOptionPane.ERROR_MESSAGE);
         else if (!choice.equalsIgnoreCase("text") && !choice.equalsIgnoreCase("image"))
-            JOptionPane.showMessageDialog(null, "Invalid Answer.", "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, "Invalid Answer.", "Error", JOptionPane.ERROR_MESSAGE);
         else {
             if (choice.equalsIgnoreCase("image")) {
                 JFileChooser fileChooser = new JFileChooser();
@@ -382,132 +522,17 @@ public class NewsfeedPage extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_addStoryButtonActionPerformed
 
-    private void addPostButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPostButtonActionPerformed
-
-        // add new post to newsfeed and arraylist of posts
-        String choice = JOptionPane.showInputDialog(null, "Choose Text or Image:");
-        if (choice.isEmpty())
-            JOptionPane.showMessageDialog(null, "Empty Field.", "Error", JOptionPane.ERROR_MESSAGE);
-        else if (!choice.equalsIgnoreCase("text") && !choice.equalsIgnoreCase("image"))
-            JOptionPane.showMessageDialog(null, "Invalid Answer.", "Error", JOptionPane.ERROR_MESSAGE);
-        else {
-            if (choice.equalsIgnoreCase("image")) {
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                int returnValue = fileChooser.showOpenDialog(this);
-                if (returnValue == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = fileChooser.getSelectedFile();
-                    posts.add(new Post(userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
-                } else {
-                    String text = JOptionPane.showInputDialog(null, "Enter Text:");
-                    posts.add(new Post(userId, text, null, LocalDateTime.now()));
-                    //!!!!!!!!!!SAVE TO FILE
-                }
-                refresh();
-            }
-        }
-
-        new postCreation(this.userId , this).setVisible(true);
+    private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
         this.dispose();
-        
-// add new post to newsfeed and arraylist of posts
-//        String choice = JOptionPane.showInputDialog(null, "Choose Text or Image:");
-//        if (choice.isEmpty())
-//            JOptionPane.showMessageDialog(null, "Empty Field.", "Error", JOptionPane.ERROR_MESSAGE);
-//        else if (!choice.equalsIgnoreCase("text") && !choice.equalsIgnoreCase("image"))
-//            JOptionPane.showMessageDialog(null, "Invalid Answer.", "Error", JOptionPane.ERROR_MESSAGE);
-//        else {
-//            if (choice.equalsIgnoreCase("image")) {
-//                JFileChooser fileChooser = new JFileChooser();
-//                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-//                int returnValue = fileChooser.showOpenDialog(this);
-//                if (returnValue == JFileChooser.APPROVE_OPTION) {
-//                    File selectedFile = fileChooser.getSelectedFile();
-//                    posts.add(new Post(userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
-//                } else {
-//                    String text = JOptionPane.showInputDialog(null, "Enter Text:");
-//                    posts.add(new Post(userId, text, null, LocalDateTime.now()));
-//                    //!!!!!!!!!!SAVE TO FILE
-//                }
-//                refresh();
-//            }
+        userManager.logout(userId);
+        new ConnectHubMain().setVisible(true);
+    }//GEN-LAST:event_logoutButtonActionPerformed
 
-
-    }//GEN-LAST:event_addPostButtonActionPerformed
-
-    private void newRefreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newRefreshButtonActionPerformed
-        //refreshing feed
-        refresh();
-    }//GEN-LAST:event_newRefreshButtonActionPerformed
-
-    private void requestsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestsComboBoxActionPerformed
-    }                                                
-
-    public void populateRequestsComboBox() {
-        requestsComboBox.removeAllItems();
-
-        ArrayList<Request> userRequests = user.getFriendRequests();
-       
-        
-        //to make sure it removes any old requests and re-writes the actually-existing ones
-        requestsComboBox.removeAll();
-
-        //adding the elements to the comboBox username(status)
-        for (Request request : userRequests) {
-            if (request.getRecipient().getUserID().equals(user.getUserID())) {
-                requestsComboBox.addItem(request.getSender().getUsername() + " (" + request.getRequestStat() + ")");
-            }
-        }
-        
-        // Add action listener to handle the combo box selection
-        requestsComboBox.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                String selectedItem = (String) requestsComboBox.getSelectedItem();
-                requestsComboBox.removeItem(selectedItem);
-                if (selectedItem != null && !selectedItem.isEmpty()) {
-                    String selectedUsername = selectedItem.split(" ")[0]; // Extract username
-                    handleFriendRequest(selectedUsername, user);
-                }
-            }
-        });
-    }
-
-
-    private void handleFriendRequest(String senderUsername, User loggedInUser) {
-        User sender = UserFileManager.getInstance().findUserByUsername(senderUsername);
-        if (sender == null) {
-            JOptionPane.showMessageDialog(null, "User not found!", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        Object[] options = {"Accept", "Decline"};
-        int choice = JOptionPane.showOptionDialog(
-                null,
-                "Do you want to accept or decline the friend request from " + sender.getUsername() + "?",
-                "Friend Request",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options[0]
-        );
-
-        //FriendsFileManager friendsManager = FriendsFileManager.getInstance(loggedInUser.getUserID());
-        ArrayList<Request> requests = loggedInUser.getFriendRequests();
-
-        if (choice == 0) { // Accept
-            loggedInUser.acceptRequest(sender);
-            JOptionPane.showMessageDialog(null, "Friend request accepted.", "Success", JOptionPane.INFORMATION_MESSAGE);
-        } else if (choice == 1) { // Decline
-            loggedInUser.declineRequest(sender);
-            JOptionPane.showMessageDialog(null, "Friend request declined.", "Success", JOptionPane.INFORMATION_MESSAGE);
-        }
-
-        // Refresh combo box
-        refresh();
-    }
-//GEN-LAST:event_requestsComboBoxActionPerformed
+    private void profileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_profileButtonActionPerformed
+        //goes to profile frame
+        new Profile(UserFileManager.getInstance().findUserByID(userId), this).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_profileButtonActionPerformed
 
 
     public void refresh() {
@@ -517,7 +542,8 @@ public class NewsfeedPage extends javax.swing.JFrame {
         this.suggestedFriendsModel.clear();
         populateFriends();
         populateSuggestedFriends();
-        populateRequestsComboBox();
+        UserFileManager.getInstance().refreshUserStatus();
+        //populateRequestsComboBox();
         
     }
 
@@ -557,15 +583,21 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private javax.swing.JList<String> friendsList;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JButton logoutButton;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JButton newRefreshButton;
     private javax.swing.JScrollPane postsScrollPane;
     private javax.swing.JButton profileButton;
-    private javax.swing.JComboBox<String> requestsComboBox;
+    private javax.swing.JList<String> requestsList;
     private javax.swing.JScrollPane storiesScrollPane;
     private javax.swing.JList<String> suggestedFriendsList;
     // End of variables declaration//GEN-END:variables

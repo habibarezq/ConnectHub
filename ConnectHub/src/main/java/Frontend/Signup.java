@@ -182,7 +182,7 @@ public class Signup extends javax.swing.JFrame {
         String password = PasswordField.getText();
         String date = (String) dateBox.getSelectedItem();
         LocalDate local = null;
-        UserManager u = new UserManager(usersArray);
+        UserManager u = new UserManager();
 
         if (date != null) {
             try {
