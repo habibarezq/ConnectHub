@@ -6,20 +6,20 @@ import Interfaces.*;
 
 import java.util.ArrayList;
 
-public class UserProfile implements ProfileManager {
+public class UserProfile implements UserProfileInterface {
 
     private String userId;
     private String profilePic;
     private String coverPic;
     private String bio;
-    private ProfileFileManager profileManager;
+    //private ProfileFileManager profileFileManager;
 
     public UserProfile(String userId, String profilePic, String coverPic, String bio) {
         this.userId = userId;
         this.profilePic = profilePic;
         this.coverPic = coverPic;
         this.bio = bio;
-        //this.profileManager = ProfileFileManager.getInstance(userId);
+       // this.profileFileManager = ProfileFileManager.getInstance();
     }
 
     // Getters
@@ -43,19 +43,19 @@ public class UserProfile implements ProfileManager {
     @Override
     public void changeProfilePic(String profile) {
         this.profilePic = profile;
-       // profileManager.saveToFile(profileManager.getProfiles());
+       ProfileFileManager.getInstance().saveToFile(ProfileFileManager.getInstance().getProfiles());
     }
 
     @Override
     public void changeCoverPic(String cover) {
         this.coverPic = cover;
-       // profileManager.saveToFile(profileManager.getProfiles());
+       ProfileFileManager.getInstance().saveToFile(ProfileFileManager.getInstance().getProfiles());
     }
 
     @Override
     public void updateBio(String bio) {
         this.bio = bio;
-       // profileManager.saveToFile(profileManager.getProfiles());
+       ProfileFileManager.getInstance().saveToFile(ProfileFileManager.getInstance().getProfiles());
     }
 
     @Override
