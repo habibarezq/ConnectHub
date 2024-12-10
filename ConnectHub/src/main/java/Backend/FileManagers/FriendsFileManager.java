@@ -99,16 +99,16 @@ public class FriendsFileManager implements FileManager<User> {
                     }
                     user.setBlocked(blocked);
 
-                    if (requestsArray != null) {
-                        for (int j = 0; j < requestsArray.length(); j++) {
-                            String requestId = requestsArray.getString(j);
-                            Request request = RequestsFileManager.getInstance().findRequestByID(requestId);
-                            if (request != null) {
-                                friendRequests.add(request);
-                            }
-                        }
-                    }
-                    user.setFriendRequests(friendRequests);
+//                    if (requestsArray != null) {
+//                        for (int j = 0; j < requestsArray.length(); j++) {
+//                            String requestId = requestsArray.getString(j);
+//                            Request request = RequestsFileManager.getInstance().findRequestByID(requestId);
+//                            if (request != null) {
+//                                friendRequests.add(request);
+//                            }
+//                        }
+//                    }
+//                    user.setFriendRequests(friendRequests);
                 }
             }
         } catch (IOException | JSONException ex) {
