@@ -113,30 +113,33 @@ public class postCreation extends javax.swing.JFrame {
 
         // Get the text from the text field
         String text = jTextField1.getText().trim(); // Trim any spaces
-        
+
         // Check if neither text nor file is selected
         if ((text.isEmpty() && this.selectedFile == null)) {
-            
+
             JOptionPane.showMessageDialog(this, "Error creating Post !!", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             // If a file is selected, create a post with the file's path
             if (this.selectedFile != null) {
-                posts.add(new Post(userId, text, selectedFile.getAbsolutePath(), LocalDateTime.now()));
-            } else {
-                // If no file is selected, create a post with just the text
-                posts.add(new Post(userId, text, "", LocalDateTime.now()));
+                Post post = new Post(userId, text, selectedFile.getAbsolutePath(), LocalDateTime.now());
+                ContentManager.getInstance(userId).addPost(post);
+            } else { // If no file is selected, create a post with just the text
+
+                Post post = new Post(userId, text, "", LocalDateTime.now());
+                ContentManager.getInstance(userId).addPost(post);
             }
         }
 
         // Refresh the posts and update the feed
         feed.refresh();
         feed.setVisible(true);
-        this.dispose(); 
+        this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // Open file chooser to select an image
         JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File("."));
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         int returnValue = fileChooser.showOpenDialog(this);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
