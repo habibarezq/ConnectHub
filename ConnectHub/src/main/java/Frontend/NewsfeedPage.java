@@ -4,24 +4,12 @@ import Backend.FileManagers.StoriesFileManager;
 import Backend.FileManagers.PostsFileManager;
 import Backend.FileManagers.FriendsFileManager;
 import Backend.FileManagers.UserFileManager;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Image;
+import java.awt.*;
 import java.io.File;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.ArrayList;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.*;
 import Backend.*;
-import java.awt.event.ActionEvent;
 import java.time.format.DateTimeFormatter;
 
 public class NewsfeedPage extends javax.swing.JFrame {
@@ -454,6 +442,19 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File("."));
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                String filename = file.getName().toLowerCase();
+                return file.isDirectory() || filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".png") || filename.endsWith(".gif");
+            }
+
+            @Override
+            public String getDescription() {
+                return "Image Files (*.jpg, *.jpeg, *.png, *.gif)";
+            }
+        });
+
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         int returnValue = fileChooser.showOpenDialog(this);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
