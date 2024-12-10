@@ -1,5 +1,7 @@
 package Backend;
 
+import Backend.FileManagers.StoriesFileManager;
+import Backend.FileManagers.PostsFileManager;
 import java.util.ArrayList;
 
 public class ContentManager {

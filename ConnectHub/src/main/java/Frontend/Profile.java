@@ -2,18 +2,18 @@ package Frontend;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
+import Backend.FileManagers.PostsFileManager;
+import Backend.FileManagers.FriendsFileManager;
+import Backend.FileManagers.UserFileManager;
+import Backend.FileManagers.ProfileFileManager;
 import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import Backend.*;
+import Backend.FileManagers.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JPanel;
 
 public class Profile extends javax.swing.JFrame {
 

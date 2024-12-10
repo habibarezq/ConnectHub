@@ -3,21 +3,21 @@
         "userId": "8526bad8-b8a7-4b60-ac87-e481bcaffcbe",
         "contentId": "post-1",
         "TextContent": "This is the first post",
-        "imagePath": "D:/TERM5/Prog2/LABS/Lab9/ConnectHub/ConnectHub/image2.jpeg",
+        "imagePath": "C:/Users/habib/Documents/NetBeansProjects/ConnectHub/ConnectHub/image2.jpeg",
         "time": "2024-12-06T10:00:00"
     },
     {
         "userId": "457154dd-294b-43c4-a4a9-8ebb744e3e06",
         "contentId": "post-2",
         "TextContent": "This is the second post",
-        "imagePath": "D:/TERM5/Prog2/LABS/Lab9/ConnectHub/ConnectHub/images.jpg",
+        "imagePath": "C:/Users/habib/Documents/NetBeansProjects/ConnectHub/ConnectHub/images.jpg",
         "time": "2024-12-06T11:00:00"
     },
     {
         "userId": "5f8078ba-4213-4fac-93fc-a1ea9d560eb9",
         "contentId": "post-3",
         "TextContent": "This is the third post",
-        "imagePath": "D:/TERM5/Prog2/LABS/Lab9/ConnectHub/ConnectHub/images3.jpeg",
+        "imagePath": "C:/Users/habib/Documents/NetBeansProjects/ConnectHub/ConnectHub/images3.jpeg",
         "time": "2024-12-06T12:00:00"
     }
 ]

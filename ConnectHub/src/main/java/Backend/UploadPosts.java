@@ -1,5 +1,6 @@
 package Backend;
 
+import Backend.FileManagers.UserFileManager;
 import Interfaces.PostsActions;
 import java.awt.BorderLayout;
 import java.awt.Color;
