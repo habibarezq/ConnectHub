@@ -13,34 +13,42 @@ public class ProfileFileManager implements FileManager<UserProfile> {
     private static ProfileFileManager instance;
     private String FILE_PATH = FilePaths.PROFILES_FILE_PATH;
     private ArrayList<UserProfile> profiles;
-    private String userId;
-    private UserProfile userProfile;
 
     // Private constructor, accepts userId to load the specific user profile
-    private ProfileFileManager(String userId) {
-        this.userId = userId;
+    private ProfileFileManager() {
         this.profiles = new ArrayList<>();
-        this.userProfile = null;
         readFromFile();
     }
 
     // Singleton pattern with userId specificity
-    public static synchronized ProfileFileManager getInstance(String userId) {
-        if (instance == null || !instance.userId.equals(userId)) {
-            instance = new ProfileFileManager(userId); // Create a new instance for the specific userId
+    public static synchronized ProfileFileManager getInstance() {
+        if (instance == null) {
+            instance = new ProfileFileManager(); // Create a new instance for the specific userId
         }
         return instance;
     }
 
     // Method to get the profile of the user
-    public UserProfile getUserProfile() {
-        if (userProfile == null) {
-            readFromFile(); // Load the profile if not already loaded
+    public UserProfile getUserProfileById(String userId) {
+        
+        UserProfile p = null;
+        
+        for (UserProfile profile : profiles) {
+            String currentUserId = profile.getUserId();
+            if (currentUserId.equals(userId)) {
+                p = profile;
+                break;
+            }
         }
-        return userProfile;
+        
+        // If the profile was not found, initialize with default values
+        if (p == null) {
+            p = new UserProfile(userId, "", "", ""); // Default profile with empty fields
+        }
+        return p;
     }
 
-    // Method to get all profiles
+    // Method to get all profiles //ERROORRRR
     public ArrayList<UserProfile> getProfiles() {
         if (profiles.isEmpty()) {
             readFromFile(); // If profiles are empty, load from file
@@ -58,25 +66,19 @@ public class ProfileFileManager implements FileManager<UserProfile> {
                 JSONObject profileJSON = profilesArray.getJSONObject(i);
                 String currentUserId = profileJSON.getString("userId");
 
-                // Only load the profile if the userId matches
-                if (currentUserId.equals(userId)) {
-                    String bio = profileJSON.getString("Bio");
-                    String profilePath = profileJSON.getString("ProfilePhotoPath");
-                    String coverPath = profileJSON.getString("CoverPhotoPath");
+                String bio = profileJSON.getString("Bio");
+                String profilePath = profileJSON.getString("ProfilePhotoPath");
+                String coverPath = profileJSON.getString("CoverPhotoPath");
 
-                    // Create the UserProfile object for the specific user
-                    userProfile = new UserProfile(userId, profilePath, coverPath, bio);
-                    break; // Exit the loop as the profile has been found
-                }
+                // Create the UserProfile object for the specific user
+                UserProfile userProfile = new UserProfile(currentUserId, profilePath, coverPath, bio);
+                profiles.add(userProfile);
+                
             }
         } catch (IOException | JSONException ex) {
             System.out.println("Error reading file: " + ex.getMessage());
         }
 
-        // If the profile was not found, initialize with default values
-        if (userProfile == null) {
-            userProfile = new UserProfile(userId, "", "", ""); // Default profile with empty fields
-        }
     }
 
     @Override
