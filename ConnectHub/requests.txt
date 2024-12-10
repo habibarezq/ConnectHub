@@ -1,20 +1,14 @@
 [
     {
-        "senderId": "8526bad8-b8a7-4b60-ac87-e481bcaffcbe",
-        "recipientId": "457154dd-294b-43c4-a4a9-8ebb744e3e06",
-        "requestStat": "Pending",
-        "requestID": "d6a9c7a6-4bd2-4db6-b6e2-123456789abc"
+        "requestID": "d6a9c7a6-4bd2-4db6-b6e2-123456789abc",
+        "senderID": "8526bad8-b8a7-4b60-ac87-e481bcaffcbe",
+        "recipientID": "457154dd-294b-43c4-a4a9-8ebb744e3e06",
+        "status": "Pending"
     },
     {
-        "senderId": "5f8078ba-4213-4fac-93fc-a1ea9d560eb9",
-        "recipientId": "e55d3f08-baed-4675-922f-c2af3769fc69",
-        "requestStat": "Accepted",
-        "requestID": "9fa5b92c-4af4-4567-bfe9-123456789def"
-    },
-    {
-        "senderId": "14742de1-a179-4840-8794-63bc37dc2319",
-        "recipientId": "8be566cf-d29b-4861-85ee-3b78fd44a626",
-        "requestStat": "Declined",
-        "requestID": "3d7c7a8b-6de2-4567-a1b5-123456789fed"
+        "requestID": "3d7c7a8b-6de2-4d78-a7c2-987654321fed",
+        "senderID": "5f8078ba-4213-4fac-93fc-a1ea9d560eb9",
+        "recipientID": "457154dd-294b-43c4-a4a9-8ebb744e3e06",
+        "status": "Pending"
     }
 ]
