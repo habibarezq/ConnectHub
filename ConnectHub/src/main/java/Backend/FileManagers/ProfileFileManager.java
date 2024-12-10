@@ -55,31 +55,51 @@ public class ProfileFileManager implements FileManager<UserProfile> {
         }
         return profiles;
     }
+@Override
+public void readFromFile() {
+    File file = new File(FILE_PATH);
 
-    @Override
-    public void readFromFile() {
+    if (!file.exists()) {
         try {
-            String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
-            JSONArray profilesArray = new JSONArray(json); // Parse the JSON array
+            file.createNewFile();
+            profiles = new ArrayList<>();
+            saveToFile(profiles);
+            return;
+        } catch (IOException ex) {
+            System.out.println("Error creating file: " + ex.getMessage());
+            return;
+        }
+    }
 
-            for (int i = 0; i < profilesArray.length(); i++) {
-                JSONObject profileJSON = profilesArray.getJSONObject(i);
-                String currentUserId = profileJSON.getString("userId");
+    if (file.length() == 0) {
+        profiles = new ArrayList<>();
+        saveToFile(profiles);
+        return;
+    }
 
-                String bio = profileJSON.getString("Bio");
-                String profilePath = profileJSON.getString("ProfilePhotoPath");
-                String coverPath = profileJSON.getString("CoverPhotoPath");
+    try {
+        String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
+        JSONArray profilesArray = new JSONArray(json);
+        this.profiles.clear();
 
-                // Create the UserProfile object for the specific user
-                UserProfile userProfile = new UserProfile(currentUserId, profilePath, coverPath, bio);
-                profiles.add(userProfile);
-                
-            }
-        } catch (IOException | JSONException ex) {
-            System.out.println("Error reading file: " + ex.getMessage());
+        for (int i = 0; i < profilesArray.length(); i++) {
+            JSONObject profileJSON = profilesArray.getJSONObject(i);
+            String currentUserId = profileJSON.getString("userId");
+            //Replaces getString with optString, allowing missing keys to be safely handled with default values.
+            String bio = profileJSON.getString("Bio");  
+            String profilePath = profileJSON.optString("ProfilePhotoPath", "");
+            String coverPath = profileJSON.optString("CoverPhotoPath", "");
+
+            UserProfile userProfile = new UserProfile(currentUserId, profilePath, coverPath, bio);
+            profiles.add(userProfile);
         }
 
+    } catch (IOException ex) {
+        System.out.println("Error reading file: " + ex.getMessage());
+    } catch (JSONException ex) {
+        System.out.println("Error parsing JSON: " + ex.getMessage());
     }
+}
 
     @Override
     public void saveToFile(ArrayList<UserProfile> data) {
