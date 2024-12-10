@@ -156,13 +156,13 @@ public class User implements FriendshipManager, FriendRequestService {
 
     @Override
     public void acceptRequest(User sender) {
-        Request friendRequest = new Request(sender, this);
+        Request friendRequest = searchRequest(sender);
         friendRequest.processAcceptFriendRequest();
     }
   
     @Override
     public void declineRequest(User sender) {
-        Request friendRequest = new Request(sender, this);
+        Request friendRequest = searchRequest(sender);
         friendRequest.processDeclineFriendRequest();
     }
 

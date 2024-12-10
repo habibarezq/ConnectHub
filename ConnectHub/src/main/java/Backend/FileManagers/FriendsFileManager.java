@@ -53,7 +53,7 @@ public class FriendsFileManager implements FileManager<User> {
         return blocked;
     }
 
-    public ArrayList<Request> getRequests() {
+    public ArrayList<Request> getRequests() { //All Requests of all users
         if (requests == null) {
             requests = new ArrayList<>();
         }

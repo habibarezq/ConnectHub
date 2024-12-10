@@ -65,9 +65,11 @@ public class NewsfeedPage extends javax.swing.JFrame {
         
         populateFriends();
         populateSuggestedFriends();
+        
         populatePosts();
         populateStories();
         populateRequestsComboBox();
+        
         ActionEvent evt = null;        
         ContentManager.getInstance(userId).refreshPosts();
         requestsComboBoxActionPerformed(evt);
@@ -77,10 +79,6 @@ public class NewsfeedPage extends javax.swing.JFrame {
         
         suggestedFriendsModel.clear();
         ArrayList<User> allUsers = UserFileManager.getInstance().getUsers();
-        for(User u:allUsers)
-        {
-            System.out.println("Username :"+u.getUsername());
-        }
         ArrayList<User> suggestedFriends = user.suggestFriends(allUsers);
         for (User suggestedFriend : suggestedFriends) {
             suggestedFriendsModel.addElement(suggestedFriend.getUsername());
@@ -385,29 +383,29 @@ public class NewsfeedPage extends javax.swing.JFrame {
     }//GEN-LAST:event_addStoryButtonActionPerformed
 
     private void addPostButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPostButtonActionPerformed
-
-        // add new post to newsfeed and arraylist of posts
-        String choice = JOptionPane.showInputDialog(null, "Choose Text or Image:");
-        if (choice.isEmpty())
-            JOptionPane.showMessageDialog(null, "Empty Field.", "Error", JOptionPane.ERROR_MESSAGE);
-        else if (!choice.equalsIgnoreCase("text") && !choice.equalsIgnoreCase("image"))
-            JOptionPane.showMessageDialog(null, "Invalid Answer.", "Error", JOptionPane.ERROR_MESSAGE);
-        else {
-            if (choice.equalsIgnoreCase("image")) {
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                int returnValue = fileChooser.showOpenDialog(this);
-                if (returnValue == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = fileChooser.getSelectedFile();
-                    posts.add(new Post(userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
-                } else {
-                    String text = JOptionPane.showInputDialog(null, "Enter Text:");
-                    posts.add(new Post(userId, text, null, LocalDateTime.now()));
-                    //!!!!!!!!!!SAVE TO FILE
-                }
-                refresh();
-            }
-        }
+//
+//        // add new post to newsfeed and arraylist of posts
+//        String choice = JOptionPane.showInputDialog(null, "Choose Text or Image:");
+//        if (choice.isEmpty())
+//            JOptionPane.showMessageDialog(null, "Empty Field.", "Error", JOptionPane.ERROR_MESSAGE);
+//        else if (!choice.equalsIgnoreCase("text") && !choice.equalsIgnoreCase("image"))
+//            JOptionPane.showMessageDialog(null, "Invalid Answer.", "Error", JOptionPane.ERROR_MESSAGE);
+//        else {
+//            if (choice.equalsIgnoreCase("image")) {
+//                JFileChooser fileChooser = new JFileChooser();
+//                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+//                int returnValue = fileChooser.showOpenDialog(this);
+//                if (returnValue == JFileChooser.APPROVE_OPTION) {
+//                    File selectedFile = fileChooser.getSelectedFile();
+//                    posts.add(new Post(userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
+//                } else {
+//                    String text = JOptionPane.showInputDialog(null, "Enter Text:");
+//                    posts.add(new Post(userId, text, null, LocalDateTime.now()));
+//                    //!!!!!!!!!!SAVE TO FILE
+//                }
+//                refresh();
+//            }
+//        }
 
         new postCreation(this.userId , this).setVisible(true);
         this.dispose();
@@ -450,9 +448,6 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
         ArrayList<Request> userRequests = user.getFriendRequests();
        
-        
-        //to make sure it removes any old requests and re-writes the actually-existing ones
-        requestsComboBox.removeAll();
 
         //adding the elements to the comboBox username(status)
         for (Request request : userRequests) {
@@ -500,6 +495,10 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
         if (choice == 0) { // Accept
             loggedInUser.acceptRequest(sender);
+            for(Request r:loggedInUser.getFriendRequests())
+            {
+                System.out.println("Username After: "+r.getRecipient().getUsername());
+            }
             JOptionPane.showMessageDialog(null, "Friend request accepted.", "Success", JOptionPane.INFORMATION_MESSAGE);
         } else if (choice == 1) { // Decline
             loggedInUser.declineRequest(sender);
@@ -519,7 +518,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
         this.suggestedFriendsModel.clear();
         populateFriends();
         populateSuggestedFriends();
-        populateRequestsComboBox();
+        //populateRequestsComboBox();
         
     }
 
