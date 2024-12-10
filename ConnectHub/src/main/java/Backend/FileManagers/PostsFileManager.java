@@ -1,13 +1,11 @@
-package Backend;
+package Backend.FileManagers;
 
-import java.awt.Image;
-import java.awt.Toolkit;
+import Backend.Post;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Base64;
 import org.json.*;
 
 //importing the FilePaths and FileManager interfaces

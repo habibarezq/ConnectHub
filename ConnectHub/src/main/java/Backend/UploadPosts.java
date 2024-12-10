@@ -1,5 +1,7 @@
 package Backend;
 
+import Backend.FileManagers.UserFileManager;
+import Interfaces.PostsActions;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -14,17 +16,16 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-public class UploadPosts {
-
+public class UploadPosts implements PostsActions {
+    
     private JScrollPane postsScrollPane;
     private ArrayList<Post> posts;
     
-    public UploadPosts(javax.swing.JScrollPane postsScrollPane, ArrayList<Post> posts) {
-       this.postsScrollPane = postsScrollPane;
-       this.posts = posts;
-       uploadPostsFunction();
+    public UploadPosts(JScrollPane postsScrollPane, ArrayList<Post> posts) {
+        this.postsScrollPane = postsScrollPane;
+        this.posts = posts;
+        uploadPostsFunction();
     }
-    
     
     public void uploadPostsFunction()
     {
@@ -70,9 +71,9 @@ public class UploadPosts {
             postPanel.add(everyPostPanel);
             postPanel.add(Box.createRigidArea(new Dimension(0, 1))); // Adding spacing between stories
         }
-        this.postsScrollPane.setViewportView(postPanel);
+        postsScrollPane.setViewportView(postPanel);
     }
-    private ImageIcon resizeImagePosts(String contentPath) {
+     public ImageIcon resizeImagePosts(String contentPath) {
         ImageIcon imageIcon = new ImageIcon(contentPath);
         Image image = imageIcon.getImage();
         Image resizedImage = image.getScaledInstance(postsScrollPane.getWidth() - 10, 300, Image.SCALE_SMOOTH);

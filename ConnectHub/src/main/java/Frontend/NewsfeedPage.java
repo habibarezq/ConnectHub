@@ -1,8 +1,9 @@
 package Frontend;
 
-import Backend.Post;
-import Backend.Story;
-import Backend.User;
+import Backend.FileManagers.StoriesFileManager;
+import Backend.FileManagers.PostsFileManager;
+import Backend.FileManagers.FriendsFileManager;
+import Backend.FileManagers.UserFileManager;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -21,8 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import Backend.*;
 import java.awt.event.ActionEvent;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.format.DateTimeFormatter;
 
 public class NewsfeedPage extends javax.swing.JFrame {
 
@@ -33,15 +33,18 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private ArrayList<User> users;
     private String userId;
     private ConnectHubMain connectHub;
+    private User user;
+    
 
-    public NewsfeedPage(User user,ConnectHubMain connectHub) {
+    public NewsfeedPage(User user, ConnectHubMain connectHub) {
         initComponents();
         setTitle("Newsfeed");
-        setSize(1300,627);
+        setSize(1300, 627);
         setContentPane(mainPanel);
-        this.connectHub=connectHub;
+        this.connectHub = connectHub;
         this.dispose();
-        
+        this.user=user;
+
         this.userId = user.getUserID();
         FriendsFileManager.getInstance(userId);
         this.posts = PostsFileManager.getInstance().getPosts();
@@ -51,7 +54,6 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
         this.stories = StoriesFileManager.getInstance().getStories();
         //fillstories();
-
 
         friendsModel = new DefaultListModel<>();
         suggestedFriendsModel = new DefaultListModel<>();
@@ -63,14 +65,20 @@ public class NewsfeedPage extends javax.swing.JFrame {
         populateSuggestedFriends();
         populatePosts();
         populateStories();
-        ActionEvent evt = null;
-        
+        populateRequestsComboBox();
+        ActionEvent evt = null;        
+        ContentManager.getInstance(userId).refreshPosts();
         requestsComboBoxActionPerformed(evt);
     }
 
     public void populateSuggestedFriends() {
-        User user = UserFileManager.getInstance().findUserByID(userId);
+        
+        suggestedFriendsModel.clear();
         ArrayList<User> allUsers = UserFileManager.getInstance().getUsers();
+        for(User u:allUsers)
+        {
+            System.out.println("Username :"+u.getUsername());
+        }
         ArrayList<User> suggestedFriends = user.suggestFriends(allUsers);
         for (User suggestedFriend : suggestedFriends) {
             suggestedFriendsModel.addElement(suggestedFriend.getUsername());
@@ -98,66 +106,15 @@ public class NewsfeedPage extends javax.swing.JFrame {
     }
 
     private void populatePosts() {
+        // uploading all posts in the posts ArrayList
         new UploadPosts(postsScrollPane, posts);
-//        JPanel postPanel = new JPanel();
-//        postPanel.setLayout(new BoxLayout(postPanel, BoxLayout.Y_AXIS));
-//        postPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-//
-//        for (Post post : posts) {
-//            //creating a panel for each post
-//            JPanel everyPostPanel = new JPanel();
-//            everyPostPanel.setLayout(new BorderLayout());
-//            everyPostPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-//            everyPostPanel.setPreferredSize(new Dimension(300, 80));
-//
-//            //adding username
-//            User u = UserFileManager.getInstance().findUserByID(post.getAuthorId()); //returns user to get username
-//            JLabel UsernameLabel = new JLabel("Username: " + u.getUsername());
-//            UsernameLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-//            postPanel.add(UsernameLabel, BorderLayout.NORTH);
-//
-//            // adding the time Stamp
-//            JLabel timestampLabel = new JLabel("Time: " + post.getUploadingTime());
-//            timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Adding padding
-//            postPanel.add(timestampLabel, BorderLayout.SOUTH);
-//
-//            //adding content
-//            //adding text
-//            JLabel contentLabel = new JLabel("Content: " + post.getContentTxt());
-//            contentLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Adding padding
-//            postPanel.add(contentLabel, BorderLayout.NORTH);
-//
-//            // adding the image 
-//            File imageFile = new File(post.getcontentPath());
-//            if (imageFile.exists()) {
-//                ImageIcon imageIcon = resizeImagePosts(post.getcontentPath());
-//                JLabel imageLabel = new JLabel(imageIcon);
-//                postPanel.add(imageLabel, BorderLayout.WEST);
-//            } else {
-//                JLabel noImageLabel = new JLabel("No image.");
-//                postPanel.add(noImageLabel, BorderLayout.WEST);
-//            }
-//
-//            postPanel.add(everyPostPanel);
-//            postPanel.add(Box.createRigidArea(new Dimension(0, 1))); // Adding spacing between stories
-//        }
-//        postsScrollPane.setViewportView(postPanel);
     }
 
-//    private ImageIcon resizeImagePosts(String contentPath) {
-//        ImageIcon imageIcon = new ImageIcon(contentPath);
-//        Image image = imageIcon.getImage();
-//        Image resizedImage = image.getScaledInstance(postsScrollPane.getWidth() - 10, 300, Image.SCALE_SMOOTH);
-//        ImageIcon resizedImageIcon = new ImageIcon(resizedImage);
-//        return resizedImageIcon;
-//    }
-
-    private ImageIcon resizeImageStories(String contentPath) {
-        ImageIcon imageIcon = new ImageIcon(contentPath);
-        Image image = imageIcon.getImage();
-        Image resizedImage = image.getScaledInstance(storiesScrollPane.getWidth() - 200, 300, Image.SCALE_SMOOTH);
-        ImageIcon resizedImageIcon = new ImageIcon(resizedImage);
-        return resizedImageIcon;
+    private ImageIcon resizeImageStories(String imagePath) {
+        ImageIcon originalIcon = new ImageIcon(imagePath);
+        Image originalImage = originalIcon.getImage();
+        Image resizedImage = originalImage.getScaledInstance(160, 160, Image.SCALE_SMOOTH);
+        return new ImageIcon(resizedImage);
     }
 
     private void populateStories() {
@@ -189,6 +146,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
                 File imageFile = new File(story.getcontentPath());
                 if (imageFile.exists()) {
                     ImageIcon imageIcon = resizeImageStories(story.getcontentPath());
+
                     JLabel imageLabel = new JLabel(imageIcon);
                     storyPanel.add(imageLabel, BorderLayout.WEST);
                 } else {
@@ -203,6 +161,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
     }
 
     private boolean checkExpiryStory(Story story) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime time = story.getUploadingTime();
 
         LocalDateTime expiryTime = time.plusDays(1);
@@ -387,13 +346,14 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
     private void profileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_profileButtonActionPerformed
         //goes to profile frame 
-        new Profile(UserFileManager.getInstance().findUserByID(userId)).setVisible(true);
+        new Profile(UserFileManager.getInstance().findUserByID(userId), this).setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_profileButtonActionPerformed
 
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
         this.dispose();
         new ConnectHubMain().setVisible(true);
-        
+
     }//GEN-LAST:event_logoutButtonActionPerformed
 
     private void addStoryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStoryButtonActionPerformed
@@ -411,11 +371,11 @@ public class NewsfeedPage extends javax.swing.JFrame {
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
 
-                    stories.add(new Story( userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
+                    stories.add(new Story(userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
                 } else {
                     String text = JOptionPane.showInputDialog(null, "Enter Text:");
 
-                    stories.add(new Story( userId, text, null, LocalDateTime.now()));
+                    stories.add(new Story(userId, text, null, LocalDateTime.now()));
                 }
                 refresh();
             }
@@ -423,6 +383,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
     }//GEN-LAST:event_addStoryButtonActionPerformed
 
     private void addPostButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPostButtonActionPerformed
+
         // add new post to newsfeed and arraylist of posts
         String choice = JOptionPane.showInputDialog(null, "Choose Text or Image:");
         if (choice.isEmpty())
@@ -436,7 +397,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
                 int returnValue = fileChooser.showOpenDialog(this);
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
-                posts.add(new Post( userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
+                    posts.add(new Post(userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
                 } else {
                     String text = JOptionPane.showInputDialog(null, "Enter Text:");
                     posts.add(new Post(userId, text, null, LocalDateTime.now()));
@@ -445,6 +406,33 @@ public class NewsfeedPage extends javax.swing.JFrame {
                 refresh();
             }
         }
+
+        new postCreation(this.userId , this).setVisible(true);
+        this.dispose();
+        
+// add new post to newsfeed and arraylist of posts
+//        String choice = JOptionPane.showInputDialog(null, "Choose Text or Image:");
+//        if (choice.isEmpty())
+//            JOptionPane.showMessageDialog(null, "Empty Field.", "Error", JOptionPane.ERROR_MESSAGE);
+//        else if (!choice.equalsIgnoreCase("text") && !choice.equalsIgnoreCase("image"))
+//            JOptionPane.showMessageDialog(null, "Invalid Answer.", "Error", JOptionPane.ERROR_MESSAGE);
+//        else {
+//            if (choice.equalsIgnoreCase("image")) {
+//                JFileChooser fileChooser = new JFileChooser();
+//                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+//                int returnValue = fileChooser.showOpenDialog(this);
+//                if (returnValue == JFileChooser.APPROVE_OPTION) {
+//                    File selectedFile = fileChooser.getSelectedFile();
+//                    posts.add(new Post(userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
+//                } else {
+//                    String text = JOptionPane.showInputDialog(null, "Enter Text:");
+//                    posts.add(new Post(userId, text, null, LocalDateTime.now()));
+//                    //!!!!!!!!!!SAVE TO FILE
+//                }
+//                refresh();
+//            }
+
+
     }//GEN-LAST:event_addPostButtonActionPerformed
 
     private void newRefreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newRefreshButtonActionPerformed
@@ -453,58 +441,74 @@ public class NewsfeedPage extends javax.swing.JFrame {
     }//GEN-LAST:event_newRefreshButtonActionPerformed
 
     private void requestsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestsComboBoxActionPerformed
-        User u = UserFileManager.getInstance().findUserByID(userId);
-        HashMap<User, String> friendRequests = u.getFriendRequests();
+    }                                                
+
+    public void populateRequestsComboBox() {
+        requestsComboBox.removeAllItems();
+
+        ArrayList<Request> userRequests = user.getFriendRequests();
+       
         
         //to make sure it removes any old requests and re-writes the actually-existing ones
         requestsComboBox.removeAll();
-        
+
         //adding the elements to the comboBox username(status)
-        for (Map.Entry<User, String> entry : friendRequests.entrySet()) {
-            User user = entry.getKey();  // The User object (key)
-            String request = entry.getValue();  // The request message (value)
-            requestsComboBox.addItem(user.getUsername()+" ("+request+") ");
+        for (Request request : userRequests) {
+            if (request.getRecipient().getUserID().equals(user.getUserID())) {
+                requestsComboBox.addItem(request.getSender().getUsername() + " (" + request.getRequestStat() + ")");
+            }
         }
+        
+        // Add action listener to handle the combo box selection
         requestsComboBox.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                User u = UserFileManager.getInstance().findUserByID(userId);
-                HashMap<User, String> friendRequests = u.getFriendRequests();
-                
                 String selectedItem = (String) requestsComboBox.getSelectedItem();
+                requestsComboBox.removeItem(selectedItem);
                 if (selectedItem != null && !selectedItem.isEmpty()) {
-                    // Parse the selected item to extract the username
-                    String selectedUsername = selectedItem.split(" ")[0]; // Extract username before '('
-                    
-                    // Create a dialog to show more information
-                    Object[] requestAnswer = {"Accept", "Decline"};
-                    int answer = JOptionPane.showOptionDialog(null, "Do you want to accept or decline?", "Friend Request", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, requestAnswer, requestAnswer[0]);
-                    //no default option and no custom icon 
-                    
-                    if(answer == 0) 
-                    {
-                        User acceptedFriend = UserFileManager.getInstance().findUserByUsername(selectedUsername);
-                        String acceptedFriendId = acceptedFriend.getUserID();
-                        friendRequests.put(acceptedFriend, acceptedFriendId);
-                        requestsComboBox.removeItem(selectedItem);
-                        refresh();
-                    }
-                        
-                    else if(answer == 1)
-                    {
-                        User declinedFriend = UserFileManager.getInstance().findUserByUsername(selectedUsername);
-                        String declinedFriendId = declinedFriend.getUserID();
-                        friendRequests.remove(declinedFriend);
-                        requestsComboBox.removeItem(selectedItem);
-                        refresh(); 
-                    }  
-                    else 
-                    JOptionPane.showMessageDialog(null, "No action taken.");    
+                    String selectedUsername = selectedItem.split(" ")[0]; // Extract username
+                    handleFriendRequest(selectedUsername, user);
                 }
             }
-        }); 
-        
-    }//GEN-LAST:event_requestsComboBoxActionPerformed
+        });
+    }
+
+
+    private void handleFriendRequest(String senderUsername, User loggedInUser) {
+        User sender = UserFileManager.getInstance().findUserByUsername(senderUsername);
+        if (sender == null) {
+            JOptionPane.showMessageDialog(null, "User not found!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Object[] options = {"Accept", "Decline"};
+        int choice = JOptionPane.showOptionDialog(
+                null,
+                "Do you want to accept or decline the friend request from " + sender.getUsername() + "?",
+                "Friend Request",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+
+        //FriendsFileManager friendsManager = FriendsFileManager.getInstance(loggedInUser.getUserID());
+        ArrayList<Request> requests = loggedInUser.getFriendRequests();
+
+        if (choice == 0) { // Accept
+            loggedInUser.acceptRequest(sender);
+            JOptionPane.showMessageDialog(null, "Friend request accepted.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } else if (choice == 1) { // Decline
+            loggedInUser.declineRequest(sender);
+            JOptionPane.showMessageDialog(null, "Friend request declined.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        }
+
+        // Refresh combo box
+        refresh();
+    }
+//GEN-LAST:event_requestsComboBoxActionPerformed
+
 
     public void refresh() {
         populateStories();
@@ -513,7 +517,8 @@ public class NewsfeedPage extends javax.swing.JFrame {
         this.suggestedFriendsModel.clear();
         populateFriends();
         populateSuggestedFriends();
-
+        populateRequestsComboBox();
+        
     }
 
     public static void main(String args[]) {
