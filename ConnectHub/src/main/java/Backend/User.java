@@ -169,9 +169,10 @@ public class User implements FriendshipManager, FriendRequestService {
     @Override
     public ArrayList<User> suggestFriends(ArrayList<User> allUsers) {
         ArrayList<User> suggestions=new ArrayList<>();
+        
         for(User user: allUsers)
         {
-            if(user !=this && !this.getFriends().contains(user) && this.searchRequest(user)!=null && !this.getBlocked().contains(user))
+            if(user !=this && !this.getFriends().contains(user) && /*this.searchRequest(user)!=null &&*/ !this.getBlocked().contains(user))
                 suggestions.add(user);
         }
         return suggestions;
@@ -186,9 +187,6 @@ public class User implements FriendshipManager, FriendRequestService {
                 return r;
         }
         return null;
-    }
-    public void logout() {
-        setStatus(false);
     }
 
     @Override
