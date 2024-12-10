@@ -60,7 +60,9 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
         friendsList.setModel(friendsModel);
         suggestedFriendsList.setModel(suggestedFriendsModel);
-
+        suggestedFriendsList.setVisibleRowCount(6);
+        
+        
         populateFriends();
         populateSuggestedFriends();
         populatePosts();
