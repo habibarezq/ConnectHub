@@ -106,7 +106,9 @@ public class NewsfeedPage extends javax.swing.JFrame {
         JPanel storyPanel = new JPanel();
         storyPanel.setLayout(new BoxLayout(storyPanel, BoxLayout.X_AXIS));
         storyPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
+        if (stories == null) {
+           return;
+        }
         for (Story story : stories) {
             if (checkExpiryStory(story)) {
                 //creating a panel for each story
