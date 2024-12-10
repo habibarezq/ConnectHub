@@ -30,7 +30,7 @@ public class Profile extends javax.swing.JFrame {
         setTitle("My Profile");
         initComponents();
         setSize(1300, 593);
-        setResizable(false);
+        
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         this.feed = feed;
