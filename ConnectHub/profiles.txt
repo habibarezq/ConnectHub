@@ -1,6 +1,14 @@
-[{
-    "CoverPhotoPath": "",
-    "Bio": "habibaaaa",
-    "userId": "6da2aab8-136d-423e-b557-722b665f6fe0",
-    "ProfilePhotoPath": "D:\\TERM5\\Prog2\\LABS\\Lab9\\ConnectHub\\ConnectHub\\pics\\download (1).jpeg"
-}]
+[
+    {
+        "CoverPhotoPath": "C:\\Users\\habib\\Documents\\NetBeansProjects\\ConnectHub\\ConnectHub\\pics\\download.jpeg",
+        "Bio": "hello , my name is habiba rezq",
+        "userId": "6125e6f4-2273-43f7-902a-437a4ef2d45f",
+        "ProfilePhotoPath": ""
+    },
+    {
+        "CoverPhotoPath": "",
+        "Bio": "",
+        "userId": "97a34610-5607-4783-bc01-2122ccaab61f",
+        "ProfilePhotoPath": ""
+    }
+]

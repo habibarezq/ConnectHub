@@ -1,8 +1,26 @@
-[{
-    "password": "$2a$10$/4wyyRgiDCdM.kQyeszE5uk/mRghH7Bd8WowrwaFqmyuyzYbOqkEq",
-    "dob": "2024-12-10",
-    "isOnline": true,
-    "userId": "6da2aab8-136d-423e-b557-722b665f6fe0",
-    "email": "h@gmail.com",
-    "username": "habiba"
-}]
+[
+    {
+        "password": "$2a$10$/4wyyRgiDCdM.kQyeszE5uk/mRghH7Bd8WowrwaFqmyuyzYbOqkEq",
+        "dob": "2024-12-10",
+        "isOnline": false,
+        "userId": "6da2aab8-136d-423e-b557-722b665f6fe0",
+        "email": "h@gmail.com",
+        "username": "habiba"
+    },
+    {
+        "password": "$2a$10$vD9GEPOCZdkcfiYwfOM0AOpp5u61/nruJXuNS4j70ION7nK2nZoTG",
+        "dob": "2024-12-11",
+        "isOnline": true,
+        "userId": "6125e6f4-2273-43f7-902a-437a4ef2d45f",
+        "email": "ha@gmail.com",
+        "username": "habiba rezq"
+    },
+    {
+        "password": "$2a$10$6CtTdJYg51vEd/Jd3J6pOeOOIULe0bZ/zfFl3fhsPDokdoTn6TLau",
+        "dob": "2024-12-11",
+        "isOnline": false,
+        "userId": "97a34610-5607-4783-bc01-2122ccaab61f",
+        "email": "r@gmail.com",
+        "username": "rahma"
+    }
+]

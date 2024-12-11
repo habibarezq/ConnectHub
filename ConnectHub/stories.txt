@@ -1,7 +1,1 @@
-[{
-    "imagePath": "D:\\TERM5\\Prog2\\LABS\\Lab9\\ConnectHub\\ConnectHub\\pics\\download (1).jpeg",
-    "contentId": "5b8acf6a-5266-409d-9497-18bb967afb3a",
-    "time": "2024-12-10T17:24:49.972089200",
-    "TextContent": "text",
-    "userId": "6da2aab8-136d-423e-b557-722b665f6fe0"
-}]
+[]
