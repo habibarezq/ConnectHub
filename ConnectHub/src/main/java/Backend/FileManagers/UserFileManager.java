@@ -38,35 +38,53 @@ public class UserFileManager implements FileManager<User> {
         return users;
     }
 
-    @Override
-    public void readFromFile() {
-        if (!users.isEmpty()) {
-            return; //to avoid reloading
-        }
+   @Override
+public void readFromFile() {
+    File file = new File(FILE_PATH);
+
+    if (!file.exists()) {
         try {
-            String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
-            JSONArray usersArray = new JSONArray(json); // Parse the JSON array
-
-            this.users.clear(); // Clear the existing list before loading new data
-            for (int i = 0; i < usersArray.length(); i++) {
-                JSONObject userJSON = usersArray.getJSONObject(i);
-                String id = userJSON.getString("userId");
-                String email = userJSON.getString("email");
-                String username = userJSON.getString("username");
-                LocalDate dateOfBirth = LocalDate.parse(userJSON.getString("dob"));
-                String password = userJSON.getString("password");
-                boolean isOnline = userJSON.getBoolean("isOnline");
-
-                User user = new User(id, email, username, dateOfBirth, password);
-                this.users.add(user); // Add to the instance variable, not local
-            }
-
+            file.createNewFile();
+            users = new ArrayList<>();
+            saveToFile(users);
+            return;
         } catch (IOException ex) {
-            System.out.println("Error reading file: " + ex.getMessage());
-        } catch (JSONException ex) {
-            System.out.println("Error parsing JSON: " + ex.getMessage());
+            System.out.println("Error creating file: " + ex.getMessage());
+            return;
         }
     }
+
+    if (file.length() == 0) {
+        users = new ArrayList<>();
+        saveToFile(users);
+        return;
+    }
+
+    try {
+        String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
+        JSONArray usersArray = new JSONArray(json);
+        this.users.clear();
+
+        for (int i = 0; i < usersArray.length(); i++) {
+            JSONObject userJSON = usersArray.getJSONObject(i);
+            String id = userJSON.getString("userId");
+            String email = userJSON.getString("email");
+            String username = userJSON.getString("username");
+            LocalDate dateOfBirth = LocalDate.parse(userJSON.getString("dob"));
+            String password = userJSON.getString("password");
+            boolean isOnline = userJSON.optBoolean("isOnline", false);
+
+            User user = new User(id, email, username, dateOfBirth, password);
+            user.setStatus(isOnline);
+            users.add(user);
+        }
+
+    } catch (IOException ex) {
+        System.out.println("Error reading file: " + ex.getMessage());
+    } catch (JSONException ex) {
+        System.out.println("Error parsing JSON: " + ex.getMessage());
+    }
+}
 
     @Override
     public void saveToFile(ArrayList<User> data) {

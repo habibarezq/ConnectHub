@@ -33,6 +33,9 @@ public class UploadPosts implements PostsActions {
         postPanel.setLayout(new BoxLayout(postPanel, BoxLayout.Y_AXIS));
         postPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
+          if (posts == null) {
+           return;
+        }
         for (Post post : posts) {
             //creating a panel for each post
             JPanel everyPostPanel = new JPanel();

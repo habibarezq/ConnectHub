@@ -13,71 +13,93 @@ public class ProfileFileManager implements FileManager<UserProfile> {
     private static ProfileFileManager instance;
     private String FILE_PATH = FilePaths.PROFILES_FILE_PATH;
     private ArrayList<UserProfile> profiles;
-    private String userId;
-    private UserProfile userProfile;
 
     // Private constructor, accepts userId to load the specific user profile
-    private ProfileFileManager(String userId) {
-        this.userId = userId;
+    private ProfileFileManager() {
         this.profiles = new ArrayList<>();
-        this.userProfile = null;
         readFromFile();
     }
 
     // Singleton pattern with userId specificity
-    public static synchronized ProfileFileManager getInstance(String userId) {
-        if (instance == null || !instance.userId.equals(userId)) {
-            instance = new ProfileFileManager(userId); // Create a new instance for the specific userId
+    public static synchronized ProfileFileManager getInstance() {
+        if (instance == null) {
+            instance = new ProfileFileManager(); // Create a new instance for the specific userId
         }
         return instance;
     }
 
     // Method to get the profile of the user
-    public UserProfile getUserProfile() {
-        if (userProfile == null) {
-            readFromFile(); // Load the profile if not already loaded
+    public UserProfile getUserProfileById(String userId) {
+        
+        UserProfile p = null;
+        
+        for (UserProfile profile : profiles) {
+            String currentUserId = profile.getUserId();
+            if (currentUserId.equals(userId)) {
+                p = profile;
+                break;
+            }
         }
-        return userProfile;
+        
+        // If the profile was not found, initialize with default values
+        if (p == null) {
+            p = new UserProfile(userId, "", "", ""); // Default profile with empty fields
+        }
+        return p;
     }
 
-    // Method to get all profiles
+    // Method to get all profiles //ERROORRRR
     public ArrayList<UserProfile> getProfiles() {
         if (profiles.isEmpty()) {
             readFromFile(); // If profiles are empty, load from file
         }
         return profiles;
     }
+@Override
+public void readFromFile() {
+    File file = new File(FILE_PATH);
 
-    @Override
-    public void readFromFile() {
+    if (!file.exists()) {
         try {
-            String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
-            JSONArray profilesArray = new JSONArray(json); // Parse the JSON array
-
-            for (int i = 0; i < profilesArray.length(); i++) {
-                JSONObject profileJSON = profilesArray.getJSONObject(i);
-                String currentUserId = profileJSON.getString("userId");
-
-                // Only load the profile if the userId matches
-                if (currentUserId.equals(userId)) {
-                    String bio = profileJSON.getString("Bio");
-                    String profilePath = profileJSON.getString("ProfilePhotoPath");
-                    String coverPath = profileJSON.getString("CoverPhotoPath");
-
-                    // Create the UserProfile object for the specific user
-                    userProfile = new UserProfile(userId, profilePath, coverPath, bio);
-                    break; // Exit the loop as the profile has been found
-                }
-            }
-        } catch (IOException | JSONException ex) {
-            System.out.println("Error reading file: " + ex.getMessage());
-        }
-
-        // If the profile was not found, initialize with default values
-        if (userProfile == null) {
-            userProfile = new UserProfile(userId, "", "", ""); // Default profile with empty fields
+            file.createNewFile();
+            profiles = new ArrayList<>();
+            saveToFile(profiles);
+            return;
+        } catch (IOException ex) {
+            System.out.println("Error creating file: " + ex.getMessage());
+            return;
         }
     }
+
+    if (file.length() == 0) {
+        profiles = new ArrayList<>();
+        saveToFile(profiles);
+        return;
+    }
+
+    try {
+        String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
+        JSONArray profilesArray = new JSONArray(json);
+        this.profiles.clear();
+
+        for (int i = 0; i < profilesArray.length(); i++) {
+            JSONObject profileJSON = profilesArray.getJSONObject(i);
+            String currentUserId = profileJSON.getString("userId");
+            //Replaces getString with optString, allowing missing keys to be safely handled with default values.
+            String bio = profileJSON.getString("Bio");  
+            String profilePath = profileJSON.optString("ProfilePhotoPath", "");
+            String coverPath = profileJSON.optString("CoverPhotoPath", "");
+
+            UserProfile userProfile = new UserProfile(currentUserId, profilePath, coverPath, bio);
+            profiles.add(userProfile);
+        }
+
+    } catch (IOException ex) {
+        System.out.println("Error reading file: " + ex.getMessage());
+    } catch (JSONException ex) {
+        System.out.println("Error parsing JSON: " + ex.getMessage());
+    }
+}
 
     @Override
     public void saveToFile(ArrayList<UserProfile> data) {
