@@ -12,4 +12,5 @@ public interface FilePaths {
     
     public String FRIENDS_FILE_PATH ="friends.txt";
 
+    public String REQUESTS_FILE_PATH="requests.txt";
 }

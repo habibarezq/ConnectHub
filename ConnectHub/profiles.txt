@@ -1,39 +1,14 @@
 [
     {
-        "userId": "8526bad8-b8a7-4b60-ac87-e481bcaffcbe",
-        "Bio": "Hello, I am Habib! Welcome to my profile.",
-        "ProfilePhotoPath": "C:/Users/habib/Documents/NetBeansProjects/ConnectHub/ConnectHub/download.jpeg",
-        "CoverPhotoPath": "C:/Users/habib/Documents/NetBeansProjects/ConnectHub/ConnectHub/image2.jpeg"
+        "CoverPhotoPath": "C:\\Users\\habib\\Documents\\NetBeansProjects\\ConnectHub\\ConnectHub\\pics\\download.jpeg",
+        "Bio": "hello , my name is habiba rezq",
+        "userId": "6125e6f4-2273-43f7-902a-437a4ef2d45f",
+        "ProfilePhotoPath": ""
     },
     {
-        "userId": "457154dd-294b-43c4-a4a9-8ebb744e3e06",
-        "Bio": "I'm a software developer. Follow me for tech insights!",
-        "ProfilePhotoPath": "C:/Users/habib/Documents/NetBeansProjects/ConnectHub/ConnectHub/images.jpg",
-        "CoverPhotoPath": "C:/Users/habib/Documents/NetBeansProjects/ConnectHub/ConnectHub/images3.jpeg"
-    },
-    {
-        "userId": "5f8078ba-4213-4fac-93fc-a1ea9d560eb9",
-        "Bio": "Avid reader and passionate about coding!",
-        "ProfilePhotoPath": "C:/Users/habib/Documents/NetBeansProjects/ConnectHub/ConnectHub/download (1).jpeg",
-        "CoverPhotoPath": "C:/Users/habib/Documents/NetBeansProjects/ConnectHub/ConnectHub/download (2).jpeg"
-    },
-    {
-        "userId": "e55d3f08-baed-4675-922f-c2af3769fc69",
-        "Bio": "Explorer of new ideas and technology.",
-        "ProfilePhotoPath": "C:/Users/habib/Documents/NetBeansProjects/ConnectHub/ConnectHub/download.jpeg",
-        "CoverPhotoPath": "C:/Users/habib/Documents/NetBeansProjects/ConnectHub/ConnectHub/image2.jpeg"
-    },
-    {
-        "userId": "14742de1-a179-4840-8794-63bc37dc2319",
-        "Bio": "Always up for a challenge!",
-        "ProfilePhotoPath": "C:/Users/habib/Documents/NetBeansProjects/ConnectHub/ConnectHub/images.jpg",
-        "CoverPhotoPath": "C:/Users/habib/Documents/NetBeansProjects/ConnectHub/ConnectHub/images3.jpeg"
-    },
-    {
-        "userId": "8be566cf-d29b-4861-85ee-3b78fd44a626",
-        "Bio": "Tech enthusiast and sports lover!",
-        "ProfilePhotoPath": "C:/Users/habib/Documents/NetBeansProjects/ConnectHub/ConnectHub/download (1).jpeg",
-        "CoverPhotoPath": "C:/Users/habib/Documents/NetBeansProjects/ConnectHub/ConnectHub/download (2).jpeg"
+        "CoverPhotoPath": "",
+        "Bio": "",
+        "userId": "97a34610-5607-4783-bc01-2122ccaab61f",
+        "ProfilePhotoPath": ""
     }
 ]
-

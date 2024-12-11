@@ -1,5 +1,7 @@
 package Backend;
 
+import Backend.FileManagers.StoriesFileManager;
+import Backend.FileManagers.PostsFileManager;
 import java.util.ArrayList;
 
 public class ContentManager {
@@ -9,9 +11,6 @@ public class ContentManager {
     private ArrayList<Post> posts; // Changed to lazy-loadable
     private ArrayList<Story> stories; // Changed to lazy-loadable
 
-    private ArrayList<UserProfile> profiles;
-
-    private boolean profileLoaded = false;
     private boolean postsLoaded = false; // Tracks if posts are loaded
     private boolean storiesLoaded = false;
 
@@ -21,7 +20,6 @@ public class ContentManager {
         this.posts = null;
         this.stories = null;
 
-        this.profiles = null;
     }
 
     public static synchronized ContentManager getInstance(String userId) {
