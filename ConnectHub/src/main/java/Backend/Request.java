@@ -45,6 +45,7 @@ public class Request {
     public void processFriendRequest() {
         System.out.println("Processing Friend Request ...");
         if (recipient.searchRequest(sender)!=null && !recipient.getBlocked().contains(sender)) {
+            recipient.getFriendRequests().add(this);
             requestStat="Pending";
             System.out.println("Friend Request sent From " + sender.getUsername() + " --> " + recipient.getUsername());
         } else if (recipient.searchRequest(sender)!=null) {
