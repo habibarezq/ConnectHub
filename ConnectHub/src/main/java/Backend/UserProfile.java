@@ -6,7 +6,7 @@ import Interfaces.*;
 
 import java.util.ArrayList;
 
-public class UserProfile implements ProfileManager {
+public class UserProfile  {
 
     private String userId;
     private String profilePic;
@@ -40,25 +40,22 @@ public class UserProfile implements ProfileManager {
     }
 
     // Methods to update profile data
-    @Override
     public void changeProfilePic(String profile) {
         this.profilePic = profile;
        // profileManager.saveToFile(profileManager.getProfiles());
     }
 
-    @Override
+
     public void changeCoverPic(String cover) {
         this.coverPic = cover;
        // profileManager.saveToFile(profileManager.getProfiles());
     }
 
-    @Override
     public void updateBio(String bio) {
         this.bio = bio;
        // profileManager.saveToFile(profileManager.getProfiles());
     }
 
-    @Override
     public void updatePassword(String password) {
         User user = UserFileManager.getInstance().findUserByID(userId);
         String hashedPass = Password.hashPassword(password);
