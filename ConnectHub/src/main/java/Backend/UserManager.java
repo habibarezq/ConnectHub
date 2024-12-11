@@ -44,13 +44,7 @@ public class UserManager implements UserManagerInterface {
         return null;
     }
 
-    public void logout(String userId) {
-        User user = UserFileManager.getInstance().findUserByID(userId);
-        if (user != null) {
-            user.setStatus(false);
-            UserFileManager.getInstance().saveToFile(users);
-        }
-    }
+    
     
  
 

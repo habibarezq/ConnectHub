@@ -1,5 +1,6 @@
 package Backend;
 
+import Backend.FileManagers.RequestsFileManager;
 import java.util.UUID;
 
 public class Request {
@@ -13,7 +14,7 @@ public class Request {
         this.sender = sender;
         this.recipient = recipient;
         this.requestStat="Pending";
-        this.requestID=UUID.randomUUID().toString();
+        //this.requestID=UUID.randomUUID().toString();
         
     }
 
@@ -44,24 +45,34 @@ public class Request {
 
     public void processFriendRequest() {
         System.out.println("Processing Friend Request ...");
-        if (recipient.searchRequest(sender)!=null && !recipient.getBlocked().contains(sender)) {
-            recipient.getFriendRequests().add(this);
+        if (!recipient.getBlocked().contains(sender)) {
             requestStat="Pending";
+            
+            //Save to File
+            RequestsFileManager.getInstance().getRequests().add(this);
+            for(Request r:RequestsFileManager.getInstance().getRequests())
+            {
+                System.out.println("Request "+r.getSender());
+            }
+            RequestsFileManager.getInstance().saveToFile(RequestsFileManager.getInstance().getRequests());
+            
             System.out.println("Friend Request sent From " + sender.getUsername() + " --> " + recipient.getUsername());
-        } else if (recipient.searchRequest(sender)!=null) {
+        } else  {
             System.out.println("Friend request already sent.");
-        } else if (recipient.getBlocked().contains(sender)) {
-
-        }
+        } 
 
     }
 
     public void processAcceptFriendRequest() {
-        if (recipient.searchRequest(sender)!=null && recipient.searchRequest(sender).getRequestStat().equals("Pending")) {
-            recipient.getFriendRequests().remove(this);
-             sender.getFriendRequests().remove(this);
+        if ( searchRequest(this.getRequestID()).getRequestStat().equals("Pending")) {
+            
             recipient.getFriends().add(sender);
             sender.getFriends().add(recipient);
+            requestStat = "Accepted";
+            
+            //Save to File
+            RequestsFileManager.getInstance().saveToFile(RequestsFileManager.getInstance().getRequests());
+            
             System.out.println("Friend request from " + sender.getUsername() + " accepted.");
         } else {
             System.out.println("No pending friend request from " + sender.getUsername());
@@ -69,15 +80,28 @@ public class Request {
     }
 
     public void processDeclineFriendRequest() {
-        if (recipient.searchRequest(sender)!=null && recipient.searchRequest(sender).getRequestStat().equals("Pending")) {
-           recipient.getFriendRequests().remove(this);
-           sender.getFriendRequests().remove(this);
+        if ( searchRequest(this.getRequestID()).getRequestStat().equals("Pending")) {
+           requestStat = "Declined";
+           
+           //Save to File
+           RequestsFileManager.getInstance().saveToFile(RequestsFileManager.getInstance().getRequests());
+           
             System.out.println("Friend request from " + sender.getUsername() + " declined.");
         } else {
             System.out.println("No friend request from " + sender.getUsername());
         }
     }
-    
    
-    
+      public Request searchRequest(String requestId)
+    {
+        for(Request r:RequestsFileManager.getInstance().getRequests())
+        {
+            System.out.println(r);
+            if(r.getRequestID().equals(requestId) )
+                System.out.println("Found !");
+                return r;
+        }
+        return null;
+    }
+
 }

@@ -2,6 +2,8 @@ package Backend;
 
 
 import Backend.FileManagers.FriendsFileManager;
+import Backend.FileManagers.RequestsFileManager;
+import Backend.FileManagers.UserFileManager;
 import java.time.*;
 import java.util.*;
 import Interfaces.*;
@@ -18,7 +20,6 @@ public class User implements FriendshipManager, FriendRequestService {
 
     private ContentManager contentManager;
     private FriendsFileManager friendsManager;
-    private ArrayList<Request> friendRequests;
     private ArrayList<User> friends;
     private ArrayList<User> blocked;
 
@@ -31,7 +32,6 @@ public class User implements FriendshipManager, FriendRequestService {
         this.dateOfBirth = dateOfBirth;
         status = false;
 
-        this.friendRequests = new ArrayList<>();
         this.friends=new ArrayList<>();
         this.blocked=new ArrayList<>();
         this.contentManager=ContentManager.getInstance(userID);
@@ -65,14 +65,6 @@ public class User implements FriendshipManager, FriendRequestService {
     public FriendsFileManager getFriendsManager()
     {
         return friendsManager;
-    }
-
-    public ArrayList<Request> getFriendRequests() {
-        return friendRequests;
-    }
-
-    public void setFriendRequests(ArrayList<Request> friendRequests) {
-        this.friendRequests = friendRequests;
     }
 
     
@@ -156,14 +148,14 @@ public class User implements FriendshipManager, FriendRequestService {
 
     @Override
     public void acceptRequest(User sender) {
-        Request friendRequest = searchRequest(sender);
-        friendRequest.processAcceptFriendRequest();
+       // Request friendRequest = searchRequest(sender);
+      //  friendRequest.processAcceptFriendRequest();
     }
   
     @Override
     public void declineRequest(User sender) {
-        Request friendRequest = searchRequest(sender);
-        friendRequest.processDeclineFriendRequest();
+      //  Request friendRequest = searchRequest(sender);
+       // friendRequest.processDeclineFriendRequest();
     }
 
     @Override
@@ -172,23 +164,19 @@ public class User implements FriendshipManager, FriendRequestService {
         
         for(User user: allUsers)
         {
-            if(user !=this && !this.getFriends().contains(user) && /*this.searchRequest(user)!=null &&*/ !this.getBlocked().contains(user))
+            if(user !=this && !this.getFriends().contains(user) && /*RequestManager.getInstance(userID).search() */ !this.getBlocked().contains(user))
                 suggestions.add(user);
         }
         return suggestions;
     }
     
-    public Request searchRequest(User otherUser)
-    {
-        for(Request r:this.friendRequests)
-        {
-            if(r.getRecipient().getUserID().equals(otherUser.getUserID()) || r.getSender().getUserID().equals(otherUser.getUserID()))
-                System.out.println("Found !");
-                return r;
+  
+    public void logout() {
+        if (this != null) {
+            this.setStatus(false);
+            UserFileManager.getInstance().saveToFile(UserFileManager.getInstance().getUsers());
         }
-        return null;
     }
-
     @Override
     public void displayStatuses() {
     }
