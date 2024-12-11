@@ -35,6 +35,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private ArrayList<Post> posts;
     private ArrayList<Story> stories;
     private ArrayList<User> users;
+    private ArrayList<Group> groups;
     private String userId;
     private ConnectHubMain connectHub;
 
@@ -551,7 +552,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
                 }
             }
             for (Group group : groups) {
-                if (group.getName().toLowerCase().contains(searchResult)) {
+                if (group.getGroupName().toLowerCase().contains(searchResult)) {
                     searchModel.addElement(group.getName());
                 }
             }
@@ -584,7 +585,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
     public Group searchSelectedItemGroup(String selectedString)
     {
         for(Group group : groups)
-            if(group.getName().equalsIgnoreCase(selectedString)) return group;
+            if(group.getGroupName().equalsIgnoreCase(selectedString)) return group;
         return null;
     }
     public void refresh() {
