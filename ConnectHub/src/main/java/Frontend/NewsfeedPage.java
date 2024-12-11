@@ -23,6 +23,8 @@ import javax.swing.JPanel;
 import Backend.*;
 import java.awt.event.ActionEvent;
 import java.time.format.DateTimeFormatter;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
 
 public class NewsfeedPage extends javax.swing.JFrame {
 
@@ -38,7 +40,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
     public NewsfeedPage(User user, ConnectHubMain connectHub) {
         initComponents();
         setTitle("Newsfeed");
-        setSize(1300, 627);
+        setSize(1300, 700);
         setContentPane(mainPanel);
         this.connectHub = connectHub;
         this.dispose();
@@ -59,6 +61,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
         friendsList.setModel(friendsModel);
         suggestedFriendsList.setModel(suggestedFriendsModel);
+        friendsList.setVisibleRowCount(5);
 
         populateFriends();
         populateSuggestedFriends();
@@ -69,22 +72,19 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
     }
 
-    public void populateSuggestedFriends() {
+    private void populateSuggestedFriends() {
 
-        suggestedFriendsModel.clear();
+        suggestedFriendsModel.removeAllElements();
         ArrayList<User> allUsers = UserFileManager.getInstance().getUsers();
-        for (User u : allUsers) {
-            System.out.println("Username :" + u.getUsername());
-        }
         ArrayList<User> suggestedFriends = user.suggestFriends(allUsers);
         for (User suggestedFriend : suggestedFriends) {
             suggestedFriendsModel.addElement(suggestedFriend.getUsername());
         }
     }
 
-    public void populateFriends() {
+    private void populateFriends() {
+        friendsModel.removeAllElements();
         ArrayList<User> friends = UserFileManager.getInstance().findUserByID(userId).getFriends();
-
         if (friends == null) {
             friendsModel.addElement("No Friends");
         } else {
@@ -178,14 +178,14 @@ public class NewsfeedPage extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         postsScrollPane = new javax.swing.JScrollPane();
         storiesScrollPane = new javax.swing.JScrollPane();
-        jPanel1 = new javax.swing.JPanel();
+        jPanelFriends = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         friendsList = new javax.swing.JList<>();
-        jPanel2 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        jPanelSuggestedFriends = new javax.swing.JPanel();
+        jScrollPaneSugFriends = new javax.swing.JScrollPane();
         suggestedFriendsList = new javax.swing.JList<>();
         jLabel4 = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
+        jPanelRequests = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         requestsList = new javax.swing.JList<>();
         jPanel4 = new javax.swing.JPanel();
@@ -197,7 +197,6 @@ public class NewsfeedPage extends javax.swing.JFrame {
         addPostButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1168, 1000));
 
         mainPanel.setPreferredSize(new java.awt.Dimension(1168, 1000));
 
@@ -210,20 +209,25 @@ public class NewsfeedPage extends javax.swing.JFrame {
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
+        friendsList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                friendsListValueChanged(evt);
+            }
+        });
         jScrollPane1.setViewportView(friendsList);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanelFriendsLayout = new javax.swing.GroupLayout(jPanelFriends);
+        jPanelFriends.setLayout(jPanelFriendsLayout);
+        jPanelFriendsLayout.setHorizontalGroup(
+            jPanelFriendsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelFriendsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)
                 .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+        jPanelFriendsLayout.setVerticalGroup(
+            jPanelFriendsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFriendsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1)
                 .addContainerGap())
@@ -234,22 +238,27 @@ public class NewsfeedPage extends javax.swing.JFrame {
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane2.setViewportView(suggestedFriendsList);
+        suggestedFriendsList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                suggestedFriendsListValueChanged(evt);
+            }
+        });
+        jScrollPaneSugFriends.setViewportView(suggestedFriendsList);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanelSuggestedFriendsLayout = new javax.swing.GroupLayout(jPanelSuggestedFriends);
+        jPanelSuggestedFriends.setLayout(jPanelSuggestedFriendsLayout);
+        jPanelSuggestedFriendsLayout.setHorizontalGroup(
+            jPanelSuggestedFriendsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelSuggestedFriendsLayout.createSequentialGroup()
                 .addGap(3, 3, 3)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPaneSugFriends, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        jPanelSuggestedFriendsLayout.setVerticalGroup(
+            jPanelSuggestedFriendsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelSuggestedFriendsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPaneSugFriends, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -262,16 +271,16 @@ public class NewsfeedPage extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(requestsList);
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanelRequestsLayout = new javax.swing.GroupLayout(jPanelRequests);
+        jPanelRequests.setLayout(jPanelRequestsLayout);
+        jPanelRequestsLayout.setHorizontalGroup(
+            jPanelRequestsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelRequestsLayout.createSequentialGroup()
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
                 .addContainerGap())
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        jPanelRequestsLayout.setVerticalGroup(
+            jPanelRequestsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
         );
 
@@ -364,7 +373,6 @@ public class NewsfeedPage extends javax.swing.JFrame {
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(storiesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 777, Short.MAX_VALUE)
                     .addComponent(postsScrollPane))
@@ -373,17 +381,17 @@ public class NewsfeedPage extends javax.swing.JFrame {
                         .addGap(6, 6, 6)
                         .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanelSuggestedFriends, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(mainPanelLayout.createSequentialGroup()
                                 .addGap(6, 6, 6)
                                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jPanelRequests, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                     .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(mainPanelLayout.createSequentialGroup()
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(138, 138, 138))
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jPanelFriends, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(28, 28, 28))
         );
         mainPanelLayout.setVerticalGroup(
@@ -399,25 +407,25 @@ public class NewsfeedPage extends javax.swing.JFrame {
                             .addGroup(mainPanelLayout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(jPanelFriends, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addComponent(storiesScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(mainPanelLayout.createSequentialGroup()
                                 .addGap(7, 7, 7)
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jPanelSuggestedFriends, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jPanelRequests, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(mainPanelLayout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(postsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 416, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -431,7 +439,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 664, Short.MAX_VALUE)
+            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 656, Short.MAX_VALUE)
         );
 
         pack();
@@ -523,7 +531,6 @@ public class NewsfeedPage extends javax.swing.JFrame {
                 options[0]
         );
 
-        //FriendsFileManager friendsManager = FriendsFileManager.getInstance(loggedInUser.getUserID());
         ArrayList<Request> requests = loggedInUser.getFriendRequests();
 
         if (choice == 0) { // Accept
@@ -534,15 +541,54 @@ public class NewsfeedPage extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Friend request declined.", "Success", JOptionPane.INFORMATION_MESSAGE);
         }
 
-        // Refresh combo box
         refresh();
     }
 //GEN-LAST:event_requestsComboBoxActionPerformed
+    private void sendFriendRequest(String recipientUsername, User loggedInUser) {
+        //loggedInUser is the sender
+        User recipient = UserFileManager.getInstance().findUserByUsername(recipientUsername);
+        if (recipient == null) {
+            JOptionPane.showMessageDialog(null, "User not found!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Object[] options = {"Send Request", "Cancel"};
+        int choice = JOptionPane.showOptionDialog(
+                null,
+                "<html>Do you want to send a Friend Request to <b>" + recipient.getUsername() + "</b>?</html>",
+                "Friend Request",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+
+        ArrayList<Request> requests = loggedInUser.getFriendRequests();
+
+        if (choice == 0) { // Send
+            loggedInUser.sendRequest(recipient);
+            JOptionPane.showMessageDialog(null, "Friend request sent.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } else if (choice == 1) { // Cancel
+
+            JOptionPane.showMessageDialog(null, "Friend request not Sent.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        }
+
+        refresh();
+    }
+    private void friendsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_friendsListValueChanged
+        String SelectedFruit = (String) friendsList.getSelectedValue();
+        //System.out.println("Selected String "+SelectedFruit);
+    }//GEN-LAST:event_friendsListValueChanged
+
+    private void suggestedFriendsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_suggestedFriendsListValueChanged
+        String selectedUsername = (String) suggestedFriendsList.getSelectedValue();
+        sendFriendRequest(selectedUsername, user);
+
+    }//GEN-LAST:event_suggestedFriendsListValueChanged
     public void refresh() {
         populateStories();
         populatePosts();
-        this.friendsModel.clear();
-        this.suggestedFriendsModel.clear();
         populateFriends();
         populateSuggestedFriends();
 
@@ -585,14 +631,14 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanelFriends;
+    private javax.swing.JPanel jPanelRequests;
+    private javax.swing.JPanel jPanelSuggestedFriends;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPaneSugFriends;
     private javax.swing.JButton logoutButton;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JButton newRefreshButton;
