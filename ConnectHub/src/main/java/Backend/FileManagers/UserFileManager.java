@@ -136,11 +136,11 @@ public void readFromFile() {
 
     public User findUserByUsername(String username) {
         for (User u : users) {
-            if (username.equals(u.getUsername())) {
+            if (u.getUsername().equals(username)) {
+                System.out.println("Username Back :"+u.getUsername());
                 return u;
             }
         }
-
         return null;
     }
 
