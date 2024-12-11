@@ -1,5 +1,0 @@
-[{
-    "senderId": "6125e6f4-2273-43f7-902a-437a4ef2d45f",
-    "recipientId": "6da2aab8-136d-423e-b557-722b665f6fe0",
-    "requestStat": "Pending"
-}]
