@@ -1,5 +1,8 @@
 package Backend;
 
+import Backend.FileManagers.ProfileFileManager;
+import Backend.FileManagers.UserFileManager;
+import Interfaces.UserManagerInterface;
 import static Backend.Password.*;
 //import static Backend.UserFileManager.readUsers;
 import Interfaces.FilePaths;
@@ -12,22 +15,20 @@ public class UserManager implements UserManagerInterface {
 
     private ArrayList<User> users;
 
-    public UserManager(ArrayList<User> users) {
-        this.users = users;
+    public UserManager() {
+        this.users = UserFileManager.getInstance().getUsers();
     }
 
     @Override
     public User signup(String email, String username, LocalDate dateOfBirth, String password) {
-        if (UserValidation.isEmailTaken(email, users)) {
-            throw new IllegalArgumentException("Email is already taken");
-            
-        } else if (UserValidation.isUsernameTaken(username, users)) {
-            throw new IllegalArgumentException("UserName is already taken");
-        }
         User u = new User(UUID.randomUUID().toString(), email, username, dateOfBirth, hashPassword(password));
         users.add(u);
+        UserProfile p = new UserProfile(u.getUserID(),"","","");
+        ProfileFileManager.getInstance().getProfiles().add(p);
         u.setStatus(true);
+        
         UserFileManager.getInstance().saveToFile(users); // Save the updated list
+        ProfileFileManager.getInstance().saveToFile(ProfileFileManager.getInstance().getProfiles());
         return u;
     }
 
@@ -36,12 +37,17 @@ public class UserManager implements UserManagerInterface {
         for (User u : users) {
             if (email.equals(u.getEmail()) && verifyPassword(password, u.getPassword())) {
                 u.setStatus(true);
+                UserFileManager.getInstance().saveToFile(users); // Save the updated list
                 return u;
             }
         }
         return null;
     }
+
     
+    
+ 
+
 
     public boolean loginValidation(String email, String password) {
         for (User u : users) {
@@ -51,4 +57,5 @@ public class UserManager implements UserManagerInterface {
         }
         return false;
     }
+
 }

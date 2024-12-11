@@ -1,5 +1,6 @@
-package Backend;
+package Backend.FileManagers;
 
+import Backend.*;
 import Interfaces.FilePaths;
 import java.io.File;
 import java.io.FileWriter;
@@ -17,19 +18,21 @@ public class FriendsFileManager implements FileManager<User> {
     private static FriendsFileManager instance;
     private String FILE_PATH = FilePaths.FRIENDS_FILE_PATH;
     private String userId;
-    private ArrayList<User> friends; // List of the current user's friends
-    private ArrayList<User> blocked; // List of the current user's blocked users
+    private ArrayList<User> friends;
+    private ArrayList<User> blocked;
+    private ArrayList<Request> requests;
 
-    // Private constructor to avoid instantiation (singleton)
     private FriendsFileManager(String userId) {
         this.userId = userId;
         this.friends = new ArrayList<>();
         this.blocked = new ArrayList<>();
-        readFromFile(); // Load the user's friends and blocked users on initialization
+        readFromFile();
     }
 
-    // Singleton pattern: getInstance method
     public static synchronized FriendsFileManager getInstance(String userId) {
+        if (instance != null && !instance.userId.equals(userId)) {
+            instance=null;
+        }
         if (instance == null) {
             instance = new FriendsFileManager(userId);
         }
@@ -37,19 +40,25 @@ public class FriendsFileManager implements FileManager<User> {
     }
 
     public ArrayList<User> getFriends() {
-    if (friends == null) {
-        friends = new ArrayList<>();
+        if (friends == null) {
+            friends = new ArrayList<>();
+        }
+        return friends;
     }
-    return friends;
-}
 
-public ArrayList<User> getBlocked() {
-    if (blocked == null) {
-        blocked = new ArrayList<>();
+    public ArrayList<User> getBlocked() {
+        if (blocked == null) {
+            blocked = new ArrayList<>();
+        }
+        return blocked;
     }
-    return blocked;
-}
 
+    public ArrayList<Request> getRequests() { //All Requests of all users
+        if (requests == null) {
+            requests = new ArrayList<>();
+        }
+        return requests;
+    }
 
     @Override
     public void readFromFile() {
@@ -57,22 +66,21 @@ public ArrayList<User> getBlocked() {
             String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
             JSONArray allUsersFriendsArray = new JSONArray(json); // Parse the JSON array
 
-            // Iterate through each user in the friends file
             for (int i = 0; i < allUsersFriendsArray.length(); i++) {
                 JSONObject userFriendBlockedJSON = allUsersFriendsArray.getJSONObject(i);
                 String userId = userFriendBlockedJSON.getString("userId");
 
-                // Find the user using UserFileManager
                 User user = UserFileManager.getInstance().findUserByID(userId);
                 if (user != null) {
-                    // Get the friends and blocked arrays
+
                     JSONArray friendsArray = userFriendBlockedJSON.getJSONArray("friends");
                     JSONArray blockedArray = userFriendBlockedJSON.getJSONArray("blocked");
+                    JSONArray requestsArray = userFriendBlockedJSON.optJSONArray("requests");
 
                     ArrayList<User> friends = new ArrayList<>();
                     ArrayList<User> blocked = new ArrayList<>();
+                    ArrayList<Request> friendRequests = new ArrayList<>();
 
-                    // Populate the friends list
                     for (int j = 0; j < friendsArray.length(); j++) {
                         String friendId = friendsArray.getString(j);
                         User friend = UserFileManager.getInstance().findUserByID(friendId);
@@ -80,11 +88,8 @@ public ArrayList<User> getBlocked() {
                             friends.add(friend);
                         }
                     }
-
-                    // Update the user's friends list
                     user.setFriends(friends);
 
-                    // Populate the blocked list
                     for (int j = 0; j < blockedArray.length(); j++) {
                         String blockedId = blockedArray.getString(j);
                         User blockedUser = UserFileManager.getInstance().findUserByID(blockedId);
@@ -92,9 +97,18 @@ public ArrayList<User> getBlocked() {
                             blocked.add(blockedUser);
                         }
                     }
-
-                    // Update the user's blocked list
                     user.setBlocked(blocked);
+
+//                    if (requestsArray != null) {
+//                        for (int j = 0; j < requestsArray.length(); j++) {
+//                            String requestId = requestsArray.getString(j);
+//                            Request request = RequestsFileManager.getInstance().findRequestByID(requestId);
+//                            if (request != null) {
+//                                friendRequests.add(request);
+//                            }
+//                        }
+//                    }
+//                    user.setFriendRequests(friendRequests);
                 }
             }
         } catch (IOException | JSONException ex) {
@@ -142,4 +156,15 @@ public ArrayList<User> getBlocked() {
             System.out.println("Error saving users: " + e.getMessage());
         }
     }
+
+    public ArrayList<Request> getRequestsForUser(String userId) {
+        ArrayList<Request> userRequests = new ArrayList<>();
+        for (Request req : getRequests()) {
+            if (req.getRecipient().getUserID().equals(userId)) {
+                userRequests.add(req);
+            }
+        }
+        return userRequests;
+    }
+
 }
