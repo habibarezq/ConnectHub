@@ -24,25 +24,28 @@ import java.awt.event.ActionEvent;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class NewsfeedPage extends javax.swing.JFrame {
 
     private DefaultListModel<String> friendsModel;
     private DefaultListModel<String> suggestedFriendsModel;
+    private DefaultListModel<String> searchModel;
     private ArrayList<Post> posts;
     private ArrayList<Story> stories;
     private ArrayList<User> users;
     private String userId;
-private ConnectHubMain connectHub;
+    private ConnectHubMain connectHub;
 
-    public NewsfeedPage(User user,ConnectHubMain connectHub) {
+    public NewsfeedPage(User user, ConnectHubMain connectHub) {
         initComponents();
         setTitle("Newsfeed");
-        setSize(1300,627);
+        setSize(1300, 627);
         setContentPane(mainPanel);
-        this.connectHub=connectHub;
+        this.connectHub = connectHub;
         this.dispose();
-        
+
         this.userId = user.getUserID();
         FriendsFileManager.getInstance(userId);
         this.posts = PostsFileManager.getInstance().getPosts();
@@ -53,10 +56,11 @@ private ConnectHubMain connectHub;
         this.stories = StoriesFileManager.getInstance().getStories();
         //fillstories();
 
-
+        searchModel = new DefaultListModel<>();
         friendsModel = new DefaultListModel<>();
         suggestedFriendsModel = new DefaultListModel<>();
 
+        searchList.setModel(searchModel);
         friendsList.setModel(friendsModel);
         suggestedFriendsList.setModel(suggestedFriendsModel);
 
@@ -65,7 +69,7 @@ private ConnectHubMain connectHub;
         populatePosts();
         populateStories();
         ActionEvent evt = null;
-        
+
         requestsComboBoxActionPerformed(evt);
     }
 
@@ -234,6 +238,10 @@ private ConnectHubMain connectHub;
         newRefreshButton = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         requestsComboBox = new javax.swing.JComboBox<>();
+        searchField = new javax.swing.JTextField();
+        searchButton = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        searchList = new javax.swing.JList<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -298,30 +306,54 @@ private ConnectHubMain connectHub;
             }
         });
 
+        searchField.setText("Search");
+
+        searchButton.setText("Search");
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonActionPerformed(evt);
+            }
+        });
+
+        searchList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane3.setViewportView(searchList);
+
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(requestsComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(mainPanelLayout.createSequentialGroup()
                         .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(mainPanelLayout.createSequentialGroup()
-                                .addGap(25, 25, 25)
-                                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(logoutButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(addStoryButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(addPostButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(profileButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(newRefreshButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(mainPanelLayout.createSequentialGroup()
+                                        .addGap(25, 25, 25)
+                                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(logoutButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(addStoryButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(addPostButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(profileButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(newRefreshButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                    .addGroup(mainPanelLayout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(mainPanelLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 38, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(requestsComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(mainPanelLayout.createSequentialGroup()
+                                        .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(searchButton)
+                                        .addGap(0, 33, Short.MAX_VALUE)))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(storiesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE)
                     .addComponent(postsScrollPane))
@@ -339,27 +371,9 @@ private ConnectHubMain connectHub;
                 .addGap(18, 18, 18)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(mainPanelLayout.createSequentialGroup()
-                                .addGap(15, 15, 15)
-                                .addComponent(profileButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(logoutButton)
-                                .addGap(60, 60, 60)
-                                .addComponent(newRefreshButton)
-                                .addGap(18, 18, 18)
-                                .addComponent(addStoryButton)
-                                .addGap(18, 18, 18)
-                                .addComponent(addPostButton)
-                                .addGap(57, 57, 57)
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(requestsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(mainPanelLayout.createSequentialGroup()
-                                .addComponent(storiesScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(postsScrollPane)))
+                        .addComponent(storiesScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(postsScrollPane)
                         .addContainerGap())
                     .addGroup(mainPanelLayout.createSequentialGroup()
                         .addComponent(jLabel1)
@@ -369,7 +383,29 @@ private ConnectHubMain connectHub;
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(113, Short.MAX_VALUE))))
+                        .addContainerGap(113, Short.MAX_VALUE))
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addComponent(profileButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(logoutButton)
+                        .addGap(60, 60, 60)
+                        .addComponent(newRefreshButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(addStoryButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(addPostButton)
+                        .addGap(40, 40, 40)
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(searchButton))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(requestsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(55, 55, 55))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -394,7 +430,7 @@ private ConnectHubMain connectHub;
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
         this.dispose();
         new ConnectHubMain().setVisible(true);
-        
+
     }//GEN-LAST:event_logoutButtonActionPerformed
 
     private void addStoryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStoryButtonActionPerformed
@@ -412,11 +448,11 @@ private ConnectHubMain connectHub;
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
 
-                    stories.add(new Story( userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
+                    stories.add(new Story(userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
                 } else {
                     String text = JOptionPane.showInputDialog(null, "Enter Text:");
 
-                    stories.add(new Story( userId, text, null, LocalDateTime.now()));
+                    stories.add(new Story(userId, text, null, LocalDateTime.now()));
                 }
                 refresh();
             }
@@ -437,7 +473,7 @@ private ConnectHubMain connectHub;
                 int returnValue = fileChooser.showOpenDialog(this);
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
-                posts.add(new Post( userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
+                    posts.add(new Post(userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
                 } else {
                     String text = JOptionPane.showInputDialog(null, "Enter Text:");
                     posts.add(new Post(userId, text, null, LocalDateTime.now()));
@@ -456,57 +492,101 @@ private ConnectHubMain connectHub;
     private void requestsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestsComboBoxActionPerformed
         User u = UserFileManager.getInstance().findUserByID(userId);
         HashMap<User, String> friendRequests = u.getFriendRequests();
-        
+
         //to make sure it removes any old requests and re-writes the actually-existing ones
         requestsComboBox.removeAll();
-        
+
         //adding the elements to the comboBox username(status)
         for (Map.Entry<User, String> entry : friendRequests.entrySet()) {
             User user = entry.getKey();  // The User object (key)
             String request = entry.getValue();  // The request message (value)
-            requestsComboBox.addItem(user.getUsername()+" ("+request+") ");
+            requestsComboBox.addItem(user.getUsername() + " (" + request + ") ");
         }
         requestsComboBox.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 User u = UserFileManager.getInstance().findUserByID(userId);
                 HashMap<User, String> friendRequests = u.getFriendRequests();
-                
+
                 String selectedItem = (String) requestsComboBox.getSelectedItem();
                 if (selectedItem != null && !selectedItem.isEmpty()) {
                     // Parse the selected item to extract the username
                     String selectedUsername = selectedItem.split(" ")[0]; // Extract username before '('
-                    
+
                     // Create a dialog to show more information
                     Object[] requestAnswer = {"Accept", "Decline"};
                     int answer = JOptionPane.showOptionDialog(null, "Do you want to accept or decline?", "Friend Request", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, requestAnswer, requestAnswer[0]);
                     //no default option and no custom icon 
-                    
-                    if(answer == 0) 
-                    {
+
+                    if (answer == 0) {
                         User acceptedFriend = UserFileManager.getInstance().findUserByUsername(selectedUsername);
                         String acceptedFriendId = acceptedFriend.getUserID();
                         friendRequests.put(acceptedFriend, acceptedFriendId);
                         requestsComboBox.removeItem(selectedItem);
                         refresh();
-                    }
-                        
-                    else if(answer == 1)
-                    {
+                    } else if (answer == 1) {
                         User declinedFriend = UserFileManager.getInstance().findUserByUsername(selectedUsername);
                         String declinedFriendId = declinedFriend.getUserID();
                         friendRequests.remove(declinedFriend);
                         requestsComboBox.removeItem(selectedItem);
-                        refresh(); 
-                    }  
-                    else 
-                    JOptionPane.showMessageDialog(null, "No action taken.");    
+                        refresh();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "No action taken.");
+                    }
                 }
             }
-        }); 
-        
+        });
+
     }//GEN-LAST:event_requestsComboBoxActionPerformed
 
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+        String searchResult = searchField.getText();
+        if (searchResult.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Empty Field.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            //searching in lists of users and groups
+            for (User user : users) {
+                if (user.getUsername().toLowerCase().contains(searchResult)) {
+                    searchModel.addElement(user.getUsername());
+                }
+            }
+            for (Group group : groups) {
+                if (group.getName().toLowerCase().contains(searchResult)) {
+                    searchModel.addElement(group.getName());
+                }
+            }
+        }
+        if(groups == null && users == null) searchModel.addElement("No search Results.");
+
+        searchList.addListSelectionListener(new ListSelectionListener() {
+        @Override
+        public void  valueChanged(ListSelectionEvent e) 
+        {
+            if(!e.getValueIsAdjusting())
+            {
+                String selectedString = searchList.getSelectedValue();
+                User u = searchSelectedItemUser(selectedString);
+                Group g = searchSelectedItemGroup(selectedString);
+                if(u!= null) new Profile(u);
+                else if(g!=null) new groupPage(g);
+            }
+        }
+        });
+    }//GEN-LAST:event_searchButtonActionPerformed
+
+    public User searchSelectedItemUser(String selectedString)
+    {
+      for(User user : users)
+          if(user.getUsername().equalsIgnoreCase(selectedString)) return user;
+      return null;
+    }
+    
+    public Group searchSelectedItemGroup(String selectedString)
+    {
+        for(Group group : groups)
+            if(group.getName().equalsIgnoreCase(selectedString)) return group;
+        return null;
+    }
     public void refresh() {
         populateStories();
         populatePosts();
@@ -556,12 +636,16 @@ private ConnectHubMain connectHub;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JButton logoutButton;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JButton newRefreshButton;
     private javax.swing.JScrollPane postsScrollPane;
     private javax.swing.JButton profileButton;
     private javax.swing.JComboBox<String> requestsComboBox;
+    private javax.swing.JButton searchButton;
+    private javax.swing.JTextField searchField;
+    private javax.swing.JList<String> searchList;
     private javax.swing.JScrollPane storiesScrollPane;
     private javax.swing.JList<String> suggestedFriendsList;
     // End of variables declaration//GEN-END:variables
