@@ -29,7 +29,6 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private String userId;
     private ConnectHubMain connectHub;
     private User user;
-    private DefaultListModel<String> searchModel;
     
     public NewsfeedPage(User user, ConnectHubMain connectHub) {
         initComponents();
@@ -50,12 +49,10 @@ public class NewsfeedPage extends javax.swing.JFrame {
         this.stories = StoriesFileManager.getInstance().getStories();
         this.requests = RequestManager.getInstance(userId).getUserRequests();
 
-        searchModel = new DefaultListModel<>();
         friendsModel = new DefaultListModel<>();
         suggestedFriendsModel = new DefaultListModel<>();
         requestsModel = new DefaultListModel<>();
 
-        searchList.setModel(searchModel);
         friendsList.setModel(friendsModel);
         friendsList.setVisibleRowCount(5);
 
@@ -217,8 +214,6 @@ public class NewsfeedPage extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         searchButton = new javax.swing.JButton();
         searchField = new javax.swing.JTextField();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        searchList = new javax.swing.JList<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -398,27 +393,15 @@ public class NewsfeedPage extends javax.swing.JFrame {
             }
         });
 
-        searchField.setText("jTextField1");
-
-        searchList.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane2.setViewportView(searchList);
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(searchField)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane2))
+                .addComponent(searchField)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -428,8 +411,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(searchButton)
                     .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE))
+                .addContainerGap(271, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
@@ -766,7 +748,6 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private javax.swing.JPanel jPanelRequests;
     private javax.swing.JPanel jPanelSuggestedFriends;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPaneSugFriends;
     private javax.swing.JButton logoutButton;
@@ -777,7 +758,6 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private javax.swing.JList<String> requestsList;
     private javax.swing.JButton searchButton;
     private javax.swing.JTextField searchField;
-    private javax.swing.JList<String> searchList;
     private javax.swing.JScrollPane storiesScrollPane;
     private javax.swing.JList<String> suggestedFriendsList;
     // End of variables declaration//GEN-END:variables
