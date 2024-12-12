@@ -1,23 +1,16 @@
 [
     {
-        "userId": "8526bad8-b8a7-4b60-ac87-e481bcaffcbe",
-        "contentId": "post-1",
-        "TextContent": "This is the first post",
-        "imagePath": "C:/Users/habib/Documents/NetBeansProjects/ConnectHub/ConnectHub/image2.jpeg",
-        "time": "2024-12-06T10:00:00"
+        "imagePath": "C:\\Users\\habib\\Documents\\NetBeansProjects\\ConnectHub\\ConnectHub\\pics\\download (2).jpeg",
+        "contentId": "7b59171f-3a36-463f-93ec-ced98d9a380b",
+        "time": "2024-12-11T02:14:42.722354300",
+        "TextContent": "hello,from habiba rezq",
+        "userId": "6125e6f4-2273-43f7-902a-437a4ef2d45f"
     },
     {
-        "userId": "457154dd-294b-43c4-a4a9-8ebb744e3e06",
-        "contentId": "post-2",
-        "TextContent": "This is the second post",
-        "imagePath": "C:/Users/habib/Documents/NetBeansProjects/ConnectHub/ConnectHub/images.jpg",
-        "time": "2024-12-06T11:00:00"
-    },
-    {
-        "userId": "5f8078ba-4213-4fac-93fc-a1ea9d560eb9",
-        "contentId": "post-3",
-        "TextContent": "This is the third post",
-        "imagePath": "C:/Users/habib/Documents/NetBeansProjects/ConnectHub/ConnectHub/images3.jpeg",
-        "time": "2024-12-06T12:00:00"
+        "imagePath": "C:\\Users\\habib\\Documents\\NetBeansProjects\\ConnectHub\\ConnectHub\\pics\\images3.jpeg",
+        "contentId": "56737438-bd52-471c-a7fe-e05087ceff08",
+        "time": "2024-12-11T02:15:45.785055400",
+        "TextContent": "rahma's 1st post",
+        "userId": "97a34610-5607-4783-bc01-2122ccaab61f"
     }
 ]

@@ -1,5 +1,6 @@
 package Backend;
 
+import Backend.FileManagers.ProfileFileManager;
 import Backend.FileManagers.UserFileManager;
 import Interfaces.UserManagerInterface;
 import static Backend.Password.*;
@@ -22,8 +23,12 @@ public class UserManager implements UserManagerInterface {
     public User signup(String email, String username, LocalDate dateOfBirth, String password) {
         User u = new User(UUID.randomUUID().toString(), email, username, dateOfBirth, hashPassword(password));
         users.add(u);
+        UserProfile p = new UserProfile(u.getUserID(),"","","");
+        ProfileFileManager.getInstance().getProfiles().add(p);
         u.setStatus(true);
+        
         UserFileManager.getInstance().saveToFile(users); // Save the updated list
+        ProfileFileManager.getInstance().saveToFile(ProfileFileManager.getInstance().getProfiles());
         return u;
     }
 
@@ -39,13 +44,7 @@ public class UserManager implements UserManagerInterface {
         return null;
     }
 
-    public void logout(String userId) {
-        User user = UserFileManager.getInstance().findUserByID(userId);
-        if (user != null) {
-            user.setStatus(false);
-            UserFileManager.getInstance().saveToFile(users);
-        }
-    }
+    
     
  
 

@@ -126,11 +126,11 @@ public class password extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Umatched Passwords!!", "Failed!!", JOptionPane.ERROR_MESSAGE);
         } else {
             // Password change is successful
-            ProfileFileManager.getInstance(user.getUserID()).getUserProfile().updatePassword(newPasswordStr);
+            ProfileFileManager.getInstance().getUserProfileById(user.getUserID()).updatePassword(newPasswordStr);
             JOptionPane.showMessageDialog(this, "Password changed successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
         }
-        new Profile(this.user, feed);
+        new Profile(this.user, feed).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 

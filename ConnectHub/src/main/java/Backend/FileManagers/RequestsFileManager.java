@@ -37,6 +37,14 @@ public class RequestsFileManager implements FileManager<Request> {
 
     @Override
     public void readFromFile() {
+        File file = new File(FILE_PATH);
+        if (!file.exists() || file.length() == 0) {
+            // If the file does not exist or is empty, initialize it with an empty array
+            System.out.println("File not found or empty. Initializing with an empty posts array.");
+            requests = new ArrayList<>();
+            saveToFile(requests);
+            return;
+        }
         try {
             String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
             JSONArray requestsArray = new JSONArray(json);
@@ -48,24 +56,22 @@ public class RequestsFileManager implements FileManager<Request> {
                 String senderId = requestJSON.getString("senderId");
                 String recipientId = requestJSON.getString("recipientId");
                 String requestStat = requestJSON.getString("requestStat");
-                String requestID = requestJSON.optString("requestID", null); // Use optString to handle missing fields
+                String requestID = requestJSON.getString("requestID");
 
-                // Fetch the User objects
                 User sender = UserFileManager.getInstance().findUserByID(senderId);
                 User recipient = UserFileManager.getInstance().findUserByID(recipientId);
 
                 if (sender != null && recipient != null) {
-                    // Create a new Request object
+
                     Request request = new Request(sender, recipient);
                     request.setRequestStat(requestStat);
 
-                    // Handle requestID
                     if (requestID != null) {
                         request.setRequestID(requestID); // Use ID from the file
                     } else {
                         request.setRequestID(java.util.UUID.randomUUID().toString()); // Generate a new ID if missing
                     }
-
+                    System.out.println("Request"+request.getRecipient().getUsername());
                     requests.add(request);
                 }
             }
@@ -111,6 +117,38 @@ public class RequestsFileManager implements FileManager<Request> {
                 return request;
             }
         }
+        return null;
+    }
+    
+    public boolean searchForUser(String userId)
+    {
+        
+        for(Request request: RequestsFileManager.getInstance().getRequests())
+        {
+            if(request.getRecipient().getUserID().equals(userId) || request.getSender().getUserID().equals(userId))
+            {
+                //if the user is a sender or reciever
+                return true;
+            }
+        }
+        return false;
+    }
+      public Request searchForRequestByIds(String senderId, String recipientId) {
+    for (Request r : RequestsFileManager.getInstance().getRequests()) {
+        if ((r.getRecipient().getUserID().equals(recipientId)) && (r.getSender().getUserID().equals(senderId))) {
+            
+            { System.out.println("Found !");
+            return r; }
+        }
+    }
+    return null; // Return null if no match is found
+}
+
+
+    public Request searchByRequestId(String requestId) {
+        for (Request r : RequestsFileManager.getInstance().getRequests()) {
+                return r;
+            }
         return null;
     }
 }

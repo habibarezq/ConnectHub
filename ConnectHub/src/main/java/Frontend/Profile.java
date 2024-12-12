@@ -30,7 +30,7 @@ public class Profile extends javax.swing.JFrame {
         setTitle("My Profile");
         initComponents();
         setSize(1300, 593);
-        setResizable(false);
+        
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         this.feed = feed;
@@ -39,10 +39,10 @@ public class Profile extends javax.swing.JFrame {
         this.posts = PostsFileManager.getInstance().getPosts();
 
         //instances of Managers
-        FriendsFileManager FriendManger = FriendsFileManager.getInstance(userId);
+        FriendsFileManager FriendManger = FriendsFileManager.getInstance();
         ContentManager contentMaanger = ContentManager.getInstance(userId);
         
-        UserProfile profile = ProfileFileManager.getInstance(userId).getUserProfile();
+        UserProfile profile = ProfileFileManager.getInstance().getUserProfileById(userId);
         friendsModel = new DefaultListModel<>();
         friendsList.setModel(friendsModel);
         
@@ -477,13 +477,14 @@ public class Profile extends javax.swing.JFrame {
     private void profileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_profileButtonActionPerformed
         // TODO add your handling code here:
         String path = changeImage(profileLabel);
-        ProfileFileManager.getInstance(userId).getUserProfile().changeProfilePic(path);
+        ProfileFileManager.getInstance().getUserProfileById(userId).changeProfilePic(path);
+        
     }//GEN-LAST:event_profileButtonActionPerformed
 
     private void coverButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_coverButtonActionPerformed
         // TODO add your handling code here:
         String path = changeImage(coverLabel);
-        ProfileFileManager.getInstance(userId).getUserProfile().changeCoverPic(path);
+        ProfileFileManager.getInstance().getUserProfileById(userId).changeCoverPic(path);
     }//GEN-LAST:event_coverButtonActionPerformed
 
     private void jTextArea1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextArea1FocusGained
@@ -497,7 +498,7 @@ public class Profile extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         String bio = saveBio(); //TO BE SENT TO THE BACKEND TO SAVE IT 
-        ProfileFileManager.getInstance(userId).getUserProfile().updateBio(bio);
+        ProfileFileManager.getInstance().getUserProfileById(userId).updateBio(bio);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed

@@ -1,12 +1,13 @@
 package Backend;
 
-
 import Backend.FileManagers.FriendsFileManager;
+import Backend.FileManagers.*;
+import Backend.FileManagers.UserFileManager;
 import java.time.*;
 import java.util.*;
 import Interfaces.*;
 
-public class User implements FriendshipManager, FriendRequestService {
+public class User{
 
     private String userID;
     private String email;
@@ -18,10 +19,8 @@ public class User implements FriendshipManager, FriendRequestService {
 
     private ContentManager contentManager;
     private FriendsFileManager friendsManager;
-    private ArrayList<Request> friendRequests;
     private ArrayList<User> friends;
     private ArrayList<User> blocked;
-
 
     public User(String userID, String email, String username, LocalDate dateOfBirth, String password) {
         this.userID = userID;
@@ -31,11 +30,10 @@ public class User implements FriendshipManager, FriendRequestService {
         this.dateOfBirth = dateOfBirth;
         status = false;
 
-        this.friendRequests = new ArrayList<>();
-        this.friends=new ArrayList<>();
-        this.blocked=new ArrayList<>();
-        this.contentManager=ContentManager.getInstance(userID);
-        
+        this.friends = new ArrayList<>();
+        this.blocked = new ArrayList<>();
+        this.contentManager = ContentManager.getInstance(userID);
+
     }
 
     public ArrayList<User> getFriends() {
@@ -61,21 +59,11 @@ public class User implements FriendshipManager, FriendRequestService {
     public ContentManager getContentManager() {
         return contentManager;
     }
-    
-    public FriendsFileManager getFriendsManager()
-    {
+
+    public FriendsFileManager getFriendsManager() {
         return friendsManager;
     }
 
-    public ArrayList<Request> getFriendRequests() {
-        return friendRequests;
-    }
-
-    public void setFriendRequests(ArrayList<Request> friendRequests) {
-        this.friendRequests = friendRequests;
-    }
-
-    
     public String getUserID() {
         return userID;
     }
@@ -124,72 +112,10 @@ public class User implements FriendshipManager, FriendRequestService {
         this.status = status;
     }
 
-    @Override
-    public void removeFriend(User friend) {
-        if (this.getFriends().contains(friend)) {
-            this.getFriends().remove(friend);
-            friend.getFriends().remove(this);
-            System.out.println(friend.getUsername() + " has been removed from your friend list.");
-        } else {
-            System.out.println(friend.getUsername() + " is not in your friend list");
-    }
-    }
-
-    @Override
-    public void blockFriend(User friend) {
-        if (this.getFriends().contains(friend)) {
-            this.getFriends().remove(friend);
-            friend.getFriends().remove(this);
-            this.getBlocked().add(friend);
-            System.out.println(friend.getUsername() + " has been blocked from.");
-           
-        } else {
-            System.out.println(friend.getUsername() + " is not in your friend list");
+    public void logout() {
+        if (this != null) {
+            this.setStatus(false);
+            UserFileManager.getInstance().saveToFile(UserFileManager.getInstance().getUsers());
         }
-    }
-
-    @Override
-    public void sendRequest(User recipient) {
-        Request friendRequest = new Request(this, recipient);
-        friendRequest.processFriendRequest();
-    }
-
-    @Override
-    public void acceptRequest(User sender) {
-        Request friendRequest = searchRequest(sender);
-        friendRequest.processAcceptFriendRequest();
-    }
-  
-    @Override
-    public void declineRequest(User sender) {
-        Request friendRequest = searchRequest(sender);
-        friendRequest.processDeclineFriendRequest();
-    }
-
-    @Override
-    public ArrayList<User> suggestFriends(ArrayList<User> allUsers) {
-        ArrayList<User> suggestions=new ArrayList<>();
-        
-        for(User user: allUsers)
-        {
-            if(user !=this && !this.getFriends().contains(user) && /*this.searchRequest(user)!=null &&*/ !this.getBlocked().contains(user))
-                suggestions.add(user);
-        }
-        return suggestions;
-    }
-    
-    public Request searchRequest(User otherUser)
-    {
-        for(Request r:this.friendRequests)
-        {
-            if(r.getRecipient().getUserID().equals(otherUser.getUserID()) || r.getSender().getUserID().equals(otherUser.getUserID()))
-                System.out.println("Found !");
-                return r;
-        }
-        return null;
-    }
-
-    @Override
-    public void displayStatuses() {
     }
 }
