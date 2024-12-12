@@ -33,5 +33,7 @@ ConnectHub/target/maven-status/maven-compiler-plugin/compile/default-compile/inp
 ConnectHub/friends.txt
 ConnectHub/requests.txt
 *.txt
-ConnectHub/users.txt
+
 ConnectHub/friends.txt
+ConnectHub/users.txt
+
