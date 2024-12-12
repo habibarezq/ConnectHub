@@ -1,11 +1,9 @@
 package Frontend;
 
 
+import Backend.FileManagers.UserFileManager;
 import javax.swing.JOptionPane;
 import Backend.*;
-import Validation.UserValidation;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 public class Login extends javax.swing.JFrame {
@@ -117,7 +115,7 @@ public class Login extends javax.swing.JFrame {
         String email = emailText.getText();
         String password = PasswordField.getText();
 
-        UserManager u = new UserManager(usersArray);
+        UserManager u = new UserManager();
         if (email.equals("") || password.equals("")) {
             JOptionPane.showMessageDialog(this, "Some fields are empty!", "Message", JOptionPane.ERROR_MESSAGE);
         }
@@ -125,7 +123,10 @@ public class Login extends javax.swing.JFrame {
             User user=u.login(email, password);
             this.dispose();
             new NewsfeedPage(user,connectHub).setVisible(true);
-            
+             for(User var:UserFileManager.getInstance().getUsers())
+            {
+                System.out.println("Username : "+var.getUsername() +"Status: "+var.getStatus()); 
+            }
         } else {
             JOptionPane.showMessageDialog(this, "Wrong Email or Password", "Message", JOptionPane.ERROR_MESSAGE);
             emailText.setText("");

@@ -1,5 +1,6 @@
-package Backend;
+package Backend.FileManagers;
 
+import Backend.User;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -14,7 +15,7 @@ public class UserFileManager implements FileManager<User> {
 
     private static UserFileManager instance;
     private ArrayList<User> users;
-    private String FILE_PATH=FilePaths.USERS_FILE_PATH;
+    private String FILE_PATH = FilePaths.USERS_FILE_PATH;
 
     //private constructor to avoid instantiation
     private UserFileManager() {
@@ -37,32 +38,53 @@ public class UserFileManager implements FileManager<User> {
         return users;
     }
 
-    @Override
-    public void readFromFile() {
-        if(!users.isEmpty()) return; //to avoid reloading
+   @Override
+public void readFromFile() {
+    File file = new File(FILE_PATH);
+
+    if (!file.exists()) {
         try {
-            String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
-            JSONArray usersArray = new JSONArray(json); // Parse the JSON array
-
-            this.users.clear(); // Clear the existing list before loading new data
-            for (int i = 0; i < usersArray.length(); i++) {
-                JSONObject userJSON = usersArray.getJSONObject(i);
-                String id = userJSON.getString("userId");
-                String email = userJSON.getString("email");
-                String username = userJSON.getString("username");
-                LocalDate dateOfBirth = LocalDate.parse(userJSON.getString("dob"));
-                String password = userJSON.getString("password");
-
-                User user = new User(id, email, username, dateOfBirth, password);
-                this.users.add(user); // Add to the instance variable, not local
-            }
-
+            file.createNewFile();
+            users = new ArrayList<>();
+            saveToFile(users);
+            return;
         } catch (IOException ex) {
-            System.out.println("Error reading file: " + ex.getMessage());
-        } catch (JSONException ex) {
-            System.out.println("Error parsing JSON: " + ex.getMessage());
+            System.out.println("Error creating file: " + ex.getMessage());
+            return;
         }
     }
+
+    if (file.length() == 0) {
+        users = new ArrayList<>();
+        saveToFile(users);
+        return;
+    }
+
+    try {
+        String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
+        JSONArray usersArray = new JSONArray(json);
+        this.users.clear();
+
+        for (int i = 0; i < usersArray.length(); i++) {
+            JSONObject userJSON = usersArray.getJSONObject(i);
+            String id = userJSON.getString("userId");
+            String email = userJSON.getString("email");
+            String username = userJSON.getString("username");
+            LocalDate dateOfBirth = LocalDate.parse(userJSON.getString("dob"));
+            String password = userJSON.getString("password");
+            boolean isOnline = userJSON.optBoolean("isOnline", false);
+
+            User user = new User(id, email, username, dateOfBirth, password);
+            user.setStatus(isOnline);
+            users.add(user);
+        }
+
+    } catch (IOException ex) {
+        System.out.println("Error reading file: " + ex.getMessage());
+    } catch (JSONException ex) {
+        System.out.println("Error parsing JSON: " + ex.getMessage());
+    }
+}
 
     @Override
     public void saveToFile(ArrayList<User> data) {
@@ -76,11 +98,14 @@ public class UserFileManager implements FileManager<User> {
 
         for (User user : users) {
             JSONObject userJSON = new JSONObject();
+            
             userJSON.put("userId", user.getUserID());
             userJSON.put("email", user.getEmail());
             userJSON.put("username", user.getUsername());
             userJSON.put("dob", user.getDateOfBirth().toString());
             userJSON.put("password", user.getPassword());
+            userJSON.put("isOnline", user.getStatus());
+
             usersArray.put(userJSON);
         }
 
@@ -109,15 +134,20 @@ public class UserFileManager implements FileManager<User> {
     }
 
 
-    public User findUserByUsername(String username)
-    {
-        for(User u : users)
-        {
-            if (username.equals(u.getUsername())) {
+    public User findUserByUsername(String username) {
+        for (User u : users) {
+            if (u.getUsername().equals(username)) {
+                System.out.println("Username Back :"+u.getUsername());
                 return u;
             }
         }
-        
-            return null;
+        return null;
+    }
+
+    public void refreshUserStatus() {
+        for (User user : getUsers()) {
+            boolean isOnline = user.getStatus();
+            // Update UI accordingly
+        }
     }
 }

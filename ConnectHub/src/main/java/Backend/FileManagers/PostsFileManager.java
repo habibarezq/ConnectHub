@@ -1,13 +1,11 @@
-package Backend;
+package Backend.FileManagers;
 
-import java.awt.Image;
-import java.awt.Toolkit;
+import Backend.Post;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Base64;
 import org.json.*;
 
 //importing the FilePaths and FileManager interfaces
@@ -35,29 +33,39 @@ public class PostsFileManager implements FileManager<Post> {
         return posts;
     }
 
-    @Override
-    public void readFromFile() {
-        if (!posts.isEmpty()) return; // To avoid reloading
-        try {
-            String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
-            JSONArray postsArray = new JSONArray(json); // Parse the JSON array
+   @Override
+public void readFromFile() {
+    if (!posts.isEmpty()) return; // To avoid reloading
 
-            this.posts.clear(); // Clear the existing list before loading new data
-            for (int i = 0; i < postsArray.length(); i++) {
-                JSONObject postJSON = postsArray.getJSONObject(i);
-                String authorId = postJSON.getString("userId");
-                String contentId = postJSON.getString("contentId");
-                String TextContent = postJSON.getString("TextContent");
-                String imagePath = postJSON.getString("imagePath");
-                LocalDateTime time = LocalDateTime.parse(postJSON.getString("time"));
-                posts.add(new Post( authorId, TextContent, imagePath, time));
-            }
-        } catch (IOException ex) {
-            System.out.println("Error reading file: " + ex.getMessage());
-        } catch (JSONException ex) {
-            System.out.println("Error parsing JSON: " + ex.getMessage());
-        }
+    File file = new File(FILE_PATH);
+    if (!file.exists() || file.length() == 0) {
+        // If the file does not exist or is empty, initialize it with an empty array
+        System.out.println("File not found or empty. Initializing with an empty posts array.");
+        posts = new ArrayList<>();
+        saveToFile(posts); 
+        return;
     }
+
+    try {
+        String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
+        JSONArray postsArray = new JSONArray(json); // Parse the JSON array
+
+        this.posts.clear(); // Clear the existing list before loading new data
+        for (int i = 0; i < postsArray.length(); i++) {
+            JSONObject postJSON = postsArray.getJSONObject(i);
+            String authorId = postJSON.getString("userId");
+            String contentId = postJSON.getString("contentId");
+            String TextContent = postJSON.getString("TextContent");
+            String imagePath = postJSON.getString("imagePath");
+            LocalDateTime time = LocalDateTime.parse(postJSON.getString("time"));
+            posts.add(new Post(authorId, TextContent, imagePath, time));
+        }
+    } catch (IOException ex) {
+        System.out.println("Error reading file: " + ex.getMessage());
+    } catch (JSONException ex) {
+        System.out.println("Error parsing JSON: " + ex.getMessage());
+    }
+}
 
     @Override
     public void saveToFile(ArrayList<Post> data) {
