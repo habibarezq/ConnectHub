@@ -1,6 +1,6 @@
 package Validation;
 
-import Backend.User;
+import Backend.UserManagement.User;
 import java.util.ArrayList;
 
 public class UserValidation {

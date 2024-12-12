@@ -7,7 +7,7 @@ package Frontend;
 import Backend.ContentManager;
 import Backend.Post;
 import Backend.FileManagers.PostsFileManager;
-import Backend.User;
+import Backend.UserManagement.User;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

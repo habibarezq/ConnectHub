@@ -1,5 +1,7 @@
-package Backend;
+package Backend.GroupManagement;
 
+import Backend.GroupManagement.Admins;
+import Backend.UserManagement.User;
 import java.util.*;
 
 public class PrimaryAdmin extends Admins {

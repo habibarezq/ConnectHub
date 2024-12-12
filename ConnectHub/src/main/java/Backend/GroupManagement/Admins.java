@@ -1,6 +1,7 @@
 
-package Backend;
+package Backend.GroupManagement;
 
+import Backend.UserManagement.User;
 import java.util.*;
 
 public class Admins {

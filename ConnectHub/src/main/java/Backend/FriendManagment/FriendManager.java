@@ -1,6 +1,7 @@
-package Backend;
+package Backend.FriendManagment;
 
 import Backend.FileManagers.*;
+import Backend.UserManagement.User;
 import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;

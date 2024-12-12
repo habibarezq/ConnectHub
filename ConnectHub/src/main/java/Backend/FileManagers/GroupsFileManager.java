@@ -1,6 +1,6 @@
 package Backend.FileManagers;
 
-import Backend.Group;
+import Backend.GroupManagement.Group;
 import Interfaces.FileManager;
 import Interfaces.FilePaths;
 import java.io.File;

@@ -1,7 +1,7 @@
 package Backend.FileManagers;
 
 import Backend.Request;
-import Backend.User;
+import Backend.UserManagement.User;
 import Interfaces.FileManager;
 import Interfaces.FilePaths;
 import java.io.File;

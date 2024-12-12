@@ -1,7 +1,7 @@
 
 package Interfaces;
 
-import Backend.User;
+import Backend.UserManagement.User;
 import java.util.ArrayList;
 
 

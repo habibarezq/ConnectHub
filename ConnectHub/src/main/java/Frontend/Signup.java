@@ -1,8 +1,8 @@
 package Frontend;
 
-import Backend.User;
+import Backend.UserManagement.User;
 import Backend.FileManagers.UserFileManager;
-import Backend.UserManager;
+import Backend.UserManagement.UserManager;
 import Validation.UserValidation;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;

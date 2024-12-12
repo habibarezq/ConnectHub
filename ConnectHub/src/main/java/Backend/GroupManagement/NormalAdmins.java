@@ -1,5 +1,5 @@
 
-package Backend;
+package Backend.GroupManagement;
 
 public class NormalAdmins {
     //accept/decline memebership requests

@@ -1,8 +1,10 @@
-package Backend;
+package Backend.UserManagement;
 
+import Backend.ContentManager;
 import Backend.FileManagers.FriendsFileManager;
 import Backend.FileManagers.*;
 import Backend.FileManagers.UserFileManager;
+import Backend.GroupManagement.Group;
 import java.time.*;
 import java.util.*;
 import Interfaces.*;

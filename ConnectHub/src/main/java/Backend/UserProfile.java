@@ -1,5 +1,6 @@
 package Backend;
 
+import Backend.UserManagement.User;
 import Backend.FileManagers.ProfileFileManager;
 import Backend.FileManagers.UserFileManager;
 import Interfaces.*;

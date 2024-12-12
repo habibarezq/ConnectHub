@@ -1,5 +1,8 @@
 package Backend;
 
+import Backend.UserManagement.User;
+import Backend.FriendManagment.FriendManagerFactory;
+import Backend.FriendManagment.FriendManager;
 import Backend.FileManagers.FriendsFileManager;
 import Backend.FileManagers.RequestsFileManager;
 import java.util.UUID;

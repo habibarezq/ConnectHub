@@ -1,5 +1,6 @@
 package Frontend;
 
+import Backend.UserManagement.User;
 import javax.swing.*;
 import java.awt.*;
 import Backend.FileManagers.PostsFileManager;
