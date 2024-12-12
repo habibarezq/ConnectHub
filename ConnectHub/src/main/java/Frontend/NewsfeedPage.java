@@ -74,7 +74,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
     }
 
-    private void populateSuggestedFriends() {
+   private void populateSuggestedFriends() {
 
         suggestedFriendsModel.removeAllElements();
 
@@ -88,7 +88,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
             System.out.println("Suggest: "+suggestedFriend.getUsername());
             suggestedFriendsModel.addElement(suggestedFriend.getUsername());
         }
-    }
+    } 
 
     private void populateRequests() {
         requestsModel.removeAllElements();
@@ -595,6 +595,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
         if (choice == 0) { // Accept
             FriendRequestManager.getInstance(userId).acceptRequest(sender);
+            requestsModel.removeElement(senderUsername);
             JOptionPane.showMessageDialog(null, "Friend request accepted.", "Success", JOptionPane.INFORMATION_MESSAGE);
         } else if (choice == 1) { // Decline
             FriendRequestManager.getInstance(userId).declineRequest(sender);
@@ -628,6 +629,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
         if (choice == 0) { // Send
             FriendRequestManager.getInstance(userId).sendRequest(recipient);
+            suggestedFriendsModel.removeElement(recipientUsername);
             JOptionPane.showMessageDialog(null, "Friend request sent.", "Success", JOptionPane.INFORMATION_MESSAGE);
         } else if (choice == 1) { // Cancel
 
@@ -637,7 +639,8 @@ public class NewsfeedPage extends javax.swing.JFrame {
         refresh();
     }
 
-    private void handleFriendAction(String recipientUsername, User loggedInUser) {
+    private void handleFriendAction(String selectedValue, User loggedInUser) {
+        String recipientUsername = selectedValue.split(" \\(")[0];
         User recipient = UserFileManager.getInstance().findUserByUsername(recipientUsername);
 
         if (recipient == null) {
@@ -659,9 +662,10 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
         if (choice == 0) {
             //JOptionPane.showMessageDialog(null, "Viewing " + recipient.getUsername() + "'s profile.", "Profile", JOptionPane.INFORMATION_MESSAGE);
-            
+
         } else if (choice == 1) {
             FriendServiceManager.getInstance(user).removeFriend(recipientUsername);
+            friendsModel.removeElement(selectedValue);
             JOptionPane.showMessageDialog(null, "You have removed " + recipient.getUsername() + " from your friend list.", "Success", JOptionPane.INFORMATION_MESSAGE);
         } else if (choice == 2) {
             FriendServiceManager.getInstance(user).blockFriend(recipientUsername);
@@ -687,7 +691,6 @@ public class NewsfeedPage extends javax.swing.JFrame {
             String selectedValue = suggestedFriendsList.getModel().getElementAt(index);
             System.out.println("Selected value: " + selectedValue);
             sendFriendRequest(selectedValue, user);
-            suggestedFriendsModel.removeElement(selectedValue);
 
         }
     }//GEN-LAST:event_suggestedFriendsListMouseClicked
@@ -734,7 +737,6 @@ public class NewsfeedPage extends javax.swing.JFrame {
             String selectedValue = requestsList.getModel().getElementAt(index);
             System.out.println("Selected value: " + selectedValue);
             handleFriendRequest(selectedValue, user);
-            requestsModel.removeElement(selectedValue);
 
         }
     }//GEN-LAST:event_requestsListMouseClicked
@@ -745,9 +747,9 @@ public class NewsfeedPage extends javax.swing.JFrame {
             // Get the value at the clicked index
             String selectedValue = friendsList.getModel().getElementAt(index);
             System.out.println("Selected value: " + selectedValue);
-            String username = selectedValue.split(" \\(")[0];
-            handleFriendAction(username, user);
-
+            
+            handleFriendAction(selectedValue, user);
+            
         }
     }//GEN-LAST:event_friendsListMouseClicked
 
@@ -767,6 +769,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
 //        return null;
 //    }
     public void refresh() {
+
         populateStories();
         populatePosts();
         populateFriends();
