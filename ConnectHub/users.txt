@@ -2,15 +2,15 @@
     {
         "password": "$2a$10$/4wyyRgiDCdM.kQyeszE5uk/mRghH7Bd8WowrwaFqmyuyzYbOqkEq",
         "dob": "2024-12-10",
-        "isOnline": false,
+        "isOnline": true,
         "userId": "6da2aab8-136d-423e-b557-722b665f6fe0",
         "email": "h@gmail.com",
-        "username": "habiba"
+        "username": "habiba elghazouly"
     },
     {
         "password": "$2a$10$vD9GEPOCZdkcfiYwfOM0AOpp5u61/nruJXuNS4j70ION7nK2nZoTG",
         "dob": "2024-12-11",
-        "isOnline": true,
+        "isOnline": false,
         "userId": "6125e6f4-2273-43f7-902a-437a4ef2d45f",
         "email": "ha@gmail.com",
         "username": "habiba rezq"
@@ -22,5 +22,21 @@
         "userId": "97a34610-5607-4783-bc01-2122ccaab61f",
         "email": "r@gmail.com",
         "username": "rahma"
+    },
+    {
+        "password": "$2a$10$y7.Pxw8uRVXnSfbx5LWoieTgfSnSOu45Di0LQDdHxNSQ/yLTpODqm",
+        "dob": "2024-12-12",
+        "isOnline": false,
+        "userId": "5561a668-5473-4658-a5b4-64de252fa4bb",
+        "email": "h",
+        "username": "test"
+    },
+    {
+        "password": "$2a$10$rCd8pZ4urwvHdgD8FftCduY1y/Dm8ZXuiOjT5AJI5mfvpF0ILA3za",
+        "dob": "2024-12-12",
+        "isOnline": false,
+        "userId": "387bced4-f57a-48d5-9a83-5dfe6b5edf9f",
+        "email": "b",
+        "username": "b"
     }
 ]
