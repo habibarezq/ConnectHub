@@ -1,10 +1,11 @@
 
 package Backend;
 
+import java.util.*;
+
 public class Admins {
-    
-    String groupId;
-    
+   
+    private ArrayList<User> members ;
     //remove members 
     //manage posts
     
