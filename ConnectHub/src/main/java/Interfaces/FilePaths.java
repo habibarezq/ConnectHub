@@ -13,6 +13,8 @@ public interface FilePaths {
     
     public String FRIENDS_FILE_PATH ="friends.txt";
     
+    public String REQUESTS_FILE_PATH="requests.txt";
+    
     public String NOTIFICATION_FILE_PATH ="notification.txt";
 
 }
