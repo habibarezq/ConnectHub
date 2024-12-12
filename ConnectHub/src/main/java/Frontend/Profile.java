@@ -39,7 +39,7 @@ public class Profile extends javax.swing.JFrame {
         this.posts = PostsFileManager.getInstance().getPosts();
 
         //instances of Managers
-        FriendsFileManager FriendManger = FriendsFileManager.getInstance(userId);
+        FriendsFileManager FriendManger = FriendsFileManager.getInstance();
         ContentManager contentMaanger = ContentManager.getInstance(userId);
         
         UserProfile profile = ProfileFileManager.getInstance().getUserProfileById(userId);
