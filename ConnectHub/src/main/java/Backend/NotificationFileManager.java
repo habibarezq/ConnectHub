@@ -14,7 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class NotificationFileManager implements FileManager {
+public class NotificationFileManager implements FileManager<Notification> {
 
     private static NotificationFileManager instance;
     private ArrayList<Notification> notifications;
@@ -55,7 +55,7 @@ public class NotificationFileManager implements FileManager {
                 String type = notificationJSON.getString("type");
                 String message = notificationJSON.getString("message");
                 String stat = notificationJSON.getString("status");
-                boolean status;
+                boolean status = false;
                 notifications.add(new Notification(notificationID,userID,timestamp,type,message,status));
             }
         } catch (IOException ex) {
@@ -77,12 +77,12 @@ public class NotificationFileManager implements FileManager {
         JSONArray notificationsArray = new JSONArray();
         for (Notification notification : data) {
             JSONObject notificationJSON = new JSONObject();
-            notificationJSON.put("userId", notification.getAuthorId());
-            notificationJSON.put("contentId", notification.getContentId());
-            notificationJSON.put("TextContent", notification.getContentTxt());
-            notificationJSON.put("imagePath", notification.getcontentPath()); // Convert image to Base64
-            notificationJSON.put("time", notification.getUploadingTime());
-            notificationsArray.put(notificationJSON);
+//            notificationJSON.put("userId", notification.getAuthorId());
+//            notificationJSON.put("contentId", notification.getContentId());
+//            notificationJSON.put("TextContent", notification.getContentTxt());
+//            notificationJSON.put("imagePath", notification.getcontentPath()); // Convert image to Base64
+//            notificationJSON.put("time", notification.getUploadingTime());
+//            notificationsArray.put(notificationJSON);
         }
 
         try {
