@@ -8,10 +8,13 @@ public class Notification {
     private String message;
     private boolean status;
 
-    public Notification(String userID, String type, String message) {
+    public Notification(String notificationID, String userID, String timestamp, String type, String message, boolean status) {
+        this.notificationID = notificationID;
         this.userID = userID;
+        this.timestamp = timestamp;
         this.type = type;
         this.message = message;
+        this.status = status;
     }
 
     public String getNotificationID() {
