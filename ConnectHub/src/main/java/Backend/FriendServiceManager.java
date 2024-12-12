@@ -30,30 +30,18 @@ public class FriendServiceManager implements FriendshipManager {
         User toRemove = UserFileManager.getInstance().findUserByUsername(toRemoveUsername);
         if (toRemove != null) {
 
-            // Get the FriendManager instances for both users
             FriendManager userManager = FriendManagerFactory.getFriendManager(currentUser.getUserID());
             FriendManager toRemoveUserManager = FriendManagerFactory.getFriendManager(toRemove.getUserID());
-
 
             userManager.getFriends().remove(toRemove);
             toRemoveUserManager.getFriends().remove(currentUser);
 
-            
-//            Request request = RequestsFileManager.getInstance().searchForRequestByIds(toRemoveUsername, currentUser.getUsername());
-//            if (request != null) {
-//                RequestsFileManager.getInstance().getRequests().remove(request);
-//
-//                RequestsFileManager.getInstance().saveToFile(RequestsFileManager.getInstance().getRequests());
-//                System.out.println("Request between " + currentUser.getUsername() + " and " + toRemove.getUsername() + " has been removed.");
-//            }
-
             System.out.println(toRemove.getUsername() + " has been removed from your friend list.");
-
             // Save the updated friends list after modification
-            UserFileManager.getInstance().saveToFile(UserFileManager.getInstance().getUsers());
+
             userManager.saveUserData();
             toRemoveUserManager.saveUserData();
-
+            RequestsFileManager.getInstance().saveToFile(RequestsFileManager.getInstance().getRequests());
         } else {
             System.out.println(toRemoveUsername + " not found.");
         }
@@ -82,7 +70,11 @@ public class FriendServiceManager implements FriendshipManager {
 
     public ArrayList<User> suggestFriends() {
         ArrayList<User> suggestions = new ArrayList<>();
+
+        // Reload data before processing suggestions
+        //UserFileManager.getInstance().readFromFile(); // Ensure fresh data
         FriendManager userManager = FriendManagerFactory.getFriendManager(currentUser.getUserID());
+
         if (UserFileManager.getInstance().getUsers() != null) {
             for (User user : UserFileManager.getInstance().getUsers()) {
                 if (user != this.currentUser
@@ -95,4 +87,5 @@ public class FriendServiceManager implements FriendshipManager {
         }
         return suggestions;
     }
+
 }
