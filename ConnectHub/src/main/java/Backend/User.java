@@ -1,7 +1,7 @@
 package Backend;
 
 import Backend.FileManagers.FriendsFileManager;
-import Backend.FileManagers.RequestsFileManager;
+import Backend.FileManagers.*;
 import Backend.FileManagers.UserFileManager;
 import java.time.*;
 import java.util.*;
