@@ -15,8 +15,16 @@ public class Request {
         this.sender = sender;
         this.recipient = recipient;
         this.requestStat = "Pending";
-        this.requestID = UUID.randomUUID().toString();
+       // this.requestID = UUID.randomUUID().toString();
 
+    }
+
+    public void setSender(User sender) {
+        this.sender = sender;
+    }
+
+    public void setRecipient(User recipient) {
+        this.recipient = recipient;
     }
 
     public String getRequestID() {
@@ -53,9 +61,7 @@ public class Request {
             RequestManager.getInstance(recipient.getUserID()).getallUserRequests().add(this);
             RequestManager.getInstance(sender.getUserID()).getallUserRequests().add(this);
 
-            for (Request r : RequestsFileManager.getInstance().getRequests()) {
-                System.out.println("Request " + r.getSender());
-            }
+       
             RequestsFileManager.getInstance().saveToFile(RequestsFileManager.getInstance().getRequests());
             System.out.println("ID:" + this.requestID);
             System.out.println("Friend Request sent From " + sender.getUsername() + " --> " + recipient.getUsername());
@@ -81,8 +87,9 @@ public class Request {
             // Save the updated data to the friends file
             senderManager.saveUserData();
             recipientManager.saveUserData();
-            requestStat = "Accepted";
-
+            request.setRequestStat("Accepted");
+            // Remove the accepted request from the requests list
+            RequestsFileManager.getInstance().getRequests().remove(request);
             //Save to File
             RequestsFileManager.getInstance().saveToFile(RequestsFileManager.getInstance().getRequests());
             FriendManagerFactory.getFriendManager(recipient.getUserID()).saveUserData();
@@ -97,8 +104,9 @@ public class Request {
         Request request = RequestsFileManager.getInstance().searchByRequestId(requestID);
         if (request.getRequestStat().equals("Pending")) {
 
-            requestStat = "Declined";
-
+            request.setRequestStat("Declined");
+            // Remove the accepted request from the requests list
+            RequestsFileManager.getInstance().getRequests().remove(request);
             //Save to File
             RequestsFileManager.getInstance().saveToFile(RequestsFileManager.getInstance().getRequests());
 
