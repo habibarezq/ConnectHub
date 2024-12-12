@@ -2,7 +2,6 @@ package Backend;
 
 
 import Backend.FileManagers.FriendsFileManager;
-import Backend.FileManagers.RequestsFileManager;
 import Backend.FileManagers.UserFileManager;
 import java.time.*;
 import java.util.*;
@@ -16,6 +15,7 @@ public class User implements FriendshipManager, FriendRequestService {
     private String password;
     private LocalDate dateOfBirth;
     protected boolean status;
+    
     //Each Friends,posts,stories will have its own database service
 
     private ContentManager contentManager;

@@ -13,12 +13,13 @@ public class SearchActionsUser extends javax.swing.JDialog {
          super(parent, modal);
         initComponents();
         setContentPane(mainPanel);
-        setTitle("Search for User");
+        setTitle("Search for "+user.getUsername());
+        //setSize(306, 302);
         setResizable(false);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.newsfeed = (NewsfeedPage) parent;
         this.user = user;
-        jLabel1.setText("User "+user.getUsername()+" found. Choose an Option:");
+        //jLabel1.setText("User "+user.getUsername()+" found. Choose an Option:");
     }
 
     @SuppressWarnings("unchecked")
@@ -26,7 +27,6 @@ public class SearchActionsUser extends javax.swing.JDialog {
     private void initComponents() {
 
         mainPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
         viewProfileButton = new javax.swing.JButton();
         removeButton = new javax.swing.JButton();
         blockButton = new javax.swing.JButton();
@@ -66,33 +66,27 @@ public class SearchActionsUser extends javax.swing.JDialog {
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(mainPanelLayout.createSequentialGroup()
-                .addGap(105, 105, 105)
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(viewProfileButton)
-                    .addComponent(removeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(blockButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
-                .addContainerGap(44, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(37, 37, 37))
+                .addContainerGap(119, Short.MAX_VALUE)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(blockButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(removeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(viewProfileButton))
+                .addGap(115, 115, 115))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
+                .addGap(52, 52, 52)
                 .addComponent(viewProfileButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+                .addGap(55, 55, 55)
                 .addComponent(addButton)
-                .addGap(36, 36, 36)
+                .addGap(52, 52, 52)
                 .addComponent(removeButton)
-                .addGap(32, 32, 32)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
                 .addComponent(blockButton)
-                .addGap(24, 24, 24))
+                .addGap(41, 41, 41))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -136,12 +130,9 @@ public class SearchActionsUser extends javax.swing.JDialog {
 
     private void blockButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_blockButtonActionPerformed
         //blocking user 
-        if(this.newsfeed.user.getFriends().contains(user))
-        {
             newsfeed.user.blockFriend(user);
             JOptionPane.showMessageDialog(null, "User blocked successfully", "Message", JOptionPane.INFORMATION_MESSAGE);
-        }
-        else JOptionPane.showMessageDialog(null, "This user is not added so it cannot be blocked.", "Error", JOptionPane.ERROR_MESSAGE);
+
         this.dispose();
     }//GEN-LAST:event_blockButtonActionPerformed
 
@@ -190,7 +181,6 @@ public class SearchActionsUser extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
     private javax.swing.JButton blockButton;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JButton removeButton;
     private javax.swing.JButton viewProfileButton;

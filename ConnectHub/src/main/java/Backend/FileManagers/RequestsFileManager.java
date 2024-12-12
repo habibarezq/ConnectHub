@@ -56,7 +56,7 @@ public class RequestsFileManager implements FileManager<Request> {
                 String senderId = requestJSON.getString("senderId");
                 String recipientId = requestJSON.getString("recipientId");
                 String requestStat = requestJSON.getString("requestStat");
-                String requestID = requestJSON.getString("requestID");
+                String requestID = requestJSON.getString("requestId");
 
                 User sender = UserFileManager.getInstance().findUserByID(senderId);
                 User recipient = UserFileManager.getInstance().findUserByID(recipientId);

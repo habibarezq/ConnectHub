@@ -71,22 +71,23 @@ public class GroupAdminPage extends javax.swing.JFrame {
      
     private void startup() //MANAGEMENT OR IMAGE
     {
-        File groupPicFile = new File(//IMAGE); 
-        if(groupPicFile.exists())
-        {
-            try {
-                Image image = ImageIO.read(groupPicFile);
-                if (image != null) {
-                    // Scale image to fit within the label
-                    Image scaledImage = image.getScaledInstance(groupPicLabel.getWidth(), groupPicLabel.getHeight(), Image.SCALE_SMOOTH);
-                    groupPicLabel.setIcon(new ImageIcon(scaledImage));
-                } else {
-                    JOptionPane.showMessageDialog(this, "The selected file is not a valid image.", "Invalid Image", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(Profile.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+        //HOPEFULLY WORKING BUT NEEDS GROUP BACKEND
+//        File groupPicFile = new File(//IMAGE); 
+//        if(groupPicFile.exists())
+//        {
+//            try {
+//                Image image = ImageIO.read(groupPicFile);
+//                if (image != null) {
+//                    // Scale image to fit within the label
+//                    Image scaledImage = image.getScaledInstance(groupPicLabel.getWidth(), groupPicLabel.getHeight(), Image.SCALE_SMOOTH);
+//                    groupPicLabel.setIcon(new ImageIcon(scaledImage));
+//                } else {
+//                    JOptionPane.showMessageDialog(this, "The selected file is not a valid image.", "Invalid Image", JOptionPane.ERROR_MESSAGE);
+//                }
+//            } catch (IOException ex) {
+//                Logger.getLogger(Profile.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

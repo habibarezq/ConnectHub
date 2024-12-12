@@ -2,7 +2,7 @@
     {
         "password": "$2a$10$/4wyyRgiDCdM.kQyeszE5uk/mRghH7Bd8WowrwaFqmyuyzYbOqkEq",
         "dob": "2024-12-10",
-        "isOnline": false,
+        "isOnline": true,
         "userId": "6da2aab8-136d-423e-b557-722b665f6fe0",
         "email": "h@gmail.com",
         "username": "habiba"

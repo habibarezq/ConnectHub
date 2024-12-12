@@ -12,10 +12,6 @@ import javax.swing.*;
 import Backend.*;
 import Backend.FileManagers.RequestsFileManager;
 import java.time.format.DateTimeFormatter;
-import javax.swing.JList;
-import javax.swing.JScrollPane;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 public class NewsfeedPage extends javax.swing.JFrame {
 
@@ -24,11 +20,12 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private DefaultListModel<String> requestsModel;
     private ArrayList<Post> posts;
     private ArrayList<Story> stories;
-    private ArrayList<User> users;
+    protected ArrayList<User> users;
     private ArrayList<Request> requests;
+    //protected ArrayList<Group> groups;
     private String userId;
     private ConnectHubMain connectHub;
-    private User user;
+    protected User user;
     
     public NewsfeedPage(User user, ConnectHubMain connectHub) {
         initComponents();
@@ -48,6 +45,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
         this.users = UserFileManager.getInstance().getUsers();
         this.stories = StoriesFileManager.getInstance().getStories();
         this.requests = RequestManager.getInstance(userId).getUserRequests();
+        //this.groups = GroupManager.getInstance().getGroups();
 
         friendsModel = new DefaultListModel<>();
         suggestedFriendsModel = new DefaultListModel<>();
@@ -129,48 +127,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
     }
 
     private void populateStories() {
-        JPanel storyPanel = new JPanel();
-        storyPanel.setLayout(new BoxLayout(storyPanel, BoxLayout.X_AXIS));
-        storyPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        if (stories == null) {
-            return;
-        }
-        for (Story story : stories) {
-            if (checkExpiryStory(story)) {
-                //creating a panel for each story
-                JPanel singleStoryPanel = new JPanel();
-                singleStoryPanel.setLayout(new BorderLayout());
-                singleStoryPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-                singleStoryPanel.setPreferredSize(new Dimension(150, 200));
-
-                //adding username
-                User u = UserFileManager.getInstance().findUserByID(story.getAuthorId()); //returns user to get username
-                JLabel UsernameLabel = new JLabel("Username: " + u.getUsername());
-                UsernameLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-                storyPanel.add(UsernameLabel, BorderLayout.NORTH);
-
-                // adding the time Stamp
-                JLabel timestampLabel = new JLabel("Time: " + story.getUploadingTime());
-                timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Adding padding
-                storyPanel.add(timestampLabel, BorderLayout.NORTH);
-
-                //adding content
-                // adding the image 
-                File imageFile = new File(story.getcontentPath());
-                if (imageFile.exists()) {
-                    ImageIcon imageIcon = resizeImageStories(story.getcontentPath());
-
-                    JLabel imageLabel = new JLabel(imageIcon);
-                    storyPanel.add(imageLabel, BorderLayout.WEST);
-                } else {
-                    JLabel noImageLabel = new JLabel("No image.");
-                    storyPanel.add(noImageLabel, BorderLayout.WEST);
-                }
-                storyPanel.add(singleStoryPanel);
-                storyPanel.add(Box.createRigidArea(new Dimension(0, 1))); // Adding spacing between stories
-            }
-        }
-        storiesScrollPane.setViewportView(storyPanel);
+      new UploadPosts(postsScrollPane, posts);
     }
 
     private boolean checkExpiryStory(Story story) {
@@ -648,53 +605,40 @@ public class NewsfeedPage extends javax.swing.JFrame {
     }//GEN-LAST:event_suggestedFriendsListMouseClicked
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-//        String searchResult = searchField.getText();
-//        if (searchResult.isEmpty()) {
-//            JOptionPane.showMessageDialog(null, "Empty Field.", "Error", JOptionPane.ERROR_MESSAGE);
-//        } else {
-//            //searching in lists of users and groups
-//            for (User user : users) {
-//                if (user.getUsername().toLowerCase().contains(searchResult)) {
-//                    searchModel.addElement(user.getUsername());
-//                }
-//            }
-//            for (Group group : groups) {
-//                if (group.getName().toLowerCase().contains(searchResult)) {
-//                    searchModel.addElement(group.getName());
-//                }
-//            }
-//        }
-//        if(groups == null && users == null) searchModel.addElement("No search Results.");
-//
-//        searchList.addListSelectionListener(new ListSelectionListener() {
-//        @Override
-//        public void  valueChanged(ListSelectionEvent e) 
-//        {
-//            if(!e.getValueIsAdjusting())
+        String searchResult = searchField.getText();
+        
+        //test 
+        ArrayList<User> friends = UserFileManager.getInstance().findUserByID(userId).getFriends();
+        for(User friend : friends)
+            System.out.println("friends : "+friend.getUsername());
+            
+            
+        boolean userFound = false, groupFound = false;
+        if (searchResult.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Empty Field.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            //searching in lists of users and groups
+            for (User user : users) {
+                if (user.getUsername().equalsIgnoreCase(searchResult)) {
+                   userFound = true;
+                   new SearchActionsUser(this, false, user).setVisible(true);
+                }
+            }
+//            if(!userFound)
 //            {
-//                String selectedString = searchList.getSelectedValue();
-//                User u = searchSelectedItemUser(selectedString);
-//                //Group g = searchSelectedItemGroup(selectedString);
-//                if(u!= null) new Profile(u);
-//                else if(g!=null) new groupPage(g);
+//            for (Group group : groups) {
+//                if (group.getGroupName().equalsIgnoreCase(searchResult)) {
+//                   groupFound = true;
+//                   new GroupPage();
+//                   //searchActionGroup
+//                }
 //            }
-//        }
-//        });
+//            }
+            if(!userFound && !groupFound) JOptionPane.showMessageDialog(null, "No search results.", "Error", JOptionPane.ERROR_MESSAGE);
+       
+        }
     }//GEN-LAST:event_searchButtonActionPerformed
-    
-    public User searchSelectedItemUser(String selectedString)
-    {
-      for(User user : users)
-          if(user.getUsername().equalsIgnoreCase(selectedString)) return user;
-      return null;
-    }
-    
-//    public Group searchSelectedItemGroup(String selectedString)
-//    {
-//        for(Group group : groups)
-//            if(group.getName().equalsIgnoreCase(selectedString)) return group;
-//        return null;
-//    }
+
     
     public void refresh() {
         populateStories();
