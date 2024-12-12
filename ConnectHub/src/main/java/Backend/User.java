@@ -21,6 +21,7 @@ public class User{
     private FriendsFileManager friendsManager;
     private ArrayList<User> friends;
     private ArrayList<User> blocked;
+    private ArrayList<Group> groups;
 
     public User(String userID, String email, String username, LocalDate dateOfBirth, String password) {
         this.userID = userID;
@@ -32,6 +33,8 @@ public class User{
 
         this.friends = new ArrayList<>();
         this.blocked = new ArrayList<>();
+        this.groups = new ArrayList<>();
+        
         this.contentManager = ContentManager.getInstance(userID);
 
     }
