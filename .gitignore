@@ -30,3 +30,10 @@ ConnectHub/target/maven-status/maven-compiler-plugin/compile/default-compile/inp
 
 /testScroll/target/
 /testScroll
+ConnectHub/friends.txt
+ConnectHub/requests.txt
+*.txt
+
+ConnectHub/friends.txt
+ConnectHub/users.txt
+

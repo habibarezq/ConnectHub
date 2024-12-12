@@ -1,3 +1,4 @@
+
 package Interfaces;
 
 public interface FilePaths {
@@ -15,3 +16,4 @@ public interface FilePaths {
     public String NOTIFICATION_FILE_PATH ="notification.txt";
 
 }
+

@@ -1,85 +1,112 @@
 package Frontend;
 
-import Backend.Post;
-import Backend.Story;
-import Backend.User;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Image;
+import Backend.FileManagers.StoriesFileManager;
+import Backend.FileManagers.PostsFileManager;
+import Backend.FileManagers.FriendsFileManager;
+import Backend.FileManagers.UserFileManager;
+import java.awt.*;
 import java.io.File;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.ArrayList;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.*;
 import Backend.*;
-import java.awt.event.ActionEvent;
+import Backend.FileManagers.RequestsFileManager;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class NewsfeedPage extends javax.swing.JFrame {
 
     private DefaultListModel<String> friendsModel;
     private DefaultListModel<String> suggestedFriendsModel;
+    private DefaultListModel<String> requestsModel;
     private ArrayList<Post> posts;
     private ArrayList<Story> stories;
     private ArrayList<User> users;
+    private ArrayList<Request> requests;
+    private ArrayList<User> friends;
     private String userId;
-private ConnectHubMain connectHub;
+    private ConnectHubMain connectHub;
+    private User user;
 
-    public NewsfeedPage(User user,ConnectHubMain connectHub) {
+    public NewsfeedPage(User user, ConnectHubMain connectHub) {
         initComponents();
         setTitle("Newsfeed");
-        setSize(1300,627);
+        setSize(1300, 700);
         setContentPane(mainPanel);
-        this.connectHub=connectHub;
+        this.connectHub = connectHub;
         this.dispose();
-        
+
+        this.user = user;
         this.userId = user.getUserID();
-        FriendsFileManager.getInstance(userId);
+
+        FriendsFileManager.getInstance();
+        RequestsFileManager.getInstance();
+
         this.posts = PostsFileManager.getInstance().getPosts();
-
         this.users = UserFileManager.getInstance().getUsers();
-        //addUsers();
-
+        this.friends = FriendManagerFactory.getFriendManager(userId).getFriends();
         this.stories = StoriesFileManager.getInstance().getStories();
-        //fillstories();
-
+        this.requests = RequestManager.getInstance(userId).getRequests();
 
         friendsModel = new DefaultListModel<>();
         suggestedFriendsModel = new DefaultListModel<>();
+        requestsModel = new DefaultListModel<>();
 
         friendsList.setModel(friendsModel);
+        friendsList.setVisibleRowCount(5);
+
         suggestedFriendsList.setModel(suggestedFriendsModel);
+
+        requestsList.setModel(requestsModel);
+        requestsList.setVisibleRowCount(5);
+        requestsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         populateFriends();
         populateSuggestedFriends();
         populatePosts();
         populateStories();
-        ActionEvent evt = null;
-        
-        requestsComboBoxActionPerformed(evt);
+        populateRequests();
+
+        ContentManager.getInstance(userId).refreshPosts();
+
     }
 
-    public void populateSuggestedFriends() {
-        User user = UserFileManager.getInstance().findUserByID(userId);
+   private void populateSuggestedFriends() {
+
+        suggestedFriendsModel.removeAllElements();
+
         ArrayList<User> allUsers = UserFileManager.getInstance().getUsers();
-        ArrayList<User> suggestedFriends = user.suggestFriends(allUsers);
+        ArrayList<User> suggestedFriends;
+
+        suggestedFriends = null;
+        suggestedFriends = FriendServiceManager.getInstance(user).suggestFriends();
+
         for (User suggestedFriend : suggestedFriends) {
+            System.out.println("Suggest: "+suggestedFriend.getUsername());
             suggestedFriendsModel.addElement(suggestedFriend.getUsername());
+        }
+    } 
+
+    private void populateRequests() {
+        requestsModel.removeAllElements();
+        requests = null;
+        requests = RequestManager.getInstance(userId).getRequests();
+
+        if (requests != null) {
+            for (Request request : requests) {
+                // Only include pending requests
+                if (request.getRequestStat().equals("Pending") && !request.getSender().equals(user)) {
+                    requestsModel.addElement(request.getSender().getUsername());
+                }
+            }
         }
     }
 
-    public void populateFriends() {
-        ArrayList<User> friends = UserFileManager.getInstance().findUserByID(userId).getFriends();
+    private void populateFriends() {
+        friendsModel.removeAllElements();
 
         if (friends == null) {
             friendsModel.addElement("No Friends");
@@ -99,72 +126,24 @@ private ConnectHubMain connectHub;
     }
 
     private void populatePosts() {
-        JPanel postPanel = new JPanel();
-        postPanel.setLayout(new BoxLayout(postPanel, BoxLayout.Y_AXIS));
-        postPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-        for (Post post : posts) {
-            //creating a panel for each post
-            JPanel everyPostPanel = new JPanel();
-            everyPostPanel.setLayout(new BorderLayout());
-            everyPostPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-            everyPostPanel.setPreferredSize(new Dimension(300, 80));
-
-            //adding username
-            User u = UserFileManager.getInstance().findUserByID(post.getAuthorId()); //returns user to get username
-            JLabel UsernameLabel = new JLabel("Username: " + u.getUsername());
-            UsernameLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-            postPanel.add(UsernameLabel, BorderLayout.NORTH);
-
-            // adding the time Stamp
-            JLabel timestampLabel = new JLabel("Time: " + post.getUploadingTime());
-            timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Adding padding
-            postPanel.add(timestampLabel, BorderLayout.SOUTH);
-
-            //adding content
-            //adding text
-            JLabel contentLabel = new JLabel("Content: " + post.getContentTxt());
-            contentLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Adding padding
-            postPanel.add(contentLabel, BorderLayout.NORTH);
-
-            // adding the image 
-            File imageFile = new File(post.getcontentPath());
-            if (imageFile.exists()) {
-                ImageIcon imageIcon = resizeImagePosts(post.getcontentPath());
-                JLabel imageLabel = new JLabel(imageIcon);
-                postPanel.add(imageLabel, BorderLayout.WEST);
-            } else {
-                JLabel noImageLabel = new JLabel("No image.");
-                postPanel.add(noImageLabel, BorderLayout.WEST);
-            }
-
-            postPanel.add(everyPostPanel);
-            postPanel.add(Box.createRigidArea(new Dimension(0, 1))); // Adding spacing between stories
-        }
-        postsScrollPane.setViewportView(postPanel);
+        // uploading all posts in the posts ArrayList
+        new UploadPosts(postsScrollPane, posts);
     }
 
-    private ImageIcon resizeImagePosts(String contentPath) {
-        ImageIcon imageIcon = new ImageIcon(contentPath);
-        Image image = imageIcon.getImage();
-        Image resizedImage = image.getScaledInstance(postsScrollPane.getWidth() - 10, 300, Image.SCALE_SMOOTH);
-        ImageIcon resizedImageIcon = new ImageIcon(resizedImage);
-        return resizedImageIcon;
-    }
-
-    private ImageIcon resizeImageStories(String contentPath) {
-        ImageIcon imageIcon = new ImageIcon(contentPath);
-        Image image = imageIcon.getImage();
-        Image resizedImage = image.getScaledInstance(storiesScrollPane.getWidth() - 200, 300, Image.SCALE_SMOOTH);
-        ImageIcon resizedImageIcon = new ImageIcon(resizedImage);
-        return resizedImageIcon;
+    private ImageIcon resizeImageStories(String imagePath) {
+        ImageIcon originalIcon = new ImageIcon(imagePath);
+        Image originalImage = originalIcon.getImage();
+        Image resizedImage = originalImage.getScaledInstance(160, 160, Image.SCALE_SMOOTH);
+        return new ImageIcon(resizedImage);
     }
 
     private void populateStories() {
         JPanel storyPanel = new JPanel();
         storyPanel.setLayout(new BoxLayout(storyPanel, BoxLayout.X_AXIS));
         storyPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
+        if (stories == null) {
+            return;
+        }
         for (Story story : stories) {
             if (checkExpiryStory(story)) {
                 //creating a panel for each story
@@ -189,6 +168,7 @@ private ConnectHubMain connectHub;
                 File imageFile = new File(story.getcontentPath());
                 if (imageFile.exists()) {
                     ImageIcon imageIcon = resizeImageStories(story.getcontentPath());
+
                     JLabel imageLabel = new JLabel(imageIcon);
                     storyPanel.add(imageLabel, BorderLayout.WEST);
                 } else {
@@ -221,21 +201,32 @@ private ConnectHubMain connectHub;
         mainPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        friendsList = new javax.swing.JList<>();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        suggestedFriendsList = new javax.swing.JList<>();
-        profileButton = new javax.swing.JButton();
-        logoutButton = new javax.swing.JButton();
-        addStoryButton = new javax.swing.JButton();
-        addPostButton = new javax.swing.JButton();
         postsScrollPane = new javax.swing.JScrollPane();
         storiesScrollPane = new javax.swing.JScrollPane();
+        jPanelFriends = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        friendsList = new javax.swing.JList<>();
+        jPanelSuggestedFriends = new javax.swing.JPanel();
+        jScrollPaneSugFriends = new javax.swing.JScrollPane();
+        suggestedFriendsList = new javax.swing.JList<>();
+        jLabel4 = new javax.swing.JLabel();
+        jPanelRequests = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        requestsList = new javax.swing.JList<>();
+        jPanel4 = new javax.swing.JPanel();
+        profileButton = new javax.swing.JButton();
+        logoutButton = new javax.swing.JButton();
         newRefreshButton = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
-        requestsComboBox = new javax.swing.JComboBox<>();
+        jPanel5 = new javax.swing.JPanel();
+        addStoryButton = new javax.swing.JButton();
+        addPostButton = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        searchButton = new javax.swing.JButton();
+        searchField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        mainPanel.setPreferredSize(new java.awt.Dimension(1168, 1000));
 
         jLabel1.setText("Friends:");
 
@@ -246,14 +237,90 @@ private ConnectHubMain connectHub;
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
+        friendsList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                friendsListMouseClicked(evt);
+            }
+        });
+        friendsList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                friendsListValueChanged(evt);
+            }
+        });
         jScrollPane1.setViewportView(friendsList);
+
+        javax.swing.GroupLayout jPanelFriendsLayout = new javax.swing.GroupLayout(jPanelFriends);
+        jPanelFriends.setLayout(jPanelFriendsLayout);
+        jPanelFriendsLayout.setHorizontalGroup(
+            jPanelFriendsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelFriendsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanelFriendsLayout.setVerticalGroup(
+            jPanelFriendsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFriendsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1)
+                .addContainerGap())
+        );
 
         suggestedFriendsList.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane2.setViewportView(suggestedFriendsList);
+        suggestedFriendsList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                suggestedFriendsListMouseClicked(evt);
+            }
+        });
+        suggestedFriendsList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                suggestedFriendsListValueChanged(evt);
+            }
+        });
+        jScrollPaneSugFriends.setViewportView(suggestedFriendsList);
+
+        javax.swing.GroupLayout jPanelSuggestedFriendsLayout = new javax.swing.GroupLayout(jPanelSuggestedFriends);
+        jPanelSuggestedFriends.setLayout(jPanelSuggestedFriendsLayout);
+        jPanelSuggestedFriendsLayout.setHorizontalGroup(
+            jPanelSuggestedFriendsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelSuggestedFriendsLayout.createSequentialGroup()
+                .addGap(3, 3, 3)
+                .addComponent(jScrollPaneSugFriends, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanelSuggestedFriendsLayout.setVerticalGroup(
+            jPanelSuggestedFriendsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelSuggestedFriendsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPaneSugFriends, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jLabel4.setText("Requests:");
+
+        requestsList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                requestsListMouseClicked(evt);
+            }
+        });
+        jScrollPane3.setViewportView(requestsList);
+
+        javax.swing.GroupLayout jPanelRequestsLayout = new javax.swing.GroupLayout(jPanelRequests);
+        jPanelRequests.setLayout(jPanelRequestsLayout);
+        jPanelRequestsLayout.setHorizontalGroup(
+            jPanelRequestsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelRequestsLayout.createSequentialGroup()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanelRequestsLayout.setVerticalGroup(
+            jPanelRequestsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
+        );
 
         profileButton.setText("My Profile");
         profileButton.addActionListener(new java.awt.event.ActionListener() {
@@ -266,6 +333,13 @@ private ConnectHubMain connectHub;
         logoutButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 logoutButtonActionPerformed(evt);
+            }
+        });
+
+        newRefreshButton.setText("Refresh");
+        newRefreshButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newRefreshButtonActionPerformed(evt);
             }
         });
 
@@ -283,55 +357,114 @@ private ConnectHubMain connectHub;
             }
         });
 
-        newRefreshButton.setText("Refresh");
-        newRefreshButton.addActionListener(new java.awt.event.ActionListener() {
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(addStoryButton, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)
+                    .addComponent(addPostButton, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addComponent(addStoryButton)
+                .addGap(18, 18, 18)
+                .addComponent(addPostButton)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(profileButton, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)
+                    .addComponent(logoutButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(newRefreshButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+            .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(profileButton)
+                .addGap(18, 18, 18)
+                .addComponent(logoutButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(newRefreshButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        searchButton.setText("Search");
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newRefreshButtonActionPerformed(evt);
+                searchButtonActionPerformed(evt);
             }
         });
 
-        jLabel3.setText("Requests:");
-
-        requestsComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                requestsComboBoxActionPerformed(evt);
-            }
-        });
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(searchField)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(searchButton)
+                    .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(271, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(requestsComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(mainPanelLayout.createSequentialGroup()
-                                .addGap(25, 25, 25)
-                                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(logoutButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(addStoryButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(addPostButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(profileButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(newRefreshButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addGroup(mainPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 38, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 113, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(storiesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE)
+                    .addComponent(storiesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 670, Short.MAX_VALUE)
                     .addComponent(postsScrollPane))
-                .addGap(18, 18, 18)
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2))
-                .addGap(22, 22, 22))
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jPanelSuggestedFriends, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(mainPanelLayout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jPanelRequests, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(mainPanelLayout.createSequentialGroup()
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(138, 138, 138))
+                        .addComponent(jPanelFriends, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(28, 28, 28))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -339,48 +472,45 @@ private ConnectHubMain connectHub;
                 .addGap(18, 18, 18)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(mainPanelLayout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanelFriends, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(storiesScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(mainPanelLayout.createSequentialGroup()
-                                .addGap(15, 15, 15)
-                                .addComponent(profileButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(logoutButton)
-                                .addGap(60, 60, 60)
-                                .addComponent(newRefreshButton)
-                                .addGap(18, 18, 18)
-                                .addComponent(addStoryButton)
-                                .addGap(18, 18, 18)
-                                .addComponent(addPostButton)
-                                .addGap(57, 57, 57)
-                                .addComponent(jLabel3)
+                                .addGap(7, 7, 7)
+                                .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(requestsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(mainPanelLayout.createSequentialGroup()
-                                .addComponent(storiesScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(postsScrollPane)))
-                        .addContainerGap())
-                    .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(113, Short.MAX_VALUE))))
+                                .addComponent(jPanelSuggestedFriends, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanelRequests, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(postsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 416, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1156, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 656, Short.MAX_VALUE)
         );
 
         pack();
@@ -388,64 +518,52 @@ private ConnectHubMain connectHub;
 
     private void profileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_profileButtonActionPerformed
         //goes to profile frame 
-        new Profile(UserFileManager.getInstance().findUserByID(userId)).setVisible(true);
+        new Profile(UserFileManager.getInstance().findUserByID(userId), this).setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_profileButtonActionPerformed
 
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
         this.dispose();
         new ConnectHubMain().setVisible(true);
-        
+        user.logout();
     }//GEN-LAST:event_logoutButtonActionPerformed
 
     private void addStoryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStoryButtonActionPerformed
         // add new story to newsfeed and arraylist of stories
-        String choice = JOptionPane.showInputDialog(null, "Choose Text or Image:");
-        if (choice.isEmpty())
-            JOptionPane.showMessageDialog(null, "Empty Field.", "Error", JOptionPane.ERROR_MESSAGE);
-        else if (!choice.equalsIgnoreCase("text") && !choice.equalsIgnoreCase("image"))
-            JOptionPane.showMessageDialog(null, "Invalid Answer.", "Error", JOptionPane.ERROR_MESSAGE);
-        else {
-            if (choice.equalsIgnoreCase("image")) {
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                int returnValue = fileChooser.showOpenDialog(this);
-                if (returnValue == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = fileChooser.getSelectedFile();
 
-                    stories.add(new Story( userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
-                } else {
-                    String text = JOptionPane.showInputDialog(null, "Enter Text:");
-
-                    stories.add(new Story( userId, text, null, LocalDateTime.now()));
-                }
-                refresh();
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File("."));
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                String filename = file.getName().toLowerCase();
+                return file.isDirectory() || filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".png") || filename.endsWith(".gif");
             }
+
+            @Override
+            public String getDescription() {
+                return "Image Files (*.jpg, *.jpeg, *.png, *.gif)";
+            }
+        });
+
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        int returnValue = fileChooser.showOpenDialog(this);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+
+            Story story = new Story(userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now());
+            ContentManager.getInstance(userId).addStory(story);
+
+            refresh();
         }
+
     }//GEN-LAST:event_addStoryButtonActionPerformed
 
     private void addPostButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPostButtonActionPerformed
-        // add new post to newsfeed and arraylist of posts
-        String choice = JOptionPane.showInputDialog(null, "Choose Text or Image:");
-        if (choice.isEmpty())
-            JOptionPane.showMessageDialog(null, "Empty Field.", "Error", JOptionPane.ERROR_MESSAGE);
-        else if (!choice.equalsIgnoreCase("text") && !choice.equalsIgnoreCase("image"))
-            JOptionPane.showMessageDialog(null, "Invalid Answer.", "Error", JOptionPane.ERROR_MESSAGE);
-        else {
-            if (choice.equalsIgnoreCase("image")) {
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                int returnValue = fileChooser.showOpenDialog(this);
-                if (returnValue == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = fileChooser.getSelectedFile();
-                posts.add(new Post( userId, "text", selectedFile.getAbsolutePath(), LocalDateTime.now())); //fix content id
-                } else {
-                    String text = JOptionPane.showInputDialog(null, "Enter Text:");
-                    posts.add(new Post(userId, text, null, LocalDateTime.now()));
-                    //!!!!!!!!!!SAVE TO FILE
-                }
-                refresh();
-            }
-        }
+
+        new postCreation(this.userId, this).setVisible(true);
+        this.dispose();
+
     }//GEN-LAST:event_addPostButtonActionPerformed
 
     private void newRefreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newRefreshButtonActionPerformed
@@ -454,67 +572,209 @@ private ConnectHubMain connectHub;
     }//GEN-LAST:event_newRefreshButtonActionPerformed
 
     private void requestsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestsComboBoxActionPerformed
-        User u = UserFileManager.getInstance().findUserByID(userId);
-        HashMap<User, String> friendRequests = u.getFriendRequests();
-        
-        //to make sure it removes any old requests and re-writes the actually-existing ones
-        requestsComboBox.removeAll();
-        
-        //adding the elements to the comboBox username(status)
-        for (Map.Entry<User, String> entry : friendRequests.entrySet()) {
-            User user = entry.getKey();  // The User object (key)
-            String request = entry.getValue();  // The request message (value)
-            requestsComboBox.addItem(user.getUsername()+" ("+request+") ");
-        }
-        requestsComboBox.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                User u = UserFileManager.getInstance().findUserByID(userId);
-                HashMap<User, String> friendRequests = u.getFriendRequests();
-                
-                String selectedItem = (String) requestsComboBox.getSelectedItem();
-                if (selectedItem != null && !selectedItem.isEmpty()) {
-                    // Parse the selected item to extract the username
-                    String selectedUsername = selectedItem.split(" ")[0]; // Extract username before '('
-                    
-                    // Create a dialog to show more information
-                    Object[] requestAnswer = {"Accept", "Decline"};
-                    int answer = JOptionPane.showOptionDialog(null, "Do you want to accept or decline?", "Friend Request", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, requestAnswer, requestAnswer[0]);
-                    //no default option and no custom icon 
-                    
-                    if(answer == 0) 
-                    {
-                        User acceptedFriend = UserFileManager.getInstance().findUserByUsername(selectedUsername);
-                        String acceptedFriendId = acceptedFriend.getUserID();
-                        friendRequests.put(acceptedFriend, acceptedFriendId);
-                        requestsComboBox.removeItem(selectedItem);
-                        refresh();
-                    }
-                        
-                    else if(answer == 1)
-                    {
-                        User declinedFriend = UserFileManager.getInstance().findUserByUsername(selectedUsername);
-                        String declinedFriendId = declinedFriend.getUserID();
-                        friendRequests.remove(declinedFriend);
-                        requestsComboBox.removeItem(selectedItem);
-                        refresh(); 
-                    }  
-                    else 
-                    JOptionPane.showMessageDialog(null, "No action taken.");    
-                }
-            }
-        }); 
-        
-    }//GEN-LAST:event_requestsComboBoxActionPerformed
+    }
 
+    private void handleFriendRequest(String senderUsername, User loggedInUser) {
+        User sender = UserFileManager.getInstance().findUserByUsername(senderUsername);
+        if (sender == null) {
+            JOptionPane.showMessageDialog(null, "User not found! HELLOOOOOO", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Object[] options = {"Accept", "Decline"};
+        int choice = JOptionPane.showOptionDialog(
+                null,
+                "Do you want to accept or decline the friend request from " + sender.getUsername() + "?",
+                "Friend Request",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+
+        if (choice == 0) { // Accept
+            FriendRequestManager.getInstance(userId).acceptRequest(sender);
+            requestsModel.removeElement(senderUsername);
+            JOptionPane.showMessageDialog(null, "Friend request accepted.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } else if (choice == 1) { // Decline
+            FriendRequestManager.getInstance(userId).declineRequest(sender);
+            JOptionPane.showMessageDialog(null, "Friend request declined.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        }
+
+        refresh();
+    }
+//GEN-LAST:event_requestsComboBoxActionPerformed
+    private void sendFriendRequest(String recipientUsername, User loggedInUser) {
+
+        //loggedInUser is the sender
+        User recipient = UserFileManager.getInstance().findUserByUsername(recipientUsername);
+        System.out.println("Username Front: " + recipient.getUsername());
+        if (recipient == null) {
+            JOptionPane.showMessageDialog(null, "User not found!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Object[] options = {"Send Request", "Cancel"};
+        int choice = JOptionPane.showOptionDialog(
+                null,
+                "<html>Do you want to send a Friend Request to <b>" + recipient.getUsername() + "</b>?</html>",
+                "Friend Request",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+
+        if (choice == 0) { // Send
+            FriendRequestManager.getInstance(userId).sendRequest(recipient);
+            suggestedFriendsModel.removeElement(recipientUsername);
+            JOptionPane.showMessageDialog(null, "Friend request sent.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } else if (choice == 1) { // Cancel
+
+            JOptionPane.showMessageDialog(null, "Friend request not Sent.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        }
+
+        refresh();
+    }
+
+    private void handleFriendAction(String selectedValue, User loggedInUser) {
+        String recipientUsername = selectedValue.split(" \\(")[0];
+        User recipient = UserFileManager.getInstance().findUserByUsername(recipientUsername);
+
+        if (recipient == null) {
+            JOptionPane.showMessageDialog(null, "User not found!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Object[] options = {"View Profile", "Remove Friend", "Block Friend"};
+        int choice = JOptionPane.showOptionDialog(
+                null,
+                "<html>What do you want to do with <b>" + recipient.getUsername() + "</b>?</html>",
+                "Friend Options",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+
+        if (choice == 0) {
+            //JOptionPane.showMessageDialog(null, "Viewing " + recipient.getUsername() + "'s profile.", "Profile", JOptionPane.INFORMATION_MESSAGE);
+
+        } else if (choice == 1) {
+            FriendServiceManager.getInstance(user).removeFriend(recipientUsername);
+            friendsModel.removeElement(selectedValue);
+            JOptionPane.showMessageDialog(null, "You have removed " + recipient.getUsername() + " from your friend list.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } else if (choice == 2) {
+            FriendServiceManager.getInstance(user).blockFriend(recipientUsername);
+            JOptionPane.showMessageDialog(null, "You have blocked " + recipient.getUsername() + ".", "Blocked", JOptionPane.INFORMATION_MESSAGE);
+        }
+
+        refresh();
+    }
+
+    private void friendsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_friendsListValueChanged
+        String SelectedFruit = (String) friendsList.getSelectedValue();
+        //System.out.println("Selected String "+SelectedFruit);
+    }//GEN-LAST:event_friendsListValueChanged
+
+    private void suggestedFriendsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_suggestedFriendsListValueChanged
+
+    }//GEN-LAST:event_suggestedFriendsListValueChanged
+
+    private void suggestedFriendsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_suggestedFriendsListMouseClicked
+        int index = suggestedFriendsList.locationToIndex(evt.getPoint());
+        if (index != -1) { // Ensure an item was clicked
+            // Get the value at the clicked index
+            String selectedValue = suggestedFriendsList.getModel().getElementAt(index);
+            System.out.println("Selected value: " + selectedValue);
+            sendFriendRequest(selectedValue, user);
+
+        }
+    }//GEN-LAST:event_suggestedFriendsListMouseClicked
+
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+//        String searchResult = searchField.getText();
+//        if (searchResult.isEmpty()) {
+//            JOptionPane.showMessageDialog(null, "Empty Field.", "Error", JOptionPane.ERROR_MESSAGE);
+//        } else {
+//            //searching in lists of users and groups
+//            for (User user : users) {
+//                if (user.getUsername().toLowerCase().contains(searchResult)) {
+//                    searchModel.addElement(user.getUsername());
+//                }
+//            }
+//            for (Group group : groups) {
+//                if (group.getName().toLowerCase().contains(searchResult)) {
+//                    searchModel.addElement(group.getName());
+//                }
+//            }
+//        }
+//        if(groups == null && users == null) searchModel.addElement("No search Results.");
+//
+//        searchList.addListSelectionListener(new ListSelectionListener() {
+//        @Override
+//        public void  valueChanged(ListSelectionEvent e) 
+//        {
+//            if(!e.getValueIsAdjusting())
+//            {
+//                String selectedString = searchList.getSelectedValue();
+//                User u = searchSelectedItemUser(selectedString);
+//                //Group g = searchSelectedItemGroup(selectedString);
+//                if(u!= null) new Profile(u);
+//                else if(g!=null) new groupPage(g);
+//            }
+//        }
+//        });
+    }//GEN-LAST:event_searchButtonActionPerformed
+
+    private void requestsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_requestsListMouseClicked
+        int index = requestsList.locationToIndex(evt.getPoint());
+        if (index != -1) { // Ensure an item was clicked
+            // Get the value at the clicked index
+            String selectedValue = requestsList.getModel().getElementAt(index);
+            System.out.println("Selected value: " + selectedValue);
+            handleFriendRequest(selectedValue, user);
+
+        }
+    }//GEN-LAST:event_requestsListMouseClicked
+
+    private void friendsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_friendsListMouseClicked
+        int index = friendsList.locationToIndex(evt.getPoint());
+        if (index != -1) { // Ensure an item was clicked
+            // Get the value at the clicked index
+            String selectedValue = friendsList.getModel().getElementAt(index);
+            System.out.println("Selected value: " + selectedValue);
+            
+            handleFriendAction(selectedValue, user);
+            
+        }
+    }//GEN-LAST:event_friendsListMouseClicked
+
+    public User searchSelectedItemUser(String selectedString) {
+        for (User user : users) {
+            if (user.getUsername().equalsIgnoreCase(selectedString)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+//    public Group searchSelectedItemGroup(String selectedString)
+//    {
+//        for(Group group : groups)
+//            if(group.getName().equalsIgnoreCase(selectedString)) return group;
+//        return null;
+//    }
     public void refresh() {
+
         populateStories();
         populatePosts();
-        this.friendsModel.clear();
-        this.suggestedFriendsModel.clear();
         populateFriends();
         populateSuggestedFriends();
-
+        populateRequests();
     }
 
     public static void main(String args[]) {
@@ -553,15 +813,24 @@ private ConnectHubMain connectHub;
     private javax.swing.JList<String> friendsList;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanelFriends;
+    private javax.swing.JPanel jPanelRequests;
+    private javax.swing.JPanel jPanelSuggestedFriends;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPaneSugFriends;
     private javax.swing.JButton logoutButton;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JButton newRefreshButton;
     private javax.swing.JScrollPane postsScrollPane;
     private javax.swing.JButton profileButton;
-    private javax.swing.JComboBox<String> requestsComboBox;
+    private javax.swing.JList<String> requestsList;
+    private javax.swing.JButton searchButton;
+    private javax.swing.JTextField searchField;
     private javax.swing.JScrollPane storiesScrollPane;
     private javax.swing.JList<String> suggestedFriendsList;
     // End of variables declaration//GEN-END:variables

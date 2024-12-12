@@ -1,5 +1,6 @@
-package Backend;
+package Backend.FileManagers;
 
+import Backend.Story;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.*;
@@ -38,10 +39,15 @@ public class StoriesFileManager implements FileManager<Story> {
 
     @Override
     public void readFromFile() {
-
-        if (!stories.isEmpty()) {
-            return; // to avoid reloading
+        File file = new File(FILE_PATH);
+        if (!file.exists() || file.length() == 0) {
+            // If the file does not exist or is empty, initialize it with an empty stories array
+            System.out.println("File not found or empty. Initializing with an empty stories array.");
+            stories = new ArrayList<>(); // Initialize the list to an empty state
+            saveToFile(stories); // Save an empty array to initialize the file
+            return;
         }
+
         try {
             String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
             JSONArray storiesArray = new JSONArray(json); // Parse the JSON array
@@ -52,16 +58,16 @@ public class StoriesFileManager implements FileManager<Story> {
                 String authorId = storyJSON.getString("userId");
                 String contentId = storyJSON.getString("contentId");
                 String TextContent = storyJSON.getString("TextContent");
-
                 String imagePath = storyJSON.getString("imagePath");
                 LocalDateTime time = LocalDateTime.parse(storyJSON.getString("time"));
-                stories.add(new Story( authorId, TextContent, imagePath, time));
+                stories.add(new Story(authorId, TextContent, imagePath, time));
             }
         } catch (IOException ex) {
             System.out.println("Error reading file: " + ex.getMessage());
         } catch (JSONException ex) {
             System.out.println("Error parsing JSON: " + ex.getMessage());
         }
+
     }
 
     @Override
