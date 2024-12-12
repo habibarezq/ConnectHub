@@ -8,5 +8,10 @@
         "blocked": [],
         "userId": "6da2aab8-136d-423e-b557-722b665f6fe0",
         "friends": []
+    },
+    {
+        "blocked": [],
+        "userId": "387bced4-f57a-48d5-9a83-5dfe6b5edf9f",
+        "friends": []
     }
 ]
