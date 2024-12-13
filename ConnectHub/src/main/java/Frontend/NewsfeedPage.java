@@ -29,7 +29,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private ArrayList<User> friends;
     private String userId;
     private ConnectHubMain connectHub;
-    private User user;
+    public User user;
 
     public NewsfeedPage(User user, ConnectHubMain connectHub) {
         initComponents();
