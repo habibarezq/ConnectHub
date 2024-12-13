@@ -1,12 +1,15 @@
 package Backend.GroupManagement;
 
-import Backend.GroupManagement.Admins;
 import Backend.UserManagement.User;
 import java.util.*;
 
-public class PrimaryAdmin extends Admins {
+public class PrimaryAdmin extends Admin {
 
-    private ArrayList<User> normalAdmins;
+    public PrimaryAdmin(String groupUserId) {
+        super(groupUserId);
+    }
+
+  
 
     //promote/demote admins
     //remove members  OVERRIDEN
