@@ -18,9 +18,11 @@ public class GroupServiceManager { //Greates the group only
     private GroupMembershipFileManager membershipFileManager = GroupMembershipFileManager.getInstance();
 
     public Group createGroup(String name, String description, String photoPath, String creatorId) {
+        
         Group group = new Group(name, description, photoPath, creatorId);
         
         groupsFileManager.getGroups().add(group);
+        ContentManager.getInstance(creatorId).getGroups().add(group);
         groupsFileManager.saveToFile(groupsFileManager.getGroups());
 
         MembershipManager.getInstance(group.getGroupId()).saveUserData();

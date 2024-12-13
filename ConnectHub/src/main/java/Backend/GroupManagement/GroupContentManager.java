@@ -30,33 +30,32 @@ public class GroupContentManager {
     }
 
     public ArrayList<GroupPost> getPosts() {
-        if (!postsLoaded) {
             loadGroupPosts();
-        }
         return new ArrayList<>(posts); // return a copy to protect internal data
     }
 
     private void loadGroupPosts() {
-        if (!postsLoaded) { // Ensure loading happens only once
+        
             this.posts = new ArrayList<>();
             ArrayList<GroupPost> allPosts = GroupPostsFileManager.getInstance().getPosts();
+           // System.out.println("POSTS FROM load" + allPosts);
             for (GroupPost post : allPosts) {
                 if (post.getGroupId().equals(groupId)) {
                     this.posts.add(post);
                 }
             }
-            postsLoaded = true;
-        }
+                        System.out.println("POSTS FROM MANAGER" + posts);
     }
 
     // Add a post to the group's posts
     public void addPost(GroupPost post) {
-        if (post.getGroupId().equals(groupId)) {
+        if (post.getGroupId().equals(groupId)){
             if (posts == null) {
                 posts = new ArrayList<>();
             }
             posts.add(post); //Adds new Post to ArrayList of User's Posts
             GroupPostsFileManager.getInstance().getPosts().add(post); //Adds new Post to ArrayList of AllPosts
+            
             GroupPostsFileManager.getInstance().saveToFile(GroupPostsFileManager.getInstance().getPosts()); //Save to File
 
             System.out.println("Post added: " + post.getContentTxt());

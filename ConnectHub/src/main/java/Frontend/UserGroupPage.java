@@ -1,10 +1,59 @@
 package Frontend;
 
+import Backend.GroupManagement.Group;
+import Backend.UserManagement.User;
+import java.awt.Font;
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+
 public class UserGroupPage extends javax.swing.JFrame {
 
-    public UserGroupPage() {
+    private NewsfeedPage newsfeed;
+    private User user;
+    private String groupId;
+    private Group group;
+
+    public UserGroupPage(NewsfeedPage newsfeed, String groupId) {
         initComponents();
-        
+        setTitle("User");
+        setContentPane(jPanel1);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
+        this.newsfeed = newsfeed;
+        this.groupId = groupId;
+        this.group = group;
+
+        //the user using the app
+        this.user = newsfeed.user;
+    }
+
+    private void startup() //MANAGEMENT OR IMAGE
+    {
+
+        File groupPicFile = new File(group.getPhotoPath());
+        if (groupPicFile.exists()) {
+            try {
+                Image image = ImageIO.read(groupPicFile);
+                if (image != null) {
+                    // Scale image to fit within the label
+                    Image scaledImage = image.getScaledInstance(groupPicLabel.getWidth(), groupPicLabel.getHeight(), Image.SCALE_SMOOTH);
+                    groupPicLabel.setIcon(new ImageIcon(scaledImage));
+                } else {
+                    JOptionPane.showMessageDialog(this, "The selected file is not a valid image.", "Invalid Image", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(Profile.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        String username = group.getName();
+        groupNameLabel.setText(username);
+        groupNameLabel.setFont(new Font("Serif", Font.BOLD, 18));
     }
 
     @SuppressWarnings("unchecked")
@@ -48,6 +97,11 @@ public class UserGroupPage extends javax.swing.JFrame {
         leaveGroupButton.setText("Leave Group");
 
         addPostButton.setText("Add Post");
+        addPostButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addPostButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -69,7 +123,7 @@ public class UserGroupPage extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(postsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 527, Short.MAX_VALUE)
                     .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(180, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -97,20 +151,24 @@ public class UserGroupPage extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(240, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(60, 60, 60))
+                .addGap(223, 223, 223))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(99, 99, 99)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(101, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void addPostButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPostButtonActionPerformed
+        new groupPostCreation(this.user.getUserID(), this.groupId,newsfeed).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_addPostButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -142,7 +200,7 @@ public class UserGroupPage extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new UserGroupPage().setVisible(true);
+
             }
         });
     }

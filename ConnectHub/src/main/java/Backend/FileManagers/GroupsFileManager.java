@@ -42,12 +42,6 @@ public class GroupsFileManager implements FileManager<Group> {
                 break;
             }
         }
-
-//        // If the group was not found, initialize with default values
-//        if (g == null) {
-//            g = new Group("newGroup", "", "", groupId, creatorId); // Default group with empty fields
-//
-//        }
         return g;
     }
     
@@ -142,4 +136,12 @@ public class GroupsFileManager implements FileManager<Group> {
         }
     }
 
+      public Group getGroupByName(String selectedString) {
+        for (Group group : groups) {
+            if (group.getName().equalsIgnoreCase(selectedString)) {
+                return group;
+            }
+        }
+        return null;
+    }
 }

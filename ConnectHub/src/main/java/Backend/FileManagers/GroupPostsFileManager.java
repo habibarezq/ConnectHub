@@ -41,9 +41,9 @@ public class GroupPostsFileManager implements FileManager<GroupPost> {
 
     @Override
     public void readFromFile() {
-        if (!posts.isEmpty()) {
-            return; // To avoid reloading
-        }
+//        if (!posts.isEmpty()) {
+//            return; // To avoid reloading
+//        }
         File file = new File(FILE_PATH);
         if (!file.exists() || file.length() == 0) {
             // If the file does not exist or is empty, initialize it with an empty array

@@ -51,9 +51,7 @@ public class ContentManager {
     }
 
     public ArrayList<Group> getGroups() {
-        if (!groupsLoaded) {
             loadUserGroups();
-        }
         return new ArrayList<>(groups);
     }
 
@@ -84,17 +82,14 @@ public class ContentManager {
     }
 
     private void loadUserGroups() {
-        if (!groupsLoaded) {
             this.groups = new ArrayList<>();
             ArrayList<Group> allGroups = GroupsFileManager.getInstance().getGroups();
             for (Group group : allGroups) {
                 if (group.getCreatorId().equals(userId) || group.isAdmin(userId) || group.isMember(userId)) {
                     this.groups.add(group);
-                    System.out.println("My Groups: "+group.getName());
+                    System.out.println("Group :"+group.getName());
                 }
             }
-            storiesLoaded = true;
-        }
     }
 
     // Observer pattern

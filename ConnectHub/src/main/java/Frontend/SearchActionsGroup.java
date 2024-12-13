@@ -108,6 +108,7 @@ public class SearchActionsGroup extends javax.swing.JDialog {
 
     private void viewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewButtonActionPerformed
         // HOW TO KNOW ROLE
+        
     }//GEN-LAST:event_viewButtonActionPerformed
 
     public static void main(String args[]) {
