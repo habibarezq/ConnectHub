@@ -30,10 +30,10 @@ public class NotificationManager {
             default:
                 message = null;
         }
-        Notification notif = new Notification(userID, type, message);
-        notif.setNotificationID(UUID.randomUUID().toString());
-        notif.setTimestamp(LocalDate.now().toString());
-        notif.setStatus(false);
+        String notificationID=UUID.randomUUID().toString();
+        String timestamp=LocalDate.now().toString();
+        boolean status=false;
+        Notification notif = new Notification(notificationID,userID,timestamp,type,message,status);
         notifications.add(notif);
         return notif;
     }
