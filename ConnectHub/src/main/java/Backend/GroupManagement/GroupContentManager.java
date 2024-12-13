@@ -57,17 +57,9 @@ public class GroupContentManager {
             posts.add(post); //Adds new Post to ArrayList of User's Posts
             
             GroupPostsFileManager.getInstance().getPosts().add(post); //Adds new Post to ArrayList of AllPosts
-            for(GroupPost var:GroupPostsFileManager.getInstance().getPosts())
-            {
-                System.out.println("IDDD ADD POST:"+var.getGroupId());
-            }
             GroupPostsFileManager.getInstance().saveToFile(GroupPostsFileManager.getInstance().getPosts()); //Save to File
-
-            GroupPostsFileManager.getInstance().getPosts().add(post); //Adds new Post to ArrayList of AllPosts
-            for(GroupPost var:GroupPostsFileManager.getInstance().getPosts())
-            {
-                System.out.println("IDDD ADD POST:"+var.getGroupId());
-            }
+            
+            
             System.out.println("Post added: " + post.getContentTxt());
         } else {
             System.out.println("Cannot add post: Group ID mismatch.");
@@ -81,7 +73,8 @@ public class GroupContentManager {
             posts.remove(post); //removes new Post to ArrayList of User's Posts
             GroupPostsFileManager.getInstance().getPosts().remove(post); //Adds new Post to ArrayList of AllPosts
             GroupPostsFileManager.getInstance().saveToFile(GroupPostsFileManager.getInstance().getPosts()); //Save to File
-
+PostsFileManager.getInstance().getPosts().remove(post);
+            PostsFileManager.getInstance().saveToFile(PostsFileManager.getInstance().getPosts());
             System.out.println("Post added: " + post.getContentTxt());
         } else {
             System.out.println("Cannot add post: Group ID mismatch.");

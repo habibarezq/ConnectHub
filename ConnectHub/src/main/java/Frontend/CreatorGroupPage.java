@@ -206,7 +206,7 @@ public class CreatorGroupPage extends javax.swing.JFrame {
             membersModel.addElement("");
         } else {
             for (GroupUser member : members) {
-               if(!member.getGroupUserId().equals(creator.getUserID()) && admins.contains(admins))
+               if(!member.getGroupUserId().equals(creator.getUserID()) && !admins.contains(member))
                 membersModel.addElement(member.getUser(member.getGroupUserId()).getUsername());
             }
         }
@@ -283,6 +283,8 @@ public class CreatorGroupPage extends javax.swing.JFrame {
             ArrayList<GroupPost> posts = GroupPostsFileManager.getInstance().getPosts();
             posts.remove(selectedPost);
             GroupPostsFileManager.getInstance().saveToFile(posts);
+            PostsFileManager.getInstance().getPosts().remove(selectedPost);
+            PostsFileManager.getInstance().saveToFile(PostsFileManager.getInstance().getPosts());
             JOptionPane.showMessageDialog(null, "Post deleted successfully!");
             // Refresh the posts display
             uploadPostsFunction(postsScrollPane, GroupPostsFileManager.getInstance().getPosts());
