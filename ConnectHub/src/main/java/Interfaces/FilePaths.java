@@ -19,4 +19,6 @@ public interface FilePaths {
     public String GROUPSMEMBER_FILE_PATH="groupsMembership.txt";
     
     public String GRP_REQUESTS_FILE_PATH="groupRequests.txt";
+    
+    public String GROUP_POSTS_FILE_PATH="groupPosts.txt";
 }
