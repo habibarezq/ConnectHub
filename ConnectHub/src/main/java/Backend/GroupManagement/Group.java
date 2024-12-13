@@ -1,18 +1,17 @@
 package Backend.GroupManagement;
 
-import Backend.UserManagement.User;
-import java.util.*;
+import Backend.Post;
+import java.util.ArrayList;
 
 public class Group {
-    
+
     private String name;
     private String description;
     private String photoPath;
     private String groupId;
-    
     private String creatorId;       // id of the creator "Primary admin" of the group
-    private ArrayList<User> admins; // List of normal admins
-    private ArrayList<User> users ; // List of normal users
+
+    private ArrayList<Post> posts;
 
     public Group(String name, String description, String photoPath, String groupId, String creatorId) {
         this.name = name;
@@ -20,8 +19,8 @@ public class Group {
         this.photoPath = photoPath;
         this.groupId = groupId;
         this.creatorId = creatorId;
-        this.admins = new ArrayList<>();
-        this.users = new ArrayList<>();
+
+        this.posts = new ArrayList<>();
     }
 
     public String getName() {
@@ -44,12 +43,4 @@ public class Group {
         return creatorId;
     }
 
-    public ArrayList<User> getAdmins() {
-        return admins;
-    }
-
-    public ArrayList<User> getUsers() {
-        return users;
-    }
-    
 }
