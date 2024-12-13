@@ -50,6 +50,10 @@ public class GroupsFileManager implements FileManager<Group> {
 //        }
         return g;
     }
+    
+    public ArrayList<Group> getGroups(){
+        return groups;
+    }
 
     @Override
     public void readFromFile() {
