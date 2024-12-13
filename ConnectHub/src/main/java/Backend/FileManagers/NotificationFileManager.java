@@ -1,6 +1,6 @@
 package Backend.FileManagers;
 
-import Frontend.Notification;
+import Backend.Notification;
 import Interfaces.FileManager;
 import Interfaces.FilePaths;
 import java.io.File;
@@ -9,7 +9,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,9 +54,8 @@ public class NotificationFileManager implements FileManager<Notification> {
                 String timestamp = notificationJSON.getString("timestamp");
                 String type = notificationJSON.getString("type");
                 String message = notificationJSON.getString("message");
-                String stat = notificationJSON.getString("status");
-                boolean status = false;
-//                notifications.add(new Notification(notificationID,userID,timestamp,type,message,status));
+                boolean status = notificationJSON.optBoolean("status");
+                notifications.add(new Notification(notificationID,userID,timestamp,type,message,status));
             }
         } catch (IOException ex) {
             System.out.println("Error reading file: " + ex.getMessage());
@@ -78,12 +76,13 @@ public class NotificationFileManager implements FileManager<Notification> {
         JSONArray notificationsArray = new JSONArray();
         for (Notification notification : data) {
             JSONObject notificationJSON = new JSONObject();
-//            notificationJSON.put("userId", notification.getAuthorId());
-//            notificationJSON.put("contentId", notification.getContentId());
-//            notificationJSON.put("TextContent", notification.getContentTxt());
-//            notificationJSON.put("imagePath", notification.getcontentPath()); // Convert image to Base64
-//            notificationJSON.put("time", notification.getUploadingTime());
-//            notificationsArray.put(notificationJSON);
+            notificationJSON.put("notificationId", notification.getNotificationID());
+            notificationJSON.put("userId", notification.getUserID());
+            notificationJSON.put("timestamp", notification.getTimestamp());
+            notificationJSON.put("type", notification.getType());
+            notificationJSON.put("message", notification.getMessage());
+            notificationJSON.put("status", notification.getStatus());
+            notificationsArray.put(notificationJSON);
         }
 
         try {
