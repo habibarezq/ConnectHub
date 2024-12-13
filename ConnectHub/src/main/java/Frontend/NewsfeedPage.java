@@ -24,7 +24,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private DefaultListModel<String> suggestedFriendsModel;
     private DefaultListModel<String> requestsModel;
     private DefaultListModel<String> groupsModel;
-    private DefaultListModel<String> suggestedGroupsModel;
+    protected DefaultListModel<String> suggestedGroupsModel;
     private ArrayList<Post> posts;
     private ArrayList<Story> stories;
     private ArrayList<User> users;
@@ -846,7 +846,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
                 for (Group group : GroupsFileManager.getInstance().getGroups()) {
                     if (group.getName().equalsIgnoreCase(searchResult)) {
                         groupFound = true;
-                        new SearchActionsGroup(this, false, group).setVisible(true);
+                        new SearchActionsGroup(this, false, group,"").setVisible(true);
                     }
                 }
             }
@@ -888,34 +888,21 @@ public class NewsfeedPage extends javax.swing.JFrame {
             System.out.println("Selected value: " + selectedValue);
             Group group=GroupsFileManager.getInstance().getGroupByName(selectedValue);
             //Check User's role
-            if(group.isCreator(userId))
-            {
-                new CreatorGroupPage(this, group.getGroupId()).setVisible(true);
-                System.out.println("IDDDD:"+group.getGroupId());
-                this.dispose();
-            }
-            else if(group.isAdmin(userId))
-            {
-                new AdminGroupPage(this, group.getGroupId()).setVisible(true);
-                this.dispose();
-            }
-            else if(group.isMember(userId))
-            {
-                new UserGroupPage(this,group.getGroupId()).setVisible(true);
-                this.dispose();
-            }
+            new RoleManager().checkRole(group,userId,this);
+          
         }
     }//GEN-LAST:event_groupsListMouseClicked
 
     private void suggestedGroupsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_suggestedGroupsListMouseClicked
-        int index = groupsList.locationToIndex(evt.getPoint());
+        int index = suggestedGroupsList.locationToIndex(evt.getPoint());
         if (index != -1) { // Ensure an item was clicked
             // Get the value at the clicked index
-            String selectedValue = groupsList.getModel().getElementAt(index);
+            String selectedValue = suggestedGroupsList.getModel().getElementAt(index);
             System.out.println("Selected value: " + selectedValue);
-            for (Group group : groups) {
+            for (Group group : GroupsFileManager.getInstance().getGroups()) {
                 if (group.getName().equalsIgnoreCase(selectedValue)) {
-                    new SearchActionsGroup(this, false, group).setVisible(true);
+                    
+                    new SearchActionsGroup(this, false, group,selectedValue).setVisible(true);
                 }
             }
         }

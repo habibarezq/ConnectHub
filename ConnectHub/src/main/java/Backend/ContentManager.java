@@ -2,7 +2,10 @@ package Backend;
 
 import Backend.FileManagers.*;
 import Backend.GroupManagement.Group;
+import Backend.GroupManagement.GroupRequest;
+import Backend.GroupManagement.GroupRequestManager;
 import Backend.GroupManagement.MembershipManager;
+import Backend.UserManagement.User;
 import java.util.ArrayList;
 
 public class ContentManager {
@@ -143,18 +146,24 @@ public class ContentManager {
             System.out.println("Cannot add story: Author ID mismatch.");
         }
     }
-
     public ArrayList<Group> suggestGroup() {
         ArrayList<Group> suggestions = new ArrayList<>();
         ArrayList<Group> allGroups = GroupsFileManager.getInstance().getGroups();
-        ArrayList<Group> myGroups = ContentManager.getInstance(userId).getGroups(); // Assuming getGroups() returns the groups the current user is part of
-
+        User currentUser=UserFileManager.getInstance().findUserByID(userId);
+        ArrayList<Group> myGroups = ContentManager.getInstance(currentUser.getUserID()).getGroups();
+        ArrayList<GroupRequest> userRequests = GroupRequestsFileManager.getInstance().getRequests();
+    
         if (allGroups != null) {
             for (Group group : allGroups) {
-                // Check if the group is not already a part of user's groups
-                if (!myGroups.contains(group)) {
+                boolean alreadyMember = myGroups.stream().anyMatch(myGroup -> myGroup.getGroupId().equals(group.getGroupId()));
+                boolean alreadyRequested = userRequests.stream()
+                    .anyMatch(request -> request.getGroup().getGroupId().equals(group.getGroupId())
+                            && request.getUser().getGroupUserId().equals(currentUser.getUserID())
+                            && request.getRequestStat().equals("Pending"));
+    
+                // Add to suggestions if the user is not a member and has not sent a request
+                if (!alreadyMember && !alreadyRequested) {
                     suggestions.add(group);
-
                 }
             }
         }
