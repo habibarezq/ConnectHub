@@ -121,7 +121,7 @@ public class SearchActionsUser extends javax.swing.JDialog {
         //and user is the friend that is being searched for
         if(this.newsfeed.user.getFriends().contains(this.user))
         {
-           newsfeed.user.removeFriend(user);
+           //newsfeed.user.removeFriend(user); Eh ely by7sal henaa?
            JOptionPane.showMessageDialog(null, "User removed successfully", "Message", JOptionPane.INFORMATION_MESSAGE);
         } 
         else JOptionPane.showMessageDialog(null, "This user is not added so it cannot be removed.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -130,7 +130,7 @@ public class SearchActionsUser extends javax.swing.JDialog {
 
     private void blockButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_blockButtonActionPerformed
         //blocking user 
-            newsfeed.user.blockFriend(user);
+            //newsfeed.user.blockFriend(user);
             JOptionPane.showMessageDialog(null, "User blocked successfully", "Message", JOptionPane.INFORMATION_MESSAGE);
 
         this.dispose();
@@ -140,7 +140,7 @@ public class SearchActionsUser extends javax.swing.JDialog {
         //adding a new user to the friends list
         if(!this.newsfeed.user.getFriends().contains(user))
         {
-            newsfeed.user.sendRequest(user);
+            //newsfeed.user.sendRequest(user);
             JOptionPane.showMessageDialog(null, "Request sent successfully", "Message", JOptionPane.INFORMATION_MESSAGE);
         }
         else JOptionPane.showMessageDialog(null, "This user is already added.", "Error", JOptionPane.ERROR_MESSAGE);
