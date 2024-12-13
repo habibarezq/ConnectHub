@@ -54,5 +54,18 @@ public class GroupManager { //IDEA ON HOW TO USE INSTEAD OF WRITING FUNCTIONS IN
         //remove request
         //SAVE TO FILE GroupRequests
     }
+    
+    public void removeMember(String toBeRemoveId)
+    {
+    ArrayList<GroupUser> members = MembershipManager.getInstance(group.getGroupId()).getGroupUsers();
+        if(group.isAdmin(user.getGroupUserId()))
+        {
+         GroupUser memberToRemove = MembershipManager.getInstance(group.getGroupId()).getGroupUserById(toBeRemoveId);
+         members.remove(memberToRemove);
+        }
+        
+        MembershipManager.getInstance(group.getGroupId()).saveUserData();
+        GroupMembershipFileManager.getInstance().saveToFile();    
+    }
 }
 
