@@ -42,5 +42,25 @@ public class Group {
     public String getCreatorId() {
         return creatorId;
     }
+    
+    public boolean isAdmin(String Id){
+        ArrayList<NormalAdmin> admins =  MembershipManager.getInstance(groupId).getAdmins();
+        for(NormalAdmin admin :admins){
+         if(admin.getGroupUserId().equals(Id)){
+             return true;
+         }   
+        }
+        return false;
+    }
+    
+       public boolean isMember(String Id){
+        ArrayList<GroupUser> users =  MembershipManager.getInstance(groupId).getGroupUsers();
+        for(GroupUser user :users){
+         if(user.getGroupUserId().equals(Id)){
+             return true;
+         }   
+        }
+        return false;
+    }
 
 }

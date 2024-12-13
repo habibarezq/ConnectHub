@@ -1,4 +1,4 @@
-package Backend;
+package Backend.NotificationManagment;
 
 public class Notification {
     private String notificationID;

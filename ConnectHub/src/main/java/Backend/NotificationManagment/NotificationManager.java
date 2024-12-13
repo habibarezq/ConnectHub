@@ -1,5 +1,6 @@
-package Backend;
+package Backend.NotificationManagment;
 
+import Backend.NotificationManagment.Notification;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.UUID;

@@ -1,4 +1,3 @@
-
 package Backend.GroupManagement;
 
 import Backend.FileManagers.FriendsFileManager;
@@ -10,21 +9,27 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-
 public class MembershipManager {
-    
-    private final String groupId;
 
-    private ArrayList<NormalAdmin> admins ;
+    private final String groupId;
+    private static MembershipManager instance;
+    private ArrayList<NormalAdmin> admins;
     private ArrayList<GroupUser> groupUsers;
 
-    MembershipManager(String groupId) {
+    private MembershipManager(String groupId) {
         this.groupId = groupId;
         this.admins = new ArrayList<>();
         this.groupUsers = new ArrayList<>();
         loadMembershipData();
     }
-
+    
+    
+    public static synchronized MembershipManager getInstance(String groupId) {
+        if (instance == null) {
+            instance = new MembershipManager(groupId); // Create a new instance for the specific userId
+        }
+        return instance;
+    }
 
     private void loadMembershipData() {
         JSONObject groupData = GroupMembershipFileManager.getInstance().getUserData(groupId);
@@ -36,9 +41,9 @@ public class MembershipManager {
         if (AdminsArray != null) {
             for (int i = 0; i < AdminsArray.length(); i++) {
                 String adminId = AdminsArray.getString(i);
-               // User friend = UserFileManager.getInstance().findUserByID(adminId);
-               NormalAdmin admin = new NormalAdmin(adminId); 
-               if (admin != null) {
+                NormalAdmin admin = new NormalAdmin(adminId);
+
+                if (admin != null) {
                     admins.add(admin);
                 }
             }
@@ -48,7 +53,7 @@ public class MembershipManager {
         if (usersArray != null) {
             for (int i = 0; i < usersArray.length(); i++) {
                 String userId = usersArray.getString(i);
-               // User blockedUser = UserFileManager.getInstance().findUserByID(blockedId);
+                //User user = UserFileManager.getInstance().findUserByID(userId);
                 GroupUser user = new GroupUser(userId);
                 if (user != null) {
                     groupUsers.add(user);
@@ -65,8 +70,6 @@ public class MembershipManager {
         return groupUsers;
     }
 
-   
-    
     public void saveUserData() {
         JSONObject userData = new JSONObject();
         userData.put("groupId", groupId);
@@ -84,11 +87,8 @@ public class MembershipManager {
         userData.put("users", usersArray);
 
         GroupMembershipFileManager.getInstance().updateUserData(groupId, userData);
-         GroupMembershipFileManager.getInstance().saveToFile();
-    } 
+        GroupMembershipFileManager.getInstance().saveToFile();
+    }
     //NOTE THAT The saveUserData() saves the user's friends and blocked lists back to the friends file. 
     //It updates the corresponding JSON object for the user and saves it using FriendsFileManager.
 }
-
-    
-  
