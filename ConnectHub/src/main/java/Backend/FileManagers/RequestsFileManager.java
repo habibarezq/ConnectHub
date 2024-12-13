@@ -1,6 +1,6 @@
 package Backend.FileManagers;
 
-import Backend.Request;
+import Backend.UserRequest;
 import Backend.UserManagement.User;
 import Interfaces.FileManager;
 import Interfaces.FilePaths;
@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class RequestsFileManager implements FileManager<Request> {
+public class RequestsFileManager implements FileManager<UserRequest> {
 
     private static RequestsFileManager instance;
     private String FILE_PATH = FilePaths.REQUESTS_FILE_PATH;
-    private ArrayList<Request> requests;
+    private ArrayList<UserRequest> requests;
 
     private RequestsFileManager() {
         this.requests = new ArrayList<>();
@@ -31,7 +31,7 @@ public class RequestsFileManager implements FileManager<Request> {
         return instance;
     }
 
-    public ArrayList<Request> getRequests() {
+    public ArrayList<UserRequest> getRequests() {
         return requests;
     }
 
@@ -63,7 +63,7 @@ public class RequestsFileManager implements FileManager<Request> {
 
                 if (sender != null && recipient != null) {
 
-                    Request request = new Request(sender, recipient);
+                    UserRequest request = new UserRequest(sender, recipient);
                     request.setRequestStat(requestStat);
 
                     if (requestID != null) {
@@ -81,7 +81,7 @@ public class RequestsFileManager implements FileManager<Request> {
     }
 
     @Override
-    public void saveToFile(ArrayList<Request> data) {
+    public void saveToFile(ArrayList<UserRequest> data) {
         File file = new File(FILE_PATH);
         try {
             file.createNewFile();
@@ -90,7 +90,7 @@ public class RequestsFileManager implements FileManager<Request> {
         }
 
         JSONArray requestsArray = new JSONArray();
-        for (Request request : data) {
+        for (UserRequest request : data) {
             JSONObject requestJSON = new JSONObject();
             requestJSON.put("senderId", request.getSender().getUserID());
             requestJSON.put("recipientId", request.getRecipient().getUserID());
@@ -111,8 +111,8 @@ public class RequestsFileManager implements FileManager<Request> {
         }
     }
 
-    public Request findRequestByID(String requestID) {
-        for (Request request : requests) {
+    public UserRequest findRequestByID(String requestID) {
+        for (UserRequest request : requests) {
             if (request.getRequestID().equals(requestID)) {
                 return request;
             }
@@ -123,7 +123,7 @@ public class RequestsFileManager implements FileManager<Request> {
     public boolean searchForUser(String userId)
     {
         
-        for(Request request: RequestsFileManager.getInstance().getRequests())
+        for(UserRequest request: RequestsFileManager.getInstance().getRequests())
         {
             if(request.getRecipient().getUserID().equals(userId) || request.getSender().getUserID().equals(userId))
             {
@@ -133,8 +133,8 @@ public class RequestsFileManager implements FileManager<Request> {
         }
         return false;
     }
-      public Request searchForRequestByIds(String senderId, String recipientId) {
-    for (Request r : RequestsFileManager.getInstance().getRequests()) {
+      public UserRequest searchForRequestByIds(String senderId, String recipientId) {
+    for (UserRequest r : RequestsFileManager.getInstance().getRequests()) {
         if ((r.getRecipient().getUserID().equals(recipientId)) && (r.getSender().getUserID().equals(senderId))) {
             
             { System.out.println("Found !");
@@ -145,8 +145,8 @@ public class RequestsFileManager implements FileManager<Request> {
 }
 
 
-    public Request searchByRequestId(String requestId) {
-        for (Request r : RequestsFileManager.getInstance().getRequests()) {
+    public UserRequest searchByRequestId(String requestId) {
+        for (UserRequest r : RequestsFileManager.getInstance().getRequests()) {
                 return r;
             }
         return null;
