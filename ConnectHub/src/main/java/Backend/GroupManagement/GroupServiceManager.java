@@ -12,6 +12,9 @@ public class GroupServiceManager { //Greates the group only
         Group group = new Group(name,description,photoPath,creatorId);
         group.setGroupId(java.util.UUID.randomUUID().toString());
         allGroups.add(group);
+        
+        //Save to File
+        GroupsFileManager.getInstance().saveToFile(allGroups);
         return group;
     }
 
