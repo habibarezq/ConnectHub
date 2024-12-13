@@ -1,12 +1,17 @@
 package Frontend;
 
+import Backend.ContentManager;
 import Backend.FileManagers.GroupPostsFileManager;
+import Backend.FileManagers.GroupRequestsFileManager;
 import Backend.FileManagers.GroupsFileManager;
+import Backend.FileManagers.PostsFileManager;
 import Backend.FileManagers.UserFileManager;
 import Backend.GroupManagement.Group;
 import Backend.GroupManagement.GroupContentManager;
 import Backend.GroupManagement.GroupManager;
 import Backend.GroupManagement.GroupPost;
+import Backend.GroupManagement.GroupRequest;
+import Backend.GroupManagement.GroupRequestManager;
 import Backend.GroupManagement.GroupServiceManager;
 import Backend.GroupManagement.GroupUser;
 import Backend.GroupManagement.MembershipManager;
@@ -45,8 +50,11 @@ import javax.swing.JTextField;
 public class AdminGroupPage extends javax.swing.JFrame {
 
     private DefaultListModel<String> membersModel;
-    private ArrayList<User> members;
-    private ArrayList<GroupPost> posts; //HOW WILL I TAKE IT
+    private DefaultListModel<String> requestsListModel;
+    private ArrayList<GroupUser> members;
+    private ArrayList<GroupRequest> requests;
+    private ArrayList<NormalAdmin> admins;
+    private ArrayList<GroupPost> posts;
     private NewsfeedPage newsfeed;
     private User admin;
     private String groupId;
@@ -56,7 +64,7 @@ public class AdminGroupPage extends javax.swing.JFrame {
 
     public AdminGroupPage(NewsfeedPage newsfeed, String groupId) {
         initComponents();
-        setTitle("Admin pages");
+        setTitle("Admin page");
         setContentPane(jPanel1);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         //GET GROUP BY GROUPID SO I CAN GET DESCRIPTION AND NAME
@@ -67,31 +75,55 @@ public class AdminGroupPage extends javax.swing.JFrame {
 
         //the user using the app
         this.admin = newsfeed.user;
-
+        this.members = MembershipManager.getInstance(groupId).getGroupUsers();
+        this.admins=MembershipManager.getInstance(groupId).getAdmins();
+        this.posts=GroupContentManager.getInstance(groupId).getPosts();
+        this.requests=GroupRequestManager.getInstance(groupId).getGroupRequests();
+        
         membersModel = new DefaultListModel<>();
-        requestsList.setModel(membersModel);
-
+        requestsListModel = new DefaultListModel<>();
+        requestsList.setModel(requestsListModel);
+        membersList.setModel(membersModel);
         //GET POSTS
         descriptionLabel.setText(group.getDescription()); //DESCRIPTION
         groupNameLabel.setText(group.getName()); //GROUP NAME
 
         populatePosts();
         populateMembers();
+        populateRequests();
         startup();
     }
 
-    private void populateMembers() {
+    private void populateRequests() {
+        requestsListModel.removeAllElements();
+        requests = null;
+        requests = GroupRequestManager.getInstance(groupId).getGroupRequests();
+        ArrayList<GroupRequest> test = GroupRequestsFileManager.getInstance().getRequests();
+
+        if (requests != null) {
+            for (GroupRequest request : requests) {
+                System.out.println("Request: "+request.getUser().getUser(request.getUser().getGroupUserId()).getUsername());
+                if (request.getRequestStat().equals("Pending")) {
+                    System.out.println("Name" + request.getUser().getUser(request.getUser().getGroupUserId()).getUsername());
+                    requestsListModel.addElement(request.getUser().getUser(request.getUser().getGroupUserId()).getUsername());
+                }
+            }
+        }
+    }
+  private void populateMembers() {
         //to make sure the list is empty
         membersModel.removeAllElements();
 
         if (members == null) {
-            membersModel.addElement("No members");
+            membersModel.addElement("");
         } else {
-            for (User member : members) {
-                membersModel.addElement(member.getUsername());
+            for (GroupUser member : members) {
+               if(!member.getGroupUserId().equals(group.getCreatorId()) && !admins.contains(member))
+                membersModel.addElement(member.getUser(member.getGroupUserId()).getUsername());
             }
         }
     }
+
 
     private void startup() //MANAGEMENT OR IMAGE
     {
@@ -521,6 +553,8 @@ public class AdminGroupPage extends javax.swing.JFrame {
             ArrayList<GroupPost> posts = GroupPostsFileManager.getInstance().getPosts();
             posts.remove(selectedPost);
             GroupPostsFileManager.getInstance().saveToFile(posts);
+            PostsFileManager.getInstance().getPosts().remove(selectedPost);
+            PostsFileManager.getInstance().saveToFile(PostsFileManager.getInstance().getPosts());
             JOptionPane.showMessageDialog(null, "Post deleted successfully!");
             // Refresh the posts display
             uploadPostsFunction(postsScrollPane, GroupPostsFileManager.getInstance().getPosts());

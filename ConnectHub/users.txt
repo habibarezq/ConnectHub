@@ -14,5 +14,13 @@
         "userId": "61f39d69-7f2e-426d-a7d0-a7476ab6345a",
         "email": "a",
         "username": "a"
+    },
+    {
+        "password": "$2a$10$EThnw1bFEdewwV9nw4cBnOyANZHuzvZN32pmuRC0rOBXju00q0lya",
+        "dob": "2024-12-14",
+        "isOnline": false,
+        "userId": "d244dc3c-689f-4bfd-8a5a-1b79bcf7214f",
+        "email": "c",
+        "username": "c"
     }
 ]

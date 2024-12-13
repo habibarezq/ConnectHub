@@ -2,6 +2,7 @@ package Frontend;
 
 import Backend.FileManagers.UserFileManager;
 import Backend.GroupManagement.Group;
+import Backend.GroupManagement.GroupContentManager;
 import Backend.GroupManagement.GroupPost;
 import Backend.GroupManagement.GroupUser;
 import Backend.GroupManagement.NormalAdmin;
@@ -46,6 +47,7 @@ public class UserGroupPage extends javax.swing.JFrame {
         this.newsfeed = newsfeed;
         this.groupId = groupId;
         this.group = group;
+        this.posts=GroupContentManager.getInstance(groupId).getPosts();
 
         //the user using the app
         this.user = newsfeed.user;
