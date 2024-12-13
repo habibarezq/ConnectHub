@@ -15,4 +15,6 @@ public interface FilePaths {
     public String REQUESTS_FILE_PATH="requests.txt";
     
     public String GROUPS_FILE_PATH="groups.txt";
+    
+    public String GROUPSMEMBER_FILE_PATH="groupsMembership.txt";
 }
