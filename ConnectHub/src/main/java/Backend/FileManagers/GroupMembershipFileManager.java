@@ -27,6 +27,10 @@ public class GroupMembershipFileManager {
     }
     // Singleton pattern with userId specificity
 
+    public Map<String, JSONObject> getGroupsMembership() {
+        return groupsMembership;
+    }
+
     public static synchronized GroupMembershipFileManager getInstance() {
         if (instance == null) {
             instance = new GroupMembershipFileManager(); // Create a new instance for the specific userId
