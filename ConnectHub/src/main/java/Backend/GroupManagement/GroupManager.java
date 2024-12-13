@@ -4,7 +4,7 @@ package Backend.GroupManagement;
 import Backend.ContentManager;
 import Backend.FileManagers.GroupMembershipFileManager;
 import java.util.ArrayList;
-//GroupServiceManager.getInstance(user,group or groupId).remove/accept/decline and so on
+//GroupManager.getInstance(user,group or groupId).remove/accept/decline and so on
 
 public class GroupManager { //IDEA ON HOW TO USE INSTEAD OF WRITING FUNCTIONS IN SUBCLASSES 
     private GroupUser user;

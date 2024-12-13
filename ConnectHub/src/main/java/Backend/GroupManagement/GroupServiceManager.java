@@ -1,25 +1,27 @@
 package Backend.GroupManagement;
 
+import Backend.FileManagers.GroupMembershipFileManager;
 import Backend.FileManagers.GroupsFileManager;
 import java.util.ArrayList;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class GroupServiceManager { //Greates the group only 
 
-    private static ArrayList<Group> allGroups;
+    private GroupsFileManager groupsFileManager = GroupsFileManager.getInstance();
+    private GroupMembershipFileManager membershipFileManager = GroupMembershipFileManager.getInstance();
 
-    public static Group createGroup(String name, String description, String photoPath, String creatorId) {
-        allGroups=GroupsFileManager.getInstance().getGroups();
-        Group group = new Group(name,description,photoPath,creatorId);
-        group.setGroupId(java.util.UUID.randomUUID().toString());
-        allGroups.add(group);
+    public Group createGroup(String name, String description, String photoPath, String creatorId) {
+        Group group = new Group(name, description, photoPath, creatorId);
         
-        //Save to File
-        GroupsFileManager.getInstance().saveToFile(allGroups);
+        groupsFileManager.getGroups().add(group);
+        groupsFileManager.saveToFile(groupsFileManager.getGroups());
+
+        MembershipManager.getInstance(group.getGroupId()).saveUserData();
         return group;
     }
 
-    public static ArrayList<Group> getAllGroups() {
-        return allGroups;
-    }
+    
 }
+
 
