@@ -1,12 +1,12 @@
 [
     {
         "blocked": [],
-        "userId": "7ef6ad98-f308-456d-992d-da459205f711",
-        "friends": ["69890c7f-4ed0-4eda-a986-1583e21087bd"]
+        "userId": "61f39d69-7f2e-426d-a7d0-a7476ab6345a",
+        "friends": []
     },
     {
         "blocked": [],
-        "userId": "69890c7f-4ed0-4eda-a986-1583e21087bd",
-        "friends": ["7ef6ad98-f308-456d-992d-da459205f711"]
+        "userId": "2cb31e2c-4ad9-47e8-9270-51e9a9d1d09e",
+        "friends": []
     }
 ]

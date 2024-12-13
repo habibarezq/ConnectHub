@@ -16,5 +16,17 @@
         "Bio": "",
         "userId": "7ef6ad98-f308-456d-992d-da459205f711",
         "ProfilePhotoPath": ""
+    },
+    {
+        "CoverPhotoPath": "",
+        "Bio": "",
+        "userId": "2cb31e2c-4ad9-47e8-9270-51e9a9d1d09e",
+        "ProfilePhotoPath": ""
+    },
+    {
+        "CoverPhotoPath": "",
+        "Bio": "",
+        "userId": "61f39d69-7f2e-426d-a7d0-a7476ab6345a",
+        "ProfilePhotoPath": "C:\\Users\\habib\\Documents\\NetBeansProjects\\ConnectHub\\ConnectHub\\pics\\image2.jpeg"
     }
 ]
