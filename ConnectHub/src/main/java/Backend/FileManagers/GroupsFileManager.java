@@ -91,7 +91,13 @@ public class GroupsFileManager implements FileManager<Group> {
                 String description = groupJSON.getString("description");
                 String photoPath = groupJSON.getString("photoPath");
 
-                Group group = new Group(groupName, description, photoPath, groupId, creatorId);
+                 
+                Group group = new Group(groupName, description, photoPath, creatorId);
+                if (groupId != null) {
+                        group.setGroupId(groupId); // Use ID from the file
+                    } else {
+                        group.setGroupId(java.util.UUID.randomUUID().toString()); // Generate a new ID if missing
+                    }
                 groups.add(group);
             }
 
