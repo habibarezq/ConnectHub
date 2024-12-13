@@ -2,7 +2,7 @@
     {
         "password": "$2a$10$ik87/uEBV6BwxlSg9RDkWeb8K3L8XA9ypuGjqJ9rCS3/tNFK.Ivl2",
         "dob": "2024-12-13",
-        "isOnline": false,
+        "isOnline": true,
         "userId": "2cb31e2c-4ad9-47e8-9270-51e9a9d1d09e",
         "email": "h",
         "username": "h"
