@@ -111,6 +111,7 @@ public class CreatorGroupPage extends javax.swing.JFrame {
             for (GroupRequest request : requests) {
                 // Only include pending requests
                 if (request.getRequestStat().equals("Pending")) {
+                    System.out.println("Name"+request.getUser().getUser(request.getUser().getGroupUserId()).getUsername());
                     requestsListModel.addElement(request.getUser().getUser(request.getUser().getGroupUserId()).getUsername());
                 }
             }
@@ -666,7 +667,7 @@ public class CreatorGroupPage extends javax.swing.JFrame {
             );
 
             if (choice == 0) {
-                //ADD USER TO MEMBERS
+                GroupManager.getInstance(user, group).acceptMember(user.getGroupUserId());
             } else if (choice == 1) {
                 return;
             }
