@@ -35,7 +35,6 @@ public class User{
 
         this.friends = new ArrayList<>();
         this.blocked = new ArrayList<>();
-        this.groups = new ArrayList<>();
         
         this.contentManager = ContentManager.getInstance(userID);
 
