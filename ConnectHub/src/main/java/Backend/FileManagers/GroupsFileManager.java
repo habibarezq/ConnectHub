@@ -31,8 +31,7 @@ public class GroupsFileManager implements FileManager<Group> {
         }
         return instance;
     }
-
-    public Group getGroupById(String groupId , String creatorId) {
+    public Group getGroupById(String groupId) {
 
         Group g = null;
 
@@ -44,11 +43,11 @@ public class GroupsFileManager implements FileManager<Group> {
             }
         }
 
-        // If the group was not found, initialize with default values
-        if (g == null) {
-            g = new Group("newGroup", "", "", groupId, creatorId); // Default group with empty fields
-
-        }
+//        // If the group was not found, initialize with default values
+//        if (g == null) {
+//            g = new Group("newGroup", "", "", groupId, creatorId); // Default group with empty fields
+//
+//        }
         return g;
     }
 
@@ -76,17 +75,17 @@ public class GroupsFileManager implements FileManager<Group> {
 
         try {
             String json = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
-            JSONArray profilesArray = new JSONArray(json);
+            JSONArray groupsArray = new JSONArray(json);
             this.groups.clear();
 
-            for (int i = 0; i < profilesArray.length(); i++) {
-                JSONObject profileJSON = profilesArray.getJSONObject(i);
+            for (int i = 0; i < groupsArray.length(); i++) {
+                JSONObject groupJSON = groupsArray.getJSONObject(i);
 
-                String creatorId = profileJSON.getString("creatorId");
-                String groupId = profileJSON.getString("groupId");
-                String groupName = profileJSON.getString("groupName");
-                String description = profileJSON.getString("description");
-                String photoPath = profileJSON.getString("photoPath");
+                String creatorId = groupJSON.getString("creatorId");
+                String groupId = groupJSON.getString("groupId");
+                String groupName = groupJSON.getString("groupName");
+                String description = groupJSON.getString("description");
+                String photoPath = groupJSON.getString("photoPath");
 
                 Group group = new Group(groupName, description, photoPath, groupId, creatorId);
                 groups.add(group);
@@ -108,23 +107,23 @@ public class GroupsFileManager implements FileManager<Group> {
             System.out.println("Error: " + ex.getMessage());
         }
 
-        JSONArray profilesArray = new JSONArray();
+        JSONArray groupsArray = new JSONArray();
 
         for (Group group : data) {
-            JSONObject profileJSON = new JSONObject();
+            JSONObject groupJSON = new JSONObject();
 
-            profileJSON.put("creatoId", group.getCreatorId());
-            profileJSON.put("groupId", group.getGroupId());
-            profileJSON.put("groupName", group.getName());
-            profileJSON.put("description", group.getDescription());
-            profileJSON.put("photoPath", group.getPhotoPath());
+            groupJSON.put("creatorId", group.getCreatorId());
+            groupJSON.put("groupId", group.getGroupId());
+            groupJSON.put("groupName", group.getName());
+            groupJSON.put("description", group.getDescription());
+            groupJSON.put("photoPath", group.getPhotoPath());
 
-            profilesArray.put(profileJSON);
+            groupsArray.put(groupJSON);
         }
 
         try {
             FileWriter file = new FileWriter(FILE_PATH);
-            file.write(profilesArray.toString(5)); // Pretty print with indentation
+            file.write(groupsArray.toString(5)); // Pretty print with indentation
             file.flush();
             file.close();
             System.out.println("Data Saved Successfully.");
