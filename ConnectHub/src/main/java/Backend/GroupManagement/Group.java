@@ -2,6 +2,7 @@ package Backend.GroupManagement;
 
 import Backend.Post;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class Group {
 
@@ -13,14 +14,34 @@ public class Group {
 
     private ArrayList<Post> posts;
 
-    public Group(String name, String description, String photoPath, String groupId, String creatorId) {
+    public Group(String name, String description, String photoPath, String creatorId) {
+        this.groupId=null;
         this.name = name;
         this.description = description;
         this.photoPath = photoPath;
-        this.groupId = groupId;
         this.creatorId = creatorId;
 
         this.posts = new ArrayList<>();
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public void setCreatorId(String creatorId) {
+        this.creatorId = creatorId;
     }
 
     public String getName() {
