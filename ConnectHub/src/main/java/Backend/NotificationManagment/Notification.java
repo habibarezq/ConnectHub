@@ -1,5 +1,7 @@
 package Backend.NotificationManagment;
 
+import java.util.UUID;
+
 public class Notification {
     private String notificationID;
     private String userID;
@@ -9,6 +11,7 @@ public class Notification {
     private boolean status;
 
     public Notification(String userID, String type, String message) {
+        this.notificationID=UUID.randomUUID().toString();
         this.userID = userID;
         this.type = type;
         this.message = message;

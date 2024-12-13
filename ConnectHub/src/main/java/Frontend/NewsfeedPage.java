@@ -917,6 +917,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
             } else {
                 JOptionPane.showMessageDialog(mainPanel, "You entered: " + userInput);
                 Group newGroup= new GroupServiceManager().createGroup(userInput, "","",userId);
+                refresh();
             }
         } else {
             JOptionPane.showMessageDialog(null, "Empty Field.", "Error", JOptionPane.ERROR_MESSAGE);
