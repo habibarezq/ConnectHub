@@ -2,6 +2,7 @@ package Backend;
 
 import Backend.FileManagers.StoriesFileManager;
 import Backend.FileManagers.PostsFileManager;
+import Backend.GroupManagement.Group;
 import java.util.ArrayList;
 
 public class ContentManager {
@@ -10,9 +11,12 @@ public class ContentManager {
     private static ContentManager instance;
     private ArrayList<Post> posts; // Changed to lazy-loadable
     private ArrayList<Story> stories; // Changed to lazy-loadable
-
+    private ArrayList<Group> groups;
+    
     private boolean postsLoaded = false; // Tracks if posts are loaded
     private boolean storiesLoaded = false;
+    private boolean groupsLoaded=false;
+    
 
     // Private constructor to avoid instantiation
     private ContentManager(String userId) {
@@ -49,6 +53,13 @@ public class ContentManager {
         return new ArrayList<>(stories);
     }
 
+    public ArrayList<Group> getGroups() {
+        if (!groupsLoaded) {
+            loadUserStories();
+        }
+        return new ArrayList<>(groups);
+    }
+    
     private void loadUserPosts() {
         if (!postsLoaded) { // Ensure loading happens only once
             this.posts = new ArrayList<>();
