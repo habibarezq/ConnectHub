@@ -65,6 +65,7 @@ public class PrimaryAdmin extends Admin {
     }
     
     //delete group
+    @Override
     public void deleteGroup(String groupId){
         ArrayList<Group> groups = GroupsFileManager.getInstance().getGroups();
         

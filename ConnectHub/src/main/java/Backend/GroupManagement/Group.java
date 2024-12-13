@@ -16,7 +16,7 @@ public class Group {
     private ArrayList<Post> posts;
 
     public Group(String name, String description, String photoPath, String creatorId) {
-        //this.groupId = UUID.randomUUID().toString();
+        this.groupId = UUID.randomUUID().toString();
         this.name = name;
         this.description = description;
         this.photoPath = photoPath;

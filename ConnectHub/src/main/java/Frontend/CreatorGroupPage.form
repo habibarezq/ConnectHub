@@ -210,6 +210,9 @@
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="postsScrollPane">
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="postsScrollPaneMouseClicked"/>
+          </Events>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
         </Container>

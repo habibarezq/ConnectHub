@@ -1,8 +1,10 @@
 
 package Backend.GroupManagement;
 
+import Backend.FileManagers.GroupMembershipFileManager;
 import Backend.FileManagers.UserFileManager;
 import Backend.UserManagement.User;
+import java.util.ArrayList;
 
 public class GroupUser  {
     
@@ -23,6 +25,25 @@ public class GroupUser  {
         return user;
     }
     
-  
+    public void deleteGroup(String groupId){
+        
+         ArrayList<GroupUser> members = MembershipManager.getInstance(groupId).getGroupUsers();
+        GroupUser memberToRemove = null;
 
+        for (GroupUser m : members) {
+            String currentId = m.getGroupUserId();
+            if (currentId.equals(groupId)) {
+
+                members.remove(memberToRemove);
+
+                GroupMembershipFileManager.getInstance().saveToFile();
+
+                return;
+            }
+        }
+
+        if (memberToRemove == null) {
+            return;
+        }
+    }
 }

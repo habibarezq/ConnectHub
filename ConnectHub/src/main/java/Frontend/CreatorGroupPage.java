@@ -4,6 +4,7 @@ import Backend.FileManagers.UserFileManager;
 import Backend.Post;
 import Backend.UploadPosts;
 import Backend.*;
+import Backend.FileManagers.GroupPostsFileManager;
 import Backend.FileManagers.GroupsFileManager;
 import Backend.FileManagers.*;
 import Backend.GroupManagement.*;
@@ -16,6 +17,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -28,11 +33,13 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -49,13 +56,15 @@ public class CreatorGroupPage extends javax.swing.JFrame {
     private User creator;
     private String groupId;
     private Group group;
+    JPanel selectedPostPanel;
+    GroupPost selectedPost;
 
-    public CreatorGroupPage(NewsfeedPage newsfeed,String groupId) {
+    public CreatorGroupPage(NewsfeedPage newsfeed, String groupId) {
         initComponents();
         setTitle("Creator page");
         setContentPane(jPanel3);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        
+
         this.newsfeed = newsfeed;
         this.creator = newsfeed.user;
         this.groupId=groupId;
@@ -64,8 +73,9 @@ public class CreatorGroupPage extends javax.swing.JFrame {
         this.group=GroupsFileManager.getInstance().getGroupById(groupId);
         this.posts=GroupContentManager.getInstance(groupId).getPosts();
         this.requests=GroupRequestManager.getInstance(groupId).getGroupRequests();
+       
         System.out.println(posts);
-        
+
         adminsModel = new DefaultListModel<>();
         adminsList.setModel(adminsModel);
 
@@ -89,6 +99,7 @@ public class CreatorGroupPage extends javax.swing.JFrame {
         uploadPostsFunction(postsScrollPane, posts);
     }
 
+
     private void populateRequests()
     {
         requestsListModel.removeAllElements();
@@ -111,14 +122,14 @@ public class CreatorGroupPage extends javax.swing.JFrame {
             }
         }
     }
-      public void uploadPostsFunction(JScrollPane postsScrollPane, ArrayList<GroupPost> posts)
-    {
-         JPanel postPanel = new JPanel();
+    
+    public void uploadPostsFunction(JScrollPane postsScrollPane, ArrayList<GroupPost> posts) {
+        JPanel postPanel = new JPanel();
         postPanel.setLayout(new BoxLayout(postPanel, BoxLayout.Y_AXIS));
         postPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-          if (posts == null) {
-           return;
+        if (posts == null) {
+            return;
         }
         for (GroupPost post : posts) {
             System.out.println(posts);
@@ -127,6 +138,14 @@ public class CreatorGroupPage extends javax.swing.JFrame {
             everyPostPanel.setLayout(new BorderLayout());
             everyPostPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             everyPostPanel.setPreferredSize(new Dimension(300, 80));
+
+            // Adding mouse listener for selection
+            everyPostPanel.addMouseListener(new MouseAdapter() {
+
+                public void mouseClicked(MouseEvent e) {
+                    selectPost(everyPostPanel, post);
+                }
+            });
 
             //adding username
             User u = UserFileManager.getInstance().findUserByID(post.getAuthorId()); //returns user to get username
@@ -161,15 +180,15 @@ public class CreatorGroupPage extends javax.swing.JFrame {
         }
         postsScrollPane.setViewportView(postPanel);
     }
-     public ImageIcon resizeImagePosts(String contentPath) {
+
+    public ImageIcon resizeImagePosts(String contentPath) {
         ImageIcon imageIcon = new ImageIcon(contentPath);
         Image image = imageIcon.getImage();
         Image resizedImage = image.getScaledInstance(postsScrollPane.getWidth() - 10, 300, Image.SCALE_SMOOTH);
         ImageIcon resizedImageIcon = new ImageIcon(resizedImage);
         return resizedImageIcon;
     }
-     
-     
+
     private void populateAdmins() {
         //to make sure the list is empty
         adminsModel.removeAllElements();
@@ -196,12 +215,90 @@ public class CreatorGroupPage extends javax.swing.JFrame {
         }
     }
 
+    private void selectPost(JPanel postPanel, GroupPost post) {
+
+        if (selectedPostPanel != null) {
+            selectedPostPanel.setBackground(Color.WHITE);
+        }
+        selectedPostPanel = postPanel;
+        selectedPostPanel.setBackground(Color.LIGHT_GRAY);
+        selectedPost = post;
+        System.out.println("Selected post: " + selectedPost.getContentTxt());
+    }
+
+    public void editSelectedPost() {
+        if (selectedPost != null) {
+            JTextField contentField = new JTextField(selectedPost.getContentTxt());
+            JTextField imagePathField = new JTextField(selectedPost.getcontentPath());
+
+            JButton browseButton = new JButton("Browse...");
+
+            browseButton.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    JFileChooser fileChooser = new JFileChooser();
+                    fileChooser.setCurrentDirectory(new File("."));
+                    int result = fileChooser.showOpenDialog(null);
+                    if (result == JFileChooser.APPROVE_OPTION) {
+                        File selectedFile = fileChooser.getSelectedFile();
+                        imagePathField.setText(selectedFile.getAbsolutePath());
+                    }
+                }
+            });
+
+            JPanel panel = new JPanel(new BorderLayout());
+            panel.add(new JLabel("Edit Content:"), BorderLayout.NORTH);
+            panel.add(contentField, BorderLayout.CENTER);
+
+            JPanel imagePanel = new JPanel(new BorderLayout());
+            imagePanel.add(new JLabel("Edit Image Path:"), BorderLayout.NORTH);
+            imagePanel.add(imagePathField, BorderLayout.CENTER);
+            imagePanel.add(browseButton, BorderLayout.EAST);
+
+            panel.add(imagePanel, BorderLayout.SOUTH);
+
+            int result = JOptionPane.showConfirmDialog(null, panel, "Edit Post", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+            if (result == JOptionPane.OK_OPTION) {
+                String newContent = contentField.getText();
+                String newImagePath = imagePathField.getText();
+
+                if (newContent != null && !newContent.trim().isEmpty()) {
+                    selectedPost.setContentTxt(newContent);
+                }
+                if (newImagePath != null && !newImagePath.trim().isEmpty()) {
+                    selectedPost.setcontentPath(newImagePath);
+                }
+
+                GroupPostsFileManager.getInstance().saveToFile(GroupPostsFileManager.getInstance().getPosts());
+                JOptionPane.showMessageDialog(null, "Post updated successfully!");
+                // Refresh the posts display
+                uploadPostsFunction(postsScrollPane, GroupPostsFileManager.getInstance().getPosts());
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No post selected to edit!");
+        }
+    }
+
+    public void deleteSelectedPost() {
+        if (selectedPost != null) {
+
+            ArrayList<GroupPost> posts = GroupPostsFileManager.getInstance().getPosts();
+            posts.remove(selectedPost);
+            GroupPostsFileManager.getInstance().saveToFile(posts);
+            JOptionPane.showMessageDialog(null, "Post deleted successfully!");
+            // Refresh the posts display
+            uploadPostsFunction(postsScrollPane, GroupPostsFileManager.getInstance().getPosts());
+        } else {
+            JOptionPane.showMessageDialog(null, "No post selected to delete!");
+        }
+    }
+
     private void startup() //MANAGEMENT OR IMAGE
     {
-       
-        File groupPicFile = new File(group.getPhotoPath()); 
-        if(groupPicFile.exists())
-        {
+
+        File groupPicFile = new File(group.getPhotoPath());
+        if (groupPicFile.exists()) {
             try {
                 Image image = ImageIO.read(groupPicFile);
                 if (image != null) {
@@ -217,7 +314,7 @@ public class CreatorGroupPage extends javax.swing.JFrame {
         }
         String username = group.getName();
         nameLabel.setText(username);
-         nameLabel.setFont(new Font("Serif", Font.BOLD, 18));
+        nameLabel.setFont(new Font("Serif", Font.BOLD, 18));
     }
 
     @SuppressWarnings("unchecked")
@@ -263,6 +360,12 @@ public class CreatorGroupPage extends javax.swing.JFrame {
         );
 
         nameLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        postsScrollPane.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                postsScrollPaneMouseClicked(evt);
+            }
+        });
 
         editPostButton.setText("Edit Post");
         editPostButton.addActionListener(new java.awt.event.ActionListener() {
@@ -490,11 +593,13 @@ public class CreatorGroupPage extends javax.swing.JFrame {
 
     private void editPostButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPostButtonActionPerformed
         //removes posts from arraylist and from scrollpane
-        //
+        editSelectedPost();
     }//GEN-LAST:event_editPostButtonActionPerformed
 
     private void deleteGroupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteGroupButtonActionPerformed
-        //DELETE GROUP
+        PrimaryAdmin p = new PrimaryAdmin(creator.getUserID());
+        p.deleteGroup(groupId);
+        this.dispose();
     }//GEN-LAST:event_deleteGroupButtonActionPerformed
 
     private void adminsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_adminsListMouseClicked
@@ -503,7 +608,8 @@ public class CreatorGroupPage extends javax.swing.JFrame {
             // Get the value at the clicked index
             String selectedValue = adminsList.getModel().getElementAt(index);
             System.out.println("Selected value: " + selectedValue);
-            handleAdminSelection(selectedValue);}
+            handleAdminSelection(selectedValue);
+        }
     }//GEN-LAST:event_adminsListMouseClicked
 
     private void membersListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_membersListMouseClicked
@@ -512,18 +618,19 @@ public class CreatorGroupPage extends javax.swing.JFrame {
             // Get the value at the clicked index
             String selectedValue = membersList.getModel().getElementAt(index);
             System.out.println("Selected value: " + selectedValue);
-            handleMemberSelection(selectedValue);}
+            handleMemberSelection(selectedValue);
+        }
     }//GEN-LAST:event_membersListMouseClicked
 
     private void backFeedButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backFeedButtonActionPerformed
-       newsfeed.setVisible(true);
-       this.dispose();
+        newsfeed.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_backFeedButtonActionPerformed
 
     private void addPostButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPostButtonActionPerformed
         // TODO add your handling code here:
-        new groupPostCreation(this.creator.getUserID(), this.groupId,newsfeed).setVisible(true);
-       
+        new groupPostCreation(this.creator.getUserID(), this.groupId, newsfeed).setVisible(true);
+
         this.dispose();
     }//GEN-LAST:event_addPostButtonActionPerformed
 
@@ -569,91 +676,75 @@ public class CreatorGroupPage extends javax.swing.JFrame {
             }
         }
     }
-    private void handleAdminSelection(String username)
-    {
-       GroupUser user = MembershipManager.getInstance(groupId).getGroupUserByUsername(username);
-       
-       if(user ==  null)
-       {
+
+    private void postsScrollPaneMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_postsScrollPaneMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_postsScrollPaneMouseClicked
+
+    private void deletePostButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletePostButtonActionPerformed
+        // TODO add your handling code here:
+        deleteSelectedPost();
+    }//GEN-LAST:event_deletePostButtonActionPerformed
+
+    private void handleAdminSelection(String username) {
+        GroupUser user = MembershipManager.getInstance(groupId).getGroupUserByUsername(username);
+
+        if (user == null) {
             JOptionPane.showMessageDialog(null, "Admin not found!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
-       }
-       else
-       {
-           Object[] options = {"Demote", "Cancel"};
-        int choice = JOptionPane.showOptionDialog(
-                null,
-                "<html>What do you want to do with <b>" + username + "</b>?</html>",
-                "Admin Options",
-                JOptionPane.YES_NO_CANCEL_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options[0]
-        );
-        
-        if(choice == 0) demoteAdmin(username);
-        else if(choice == 1) return;
-       }
-    }
+        } else {
+            Object[] options = {"Demote", "Cancel"};
+            int choice = JOptionPane.showOptionDialog(
+                    null,
+                    "<html>What do you want to do with <b>" + username + "</b>?</html>",
+                    "Admin Options",
+                    JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    options,
+                    options[0]
+            );
 
-    private void demoteAdmin(String adminUsername) {
-        User selectedAdmin = UserFileManager.getInstance().findUserByUsername(adminUsername);
-        if (selectedAdmin != null) {
-            admins.remove(selectedAdmin);
-            members.add(selectedAdmin);
+            if (choice == 0) {
+                PrimaryAdmin p = new PrimaryAdmin(creator.getUserID());
+                p.demote(user.getGroupUserId());
+            } else if (choice == 1) {
+                return;
+            }
         }
-
-        //update the JLists
-        populateAdmins();
-        populateMembers();
     }
 
-    private void handleMemberSelection(String username)
-    {
-       GroupUser user = MembershipManager.getInstance(groupId).getGroupUserByUsername(username);
-       
-       if(user ==  null)
-       {
+    private void handleMemberSelection(String username) {
+        GroupUser user = MembershipManager.getInstance(groupId).getGroupUserByUsername(username);
+
+        if (user == null) {
             JOptionPane.showMessageDialog(null, "Member not found!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
-       }
-       else
-       {
-           Object[] options = {"Pomote", "Remove", "Cancel"};
-        int choice = JOptionPane.showOptionDialog(
-                null,
-                "<html>What do you want to do with <b>" + username + "</b>?</html>",
-                "Admin Options",
-                JOptionPane.YES_NO_CANCEL_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options[0]
-        );
-        
-        if(choice == 0) promoteMember(username);
-        else if(choice == 1) removeMember(username);
-        else if(choice == 2) return;
-       }
-    }
-    private void promoteMember(String memberUsername) {
-        User selectedMember = UserFileManager.getInstance().findUserByUsername(memberUsername);
-        if (selectedMember != null) {
-            members.remove(selectedMember);
-            admins.add(selectedMember);
+        } else {
+            Object[] options = {"Pomote", "Remove", "Cancel"};
+            int choice = JOptionPane.showOptionDialog(
+                    null,
+                    "<html>What do you want to do with <b>" + username + "</b>?</html>",
+                    "Admin Options",
+                    JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    options,
+                    options[0]
+            );
+
+            PrimaryAdmin p = new PrimaryAdmin(creator.getUserID());
+            if (choice == 0) {
+
+                p.promote(user.getGroupUserId());
+            } else if (choice == 1) {
+                p.removeMember(user.getGroupUserId());
+            } else if (choice == 2) {
+                return;
+            }
         }
-
-        //update the JLists
-        populateAdmins();
-        populateMembers();
     }
 
-    private void removeMember(String username)
-    {
-        //REMOVE MEMBER
-    }
-    
     private String changeImage() {
 
         JFileChooser fileChooser = new JFileChooser();
