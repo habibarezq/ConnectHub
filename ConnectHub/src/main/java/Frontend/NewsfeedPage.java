@@ -29,7 +29,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private ArrayList<Post> posts;
     private ArrayList<Story> stories;
     private ArrayList<User> users;
-    private ArrayList<Request> requests;
+    private ArrayList<UserRequest> requests;
     private ArrayList<User> friends;
     private String userId;
     private ConnectHubMain connectHub;
@@ -100,7 +100,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
         requests = RequestManager.getInstance(userId).getRequests();
 
         if (requests != null) {
-            for (Request request : requests) {
+            for (UserRequest request : requests) {
                 // Only include pending requests
                 if (request.getRequestStat().equals("Pending") && !request.getSender().equals(user)) {
                     requestsModel.addElement(request.getSender().getUsername());
@@ -434,7 +434,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(searchButton)
                     .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(271, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);

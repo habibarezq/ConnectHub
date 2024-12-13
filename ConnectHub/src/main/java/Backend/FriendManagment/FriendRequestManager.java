@@ -1,7 +1,7 @@
 package Backend.FriendManagment;
 
 import Backend.FileManagers.*;
-import Backend.Request;
+import Backend.UserRequest;
 import Backend.UserManagement.User;
 import Interfaces.*;
 import java.util.ArrayList;
@@ -31,19 +31,19 @@ public class FriendRequestManager implements FriendRequestService {
 
     @Override
     public void sendRequest(User recipient) {
-        Request friendRequest = new Request(user, recipient);
+        UserRequest friendRequest = new UserRequest(user, recipient);
         friendRequest.processFriendRequest();
     }
 
     @Override
     public void acceptRequest(User sender) {
-        Request friendRequest = RequestsFileManager.getInstance().searchForRequestByIds(sender.getUserID(), userId);
+        UserRequest friendRequest = RequestsFileManager.getInstance().searchForRequestByIds(sender.getUserID(), userId);
         friendRequest.processAcceptFriendRequest();
     }
 
     @Override
     public void declineRequest(User sender) {
-        Request friendRequest = RequestsFileManager.getInstance().searchForRequestByIds(sender.getUserID(), userId);
+        UserRequest friendRequest = RequestsFileManager.getInstance().searchForRequestByIds(sender.getUserID(), userId);
         friendRequest.processDeclineFriendRequest();
     }
 
