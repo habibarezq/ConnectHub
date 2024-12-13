@@ -12,10 +12,10 @@ public class PrimaryAdmin extends Admin {
 
     // public abstract void removeMember(String Id); OVERRIDEN
     //promote/demote admins
-    public void promote(String Id) {
+    public void promote(String groupId,String Id) {
 
-        ArrayList<GroupUser> members = MembershipManager.getInstance(Id).getGroupUsers();
-        ArrayList<NormalAdmin> admins = MembershipManager.getInstance(Id).getAdmins();
+        ArrayList<GroupUser> members = MembershipManager.getInstance(groupId).getGroupUsers();
+        ArrayList<NormalAdmin> admins = MembershipManager.getInstance(groupId).getAdmins();
         GroupUser memberToPromote = null;
 
         for (GroupUser m : members) {
@@ -27,8 +27,10 @@ public class PrimaryAdmin extends Admin {
                 admins.add(promotedMember); // adding the member after promotimg to be an admin to the admin ArrayList
                 members.remove(memberToPromote); // removing the member after promotimg to be an admin fom the users ArrayList
 
+                 
                 GroupMembershipFileManager.getInstance().saveToFile();
-
+                MembershipManager.getInstance(groupId).saveUserData();
+       
                 return;
             }
         }
@@ -38,9 +40,9 @@ public class PrimaryAdmin extends Admin {
         }
     }
 
-    public void demote(String Id) {
-        ArrayList<GroupUser> members = MembershipManager.getInstance(Id).getGroupUsers();
-        ArrayList<NormalAdmin> admins = MembershipManager.getInstance(Id).getAdmins();
+    public void demote(String groupId,String Id) {
+        ArrayList<GroupUser> members = MembershipManager.getInstance(groupId).getGroupUsers();
+        ArrayList<NormalAdmin> admins = MembershipManager.getInstance(groupId).getAdmins();
 
         NormalAdmin adminToDemote = null;
         for (NormalAdmin a : admins) {
@@ -53,6 +55,7 @@ public class PrimaryAdmin extends Admin {
                 admins.remove(adminToDemote); // removing the member after promotimg to be an admin fom the users ArrayList
 
                 GroupMembershipFileManager.getInstance().saveToFile();
+                MembershipManager.getInstance(groupId).saveUserData();
                 return;
             }
         }
@@ -74,6 +77,16 @@ public class PrimaryAdmin extends Admin {
         }
         GroupsFileManager.getInstance().saveToFile(groups);
     }
-
+ public void removeMember(String toBeRemoveId,String groupId)
+    {
+        ArrayList<GroupUser> members = MembershipManager.getInstance(groupId).getGroupUsers();
+        
+         GroupUser memberToRemove = MembershipManager.getInstance(groupId).getGroupUserById(toBeRemoveId);
+         members.remove(memberToRemove);
+        
+        
+        MembershipManager.getInstance(groupId).saveUserData();
+        GroupMembershipFileManager.getInstance().saveToFile();    
+    }
     //manage posts    OVERRIDEN
 }

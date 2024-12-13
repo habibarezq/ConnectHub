@@ -1,5 +1,6 @@
 package Frontend;
 
+import Backend.FileManagers.GroupsFileManager;
 import Backend.FileManagers.UserFileManager;
 import Backend.GroupManagement.Group;
 import Backend.GroupManagement.GroupContentManager;
@@ -37,7 +38,6 @@ public class UserGroupPage extends javax.swing.JFrame {
     private Group group;
     private ArrayList<GroupPost> posts;
 
-    
     public UserGroupPage(NewsfeedPage newsfeed, String groupId) {
         initComponents();
         setTitle("User");
@@ -46,8 +46,8 @@ public class UserGroupPage extends javax.swing.JFrame {
 
         this.newsfeed = newsfeed;
         this.groupId = groupId;
-        this.group = group;
-        this.posts=GroupContentManager.getInstance(groupId).getPosts();
+        this.group = GroupsFileManager.getInstance().getGroupById(groupId);
+        this.posts = GroupContentManager.getInstance(groupId).getPosts();
 
         //the user using the app
         this.user = newsfeed.user;
@@ -58,28 +58,29 @@ public class UserGroupPage extends javax.swing.JFrame {
 
     private void startup() //MANAGEMENT OR IMAGE
     {
-if(group!=null){
-        File groupPicFile = new File(group.getPhotoPath());
-        if (groupPicFile.exists()) {
-            try {
-                Image image = ImageIO.read(groupPicFile);
-                if (image != null) {
-                    // Scale image to fit within the label
-                    Image scaledImage = image.getScaledInstance(groupPicLabel.getWidth(), groupPicLabel.getHeight(), Image.SCALE_SMOOTH);
-                    groupPicLabel.setIcon(new ImageIcon(scaledImage));
-                } else {
-                    JOptionPane.showMessageDialog(this, "The selected file is not a valid image.", "Invalid Image", JOptionPane.ERROR_MESSAGE);
+        if (group != null) {
+            File groupPicFile = new File(group.getPhotoPath());
+            if (groupPicFile.exists()) {
+                try {
+                    Image image = ImageIO.read(groupPicFile);
+                    if (image != null) {
+                        // Scale image to fit within the label
+                        Image scaledImage = image.getScaledInstance(groupPicLabel.getWidth(), groupPicLabel.getHeight(), Image.SCALE_SMOOTH);
+                        groupPicLabel.setIcon(new ImageIcon(scaledImage));
+                    } else {
+                        JOptionPane.showMessageDialog(this, "The selected file is not a valid image.", "Invalid Image", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(Profile.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } catch (IOException ex) {
-                Logger.getLogger(Profile.class.getName()).log(Level.SEVERE, null, ex);
             }
+            String username = group.getName();
+            groupNameLabel.setText(username);
+            groupNameLabel.setFont(new Font("Serif", Font.BOLD, 18));
         }
-        String username = group.getName();
-        groupNameLabel.setText(username);
-        groupNameLabel.setFont(new Font("Serif", Font.BOLD, 18));
     }
-    }
-     private void populatePosts() {
+
+    private void populatePosts() {
         uploadPostsFunction(postsScrollPane, posts);
     }
 
@@ -140,6 +141,7 @@ if(group!=null){
         ImageIcon resizedImageIcon = new ImageIcon(resizedImage);
         return resizedImageIcon;
     }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

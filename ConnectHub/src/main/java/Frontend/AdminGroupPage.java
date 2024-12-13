@@ -96,6 +96,7 @@ public class AdminGroupPage extends javax.swing.JFrame {
 
     private void populateRequests() {
         requestsListModel.removeAllElements();
+        requestsListModel.clear();
         requests = null;
         requests = GroupRequestManager.getInstance(groupId).getGroupRequests();
         ArrayList<GroupRequest> test = GroupRequestsFileManager.getInstance().getRequests();
@@ -406,7 +407,8 @@ public class AdminGroupPage extends javax.swing.JFrame {
 
             if (choice == 0) {
                 NormalAdmin a = new NormalAdmin(admin.getUserID());
-                a.acceptMember(user.getGroupUserId());
+                a.acceptMember(user.getGroupUserId(),groupId);
+                requestsListModel.removeElement(username);
             } else if (choice == 1) {
                 return;
             }

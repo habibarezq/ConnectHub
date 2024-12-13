@@ -10,16 +10,7 @@ public class NormalAdmin extends Admin {
         super(groupUserId);
     }
 
-    //accept/decline memebership requests
-    public void acceptMember(String Id){
-        ArrayList<GroupUser> members = MembershipManager.getInstance(Id).getGroupUsers();
-        GroupUser memberToAdd = new GroupUser(Id);
-        members.add(memberToAdd);
-        //remove Request
-        //save to GroupRequests File
-        
-        GroupMembershipFileManager.getInstance().saveToFile();
-    }
+    
     
     public void decline(String Id){
     

@@ -1,4 +1,3 @@
-
 package Backend.GroupManagement;
 
 import Backend.FileManagers.GroupMembershipFileManager;
@@ -6,10 +5,9 @@ import Backend.FileManagers.UserFileManager;
 import Backend.UserManagement.User;
 import java.util.ArrayList;
 
-public class GroupUser  {
-    
+public class GroupUser {
+
     private String groupUserId;
-    
 
     public GroupUser(String groupUserId) {
         this.groupUserId = groupUserId;
@@ -19,31 +17,20 @@ public class GroupUser  {
         return groupUserId;
     }
 
-    public User getUser(String Id)
-    {
-        User user=UserFileManager.getInstance().findUserByID(Id);
+    public User getUser(String Id) {
+        User user = UserFileManager.getInstance().findUserByID(Id);
         return user;
     }
-    
-    public void deleteGroup(String groupId){
-        
-         ArrayList<GroupUser> members = MembershipManager.getInstance(groupId).getGroupUsers();
-        GroupUser memberToRemove = null;
 
-        for (GroupUser m : members) {
-            String currentId = m.getGroupUserId();
-            if (currentId.equals(groupId)) {
+    public void deleteGroup(String groupId) {
 
-                members.remove(memberToRemove);
+        ArrayList<GroupUser> members = MembershipManager.getInstance(groupId).getGroupUsers();
 
-                GroupMembershipFileManager.getInstance().saveToFile();
+        GroupUser memberToRemove = MembershipManager.getInstance(groupId).getGroupUserById(groupUserId);
 
-                return;
-            }
-        }
-
-        if (memberToRemove == null) {
-            return;
-        }
+        members.remove(memberToRemove);
+        GroupMembershipFileManager.getInstance().saveToFile();
+        MembershipManager.getInstance(groupId).saveUserData();
     }
+
 }

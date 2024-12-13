@@ -615,7 +615,7 @@ public class CreatorGroupPage extends javax.swing.JFrame {
         int index = membersList.locationToIndex(evt.getPoint());
         if (index != -1) { // Ensure an item was clicked
             // Get the value at the clicked index
-            String selectedValue = membersList.getModel().getElementAt(index);
+            String selectedValue =membersModel.getElementAt(index);
             System.out.println("Selected value: " + selectedValue);
             handleMemberSelection(selectedValue);
         }
@@ -650,8 +650,7 @@ public class CreatorGroupPage extends javax.swing.JFrame {
     }//GEN-LAST:event_requestsListMouseClicked
 
     private void handleRequestSelection(String username) {
-        GroupUser user = MembershipManager.getInstance(groupId).getGroupUserByUsername(username);
-
+            User user=UserFileManager.getInstance().findUserByUsername(username);
         if (user == null) {
             JOptionPane.showMessageDialog(null, "User not found!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -669,7 +668,9 @@ public class CreatorGroupPage extends javax.swing.JFrame {
             );
 
             if (choice == 0) {
-                GroupManager.getInstance(user, group).acceptMember(user.getGroupUserId());
+                GroupUser newUser=new GroupUser(user.getUserID());
+                PrimaryAdmin creatorUser=new PrimaryAdmin(creator.getUserID());
+                creatorUser.acceptMember(user.getUserID(), groupId);
             } else if (choice == 1) {
                 return;
             }
@@ -687,7 +688,7 @@ public class CreatorGroupPage extends javax.swing.JFrame {
     }//GEN-LAST:event_deleteButtonActionPerformed
 
     private void handleAdminSelection(String username) {
-        GroupUser user = MembershipManager.getInstance(groupId).getGroupUserByUsername(username);
+        GroupUser user = MembershipManager.getInstance(groupId).getAdminByUsername(username);
 
         if (user == null) {
             JOptionPane.showMessageDialog(null, "Admin not found!", "Error", JOptionPane.ERROR_MESSAGE);
@@ -707,7 +708,10 @@ public class CreatorGroupPage extends javax.swing.JFrame {
 
             if (choice == 0) {
                 PrimaryAdmin p = new PrimaryAdmin(creator.getUserID());
-                p.demote(user.getGroupUserId());
+                p.demote(groupId,user.getGroupUserId());
+                adminsModel.removeElement(username);
+                membersModel.addElement(username);
+                newsfeed.refresh();
             } else if (choice == 1) {
                 return;
             }
@@ -736,9 +740,14 @@ public class CreatorGroupPage extends javax.swing.JFrame {
             PrimaryAdmin p = new PrimaryAdmin(creator.getUserID());
             if (choice == 0) {
 
-                p.promote(user.getGroupUserId());
+                p.promote(groupId,user.getGroupUserId());
+                membersModel.removeElement(username);
+                adminsModel.addElement(username);
+                newsfeed.refresh();
             } else if (choice == 1) {
-                p.removeMember(user.getGroupUserId());
+                p.removeMember(user.getGroupUserId(),groupId);
+                membersModel.removeElement(username);
+                newsfeed.refresh();
             } else if (choice == 2) {
                 return;
             }

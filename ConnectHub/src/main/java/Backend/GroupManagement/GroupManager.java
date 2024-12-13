@@ -11,11 +11,11 @@ public class GroupManager { //IDEA ON HOW TO USE INSTEAD OF WRITING FUNCTIONS IN
     private Group group;
     private static GroupManager instance;
 
-    private GroupManager(GroupUser user, Group group) {
+    private GroupManager(Admin user, Group group) {
         this.user = user;
         this.group = group;
     }
-     public static synchronized GroupManager getInstance(GroupUser user, Group group) {
+     public static synchronized GroupManager getInstance(Admin user, Group group) {
         if (instance != null && !instance.user.equals(user)) {
             // Clear the existing instance when the userId changes
             instance = null;  //SHOULD CALL CONSTRUCTOR HERE TO MAKE A NEW INSTANCE FOR NEW ID 
@@ -39,6 +39,7 @@ public class GroupManager { //IDEA ON HOW TO USE INSTEAD OF WRITING FUNCTIONS IN
         if(group.isAdmin(user.getGroupUserId()))
         {
          GroupUser memberToAdd = new GroupUser(memberToAddId);
+            System.out.println("Added ");
          members.add(memberToAdd);
         }
         
