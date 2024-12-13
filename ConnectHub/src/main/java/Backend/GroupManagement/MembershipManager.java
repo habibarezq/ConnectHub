@@ -99,14 +99,16 @@ public class MembershipManager {
     }
 
     public GroupUser getGroupUserByUsername(String username) {
-        for(NormalAdmin admin:admins)
+        for(GroupUser user:groupUsers)
         {
-            User adminUser=admin.getAdminUser(admin.getGroupUserId());
-            if(adminUser.getUsername().equals(username))
-                return admin;
+            User grpUser=user.getUser(user.getGroupUserId());
+            if(grpUser.getUsername().equals(username))
+                return user;
         }
         return null;
     }
+    
+    
     //NOTE THAT The saveUserData() saves the user's friends and blocked lists back to the friends file. 
     //It updates the corresponding JSON object for the user and saves it using FriendsFileManager.
 }

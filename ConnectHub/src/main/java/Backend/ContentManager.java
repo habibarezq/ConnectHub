@@ -149,21 +149,14 @@ public class ContentManager {
     public ArrayList<Group> suggestGroup() {
         ArrayList<Group> suggestions = new ArrayList<>();
         ArrayList<Group> allGroups = GroupsFileManager.getInstance().getGroups();
-        User currentUser=UserFileManager.getInstance().findUserByID(userId);
-        ArrayList<Group> myGroups = ContentManager.getInstance(currentUser.getUserID()).getGroups();
-        ArrayList<GroupRequest> userRequests = GroupRequestsFileManager.getInstance().getRequests();
-    
+        ArrayList<Group> myGroups = ContentManager.getInstance(userId).getGroups(); // Assuming getGroups() returns the groups the current user is part of
+
         if (allGroups != null) {
             for (Group group : allGroups) {
-                boolean alreadyMember = myGroups.stream().anyMatch(myGroup -> myGroup.getGroupId().equals(group.getGroupId()));
-                boolean alreadyRequested = userRequests.stream()
-                    .anyMatch(request -> request.getGroup().getGroupId().equals(group.getGroupId())
-                            && request.getUser().getGroupUserId().equals(currentUser.getUserID())
-                            && request.getRequestStat().equals("Pending"));
-    
-                // Add to suggestions if the user is not a member and has not sent a request
-                if (!alreadyMember && !alreadyRequested) {
+                // Check if the group is not already a part of user's groups
+                if (!myGroups.contains(group)) {
                     suggestions.add(group);
+
                 }
             }
         }

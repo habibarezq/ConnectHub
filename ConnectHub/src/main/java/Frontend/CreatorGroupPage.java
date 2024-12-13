@@ -105,19 +105,13 @@ public class CreatorGroupPage extends javax.swing.JFrame {
         requestsListModel.removeAllElements();
         requests = null;
         requests=GroupRequestManager.getInstance(groupId).getGroupRequests();
-        if(requests==null)
-        {
-            System.out.println("NU;;S");
-        }
-        for(GroupRequest request:requests)
-        {
-            System.out.println("SENDER:"+request.getUser().getUser(groupId).getUsername());
-        }
+        ArrayList<GroupRequest> test=GroupRequestsFileManager.getInstance().getRequests();
+      
         if (requests != null) {
             for (GroupRequest request : requests) {
                 // Only include pending requests
                 if (request.getRequestStat().equals("Pending")) {
-                    requestsListModel.addElement(request.getUser().getUser(groupId).getUsername());
+                    requestsListModel.addElement(request.getUser().getUser(request.getUser().getGroupUserId()).getUsername());
                 }
             }
         }
