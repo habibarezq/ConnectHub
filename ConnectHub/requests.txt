@@ -1,14 +1,1 @@
-[
-    {
-        "senderId": "6da2aab8-136d-423e-b557-722b665f6fe0",
-        "requestId": "fhebwiu",
-        "recipientId": "97a34610-5607-4783-bc01-2122ccaab61f",
-        "requestStat": "Pending"
-    },
-    {
-        "senderId": "6da2aab8-136d-423e-b557-722b665f6fe0",
-        "requestId": "fhebwsfuhfiu",
-        "recipientId": "97a34610-5607-4783-bc01-2122ccaab61f",
-        "requestStat": "Pending"
-    }
-]
+[]

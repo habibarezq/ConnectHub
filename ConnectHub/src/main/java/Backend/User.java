@@ -1,13 +1,13 @@
 package Backend;
 
-
 import Backend.FileManagers.FriendsFileManager;
+import Backend.FileManagers.*;
 import Backend.FileManagers.UserFileManager;
 import java.time.*;
 import java.util.*;
 import Interfaces.*;
 
-public class User implements FriendshipManager, FriendRequestService {
+public class User{
 
     private String userID;
     private String email;
@@ -15,14 +15,12 @@ public class User implements FriendshipManager, FriendRequestService {
     private String password;
     private LocalDate dateOfBirth;
     protected boolean status;
-    
     //Each Friends,posts,stories will have its own database service
 
     private ContentManager contentManager;
     private FriendsFileManager friendsManager;
     private ArrayList<User> friends;
     private ArrayList<User> blocked;
-
 
     public User(String userID, String email, String username, LocalDate dateOfBirth, String password) {
         this.userID = userID;
@@ -32,10 +30,10 @@ public class User implements FriendshipManager, FriendRequestService {
         this.dateOfBirth = dateOfBirth;
         status = false;
 
-        this.friends=new ArrayList<>();
-        this.blocked=new ArrayList<>();
-        this.contentManager=ContentManager.getInstance(userID);
-        
+        this.friends = new ArrayList<>();
+        this.blocked = new ArrayList<>();
+        this.contentManager = ContentManager.getInstance(userID);
+
     }
 
     public ArrayList<User> getFriends() {
@@ -61,13 +59,11 @@ public class User implements FriendshipManager, FriendRequestService {
     public ContentManager getContentManager() {
         return contentManager;
     }
-    
-    public FriendsFileManager getFriendsManager()
-    {
+
+    public FriendsFileManager getFriendsManager() {
         return friendsManager;
     }
 
-    
     public String getUserID() {
         return userID;
     }
@@ -116,68 +112,10 @@ public class User implements FriendshipManager, FriendRequestService {
         this.status = status;
     }
 
-    @Override
-    public void removeFriend(User friend) {
-        if (this.getFriends().contains(friend)) {
-            this.getFriends().remove(friend);
-            friend.getFriends().remove(this);
-            System.out.println(friend.getUsername() + " has been removed from your friend list.");
-        } else {
-            System.out.println(friend.getUsername() + " is not in your friend list");
-    }
-    }
-
-    @Override
-    public void blockFriend(User friend) {
-        if (this.getFriends().contains(friend)) {
-            this.getFriends().remove(friend);
-            friend.getFriends().remove(this);
-            this.getBlocked().add(friend);
-            System.out.println(friend.getUsername() + " has been blocked from.");
-           
-        } else {
-            System.out.println(friend.getUsername() + " is not in your friend list");
-        }
-    }
-
-    @Override
-    public void sendRequest(User recipient) {
-        Request friendRequest = new Request(this, recipient);
-        friendRequest.processFriendRequest();
-    }
-
-    @Override
-    public void acceptRequest(User sender) {
-       // Request friendRequest = searchRequest(sender);
-      //  friendRequest.processAcceptFriendRequest();
-    }
-  
-    @Override
-    public void declineRequest(User sender) {
-      //  Request friendRequest = searchRequest(sender);
-       // friendRequest.processDeclineFriendRequest();
-    }
-
-    @Override
-    public ArrayList<User> suggestFriends(ArrayList<User> allUsers) {
-        ArrayList<User> suggestions=new ArrayList<>();
-        
-        for(User user: allUsers)
-        {
-            if(user !=this && !this.getFriends().contains(user) && /*RequestManager.getInstance(userID).search() */ !this.getBlocked().contains(user))
-                suggestions.add(user);
-        }
-        return suggestions;
-    }
-    
-  
     public void logout() {
         if (this != null) {
             this.setStatus(false);
             UserFileManager.getInstance().saveToFile(UserFileManager.getInstance().getUsers());
         }
-    }
-    @Override
-    public void displayStatuses() {
     }
 }

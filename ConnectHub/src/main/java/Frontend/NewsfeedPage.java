@@ -12,6 +12,10 @@ import javax.swing.*;
 import Backend.*;
 import Backend.FileManagers.RequestsFileManager;
 import java.time.format.DateTimeFormatter;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class NewsfeedPage extends javax.swing.JFrame {
 
@@ -20,13 +24,13 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private DefaultListModel<String> requestsModel;
     private ArrayList<Post> posts;
     private ArrayList<Story> stories;
-    protected ArrayList<User> users;
+    private ArrayList<User> users;
     private ArrayList<Request> requests;
-    //protected ArrayList<Group> groups;
+    private ArrayList<User> friends;
     private String userId;
     private ConnectHubMain connectHub;
-    protected User user;
-    
+    private User user;
+
     public NewsfeedPage(User user, ConnectHubMain connectHub) {
         initComponents();
         setTitle("Newsfeed");
@@ -38,14 +42,14 @@ public class NewsfeedPage extends javax.swing.JFrame {
         this.user = user;
         this.userId = user.getUserID();
 
-        FriendsFileManager.getInstance(userId);
+        FriendsFileManager.getInstance();
         RequestsFileManager.getInstance();
 
         this.posts = PostsFileManager.getInstance().getPosts();
         this.users = UserFileManager.getInstance().getUsers();
+        this.friends = FriendManagerFactory.getFriendManager(userId).getFriends();
         this.stories = StoriesFileManager.getInstance().getStories();
-        this.requests = RequestManager.getInstance(userId).getUserRequests();
-        //this.groups = GroupManager.getInstance().getGroups();
+        this.requests = RequestManager.getInstance(userId).getRequests();
 
         friendsModel = new DefaultListModel<>();
         suggestedFriendsModel = new DefaultListModel<>();
@@ -56,10 +60,10 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
         suggestedFriendsList.setModel(suggestedFriendsModel);
 
-        requestsModel = new DefaultListModel<>();
+        requestsList.setModel(requestsModel);
         requestsList.setVisibleRowCount(5);
         requestsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
+
         populateFriends();
         populateSuggestedFriends();
         populatePosts();
@@ -70,33 +74,40 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
     }
 
-    private void populateSuggestedFriends() {
+   private void populateSuggestedFriends() {
 
         suggestedFriendsModel.removeAllElements();
+
         ArrayList<User> allUsers = UserFileManager.getInstance().getUsers();
-        ArrayList<User> suggestedFriends = user.suggestFriends(allUsers);
+        ArrayList<User> suggestedFriends;
+
+        suggestedFriends = null;
+        suggestedFriends = FriendServiceManager.getInstance(user).suggestFriends();
+
         for (User suggestedFriend : suggestedFriends) {
+            System.out.println("Suggest: "+suggestedFriend.getUsername());
             suggestedFriendsModel.addElement(suggestedFriend.getUsername());
         }
-    }
+    } 
 
     private void populateRequests() {
-
         requestsModel.removeAllElements();
-        try {
-            if (requests != null) {
-                for (Request request : requests) {
+        requests = null;
+        requests = RequestManager.getInstance(userId).getRequests();
+
+        if (requests != null) {
+            for (Request request : requests) {
+                // Only include pending requests
+                if (request.getRequestStat().equals("Pending") && !request.getSender().equals(user)) {
                     requestsModel.addElement(request.getSender().getUsername());
                 }
             }
-        } catch (NullPointerException ex) {
-            System.out.println("Error: " + ex.getMessage());
         }
     }
 
     private void populateFriends() {
         friendsModel.removeAllElements();
-        ArrayList<User> friends = UserFileManager.getInstance().findUserByID(userId).getFriends();
+
         if (friends == null) {
             friendsModel.addElement("No Friends");
         } else {
@@ -127,7 +138,48 @@ public class NewsfeedPage extends javax.swing.JFrame {
     }
 
     private void populateStories() {
-      new UploadPosts(postsScrollPane, posts);
+        JPanel storyPanel = new JPanel();
+        storyPanel.setLayout(new BoxLayout(storyPanel, BoxLayout.X_AXIS));
+        storyPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        if (stories == null) {
+            return;
+        }
+        for (Story story : stories) {
+            if (checkExpiryStory(story)) {
+                //creating a panel for each story
+                JPanel singleStoryPanel = new JPanel();
+                singleStoryPanel.setLayout(new BorderLayout());
+                singleStoryPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                singleStoryPanel.setPreferredSize(new Dimension(150, 200));
+
+                //adding username
+                User u = UserFileManager.getInstance().findUserByID(story.getAuthorId()); //returns user to get username
+                JLabel UsernameLabel = new JLabel("Username: " + u.getUsername());
+                UsernameLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+                storyPanel.add(UsernameLabel, BorderLayout.NORTH);
+
+                // adding the time Stamp
+                JLabel timestampLabel = new JLabel("Time: " + story.getUploadingTime());
+                timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Adding padding
+                storyPanel.add(timestampLabel, BorderLayout.NORTH);
+
+                //adding content
+                // adding the image 
+                File imageFile = new File(story.getcontentPath());
+                if (imageFile.exists()) {
+                    ImageIcon imageIcon = resizeImageStories(story.getcontentPath());
+
+                    JLabel imageLabel = new JLabel(imageIcon);
+                    storyPanel.add(imageLabel, BorderLayout.WEST);
+                } else {
+                    JLabel noImageLabel = new JLabel("No image.");
+                    storyPanel.add(noImageLabel, BorderLayout.WEST);
+                }
+                storyPanel.add(singleStoryPanel);
+                storyPanel.add(Box.createRigidArea(new Dimension(0, 1))); // Adding spacing between stories
+            }
+        }
+        storiesScrollPane.setViewportView(storyPanel);
     }
 
     private boolean checkExpiryStory(Story story) {
@@ -184,6 +236,11 @@ public class NewsfeedPage extends javax.swing.JFrame {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
+        });
+        friendsList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                friendsListMouseClicked(evt);
+            }
         });
         friendsList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
@@ -245,6 +302,11 @@ public class NewsfeedPage extends javax.swing.JFrame {
 
         jLabel4.setText("Requests:");
 
+        requestsList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                requestsListMouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(requestsList);
 
         javax.swing.GroupLayout jPanelRequestsLayout = new javax.swing.GroupLayout(jPanelRequests);
@@ -531,12 +593,12 @@ public class NewsfeedPage extends javax.swing.JFrame {
                 options[0]
         );
 
-
         if (choice == 0) { // Accept
-            loggedInUser.acceptRequest(sender);
+            FriendRequestManager.getInstance(userId).acceptRequest(sender);
+            requestsModel.removeElement(senderUsername);
             JOptionPane.showMessageDialog(null, "Friend request accepted.", "Success", JOptionPane.INFORMATION_MESSAGE);
         } else if (choice == 1) { // Decline
-            loggedInUser.declineRequest(sender);
+            FriendRequestManager.getInstance(userId).declineRequest(sender);
             JOptionPane.showMessageDialog(null, "Friend request declined.", "Success", JOptionPane.INFORMATION_MESSAGE);
         }
 
@@ -544,10 +606,10 @@ public class NewsfeedPage extends javax.swing.JFrame {
     }
 //GEN-LAST:event_requestsComboBoxActionPerformed
     private void sendFriendRequest(String recipientUsername, User loggedInUser) {
-        
-    //loggedInUser is the sender
+
+        //loggedInUser is the sender
         User recipient = UserFileManager.getInstance().findUserByUsername(recipientUsername);
-        System.out.println("Username Front: "+recipient.getUsername());
+        System.out.println("Username Front: " + recipient.getUsername());
         if (recipient == null) {
             JOptionPane.showMessageDialog(null, "User not found!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -566,42 +628,71 @@ public class NewsfeedPage extends javax.swing.JFrame {
         );
 
         if (choice == 0) { // Send
-            loggedInUser.sendRequest(recipient);
-
+            FriendRequestManager.getInstance(userId).sendRequest(recipient);
+            suggestedFriendsModel.removeElement(recipientUsername);
             JOptionPane.showMessageDialog(null, "Friend request sent.", "Success", JOptionPane.INFORMATION_MESSAGE);
         } else if (choice == 1) { // Cancel
 
             JOptionPane.showMessageDialog(null, "Friend request not Sent.", "Success", JOptionPane.INFORMATION_MESSAGE);
         }
 
-        //refresh();
+        refresh();
     }
+
+    private void handleFriendAction(String selectedValue, User loggedInUser) {
+        String recipientUsername = selectedValue.split(" \\(")[0];
+        User recipient = UserFileManager.getInstance().findUserByUsername(recipientUsername);
+
+        if (recipient == null) {
+            JOptionPane.showMessageDialog(null, "User not found!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Object[] options = {"View Profile", "Remove Friend", "Block Friend"};
+        int choice = JOptionPane.showOptionDialog(
+                null,
+                "<html>What do you want to do with <b>" + recipient.getUsername() + "</b>?</html>",
+                "Friend Options",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+
+        if (choice == 0) {
+            //JOptionPane.showMessageDialog(null, "Viewing " + recipient.getUsername() + "'s profile.", "Profile", JOptionPane.INFORMATION_MESSAGE);
+
+        } else if (choice == 1) {
+            FriendServiceManager.getInstance(user).removeFriend(recipientUsername);
+            friendsModel.removeElement(selectedValue);
+            JOptionPane.showMessageDialog(null, "You have removed " + recipient.getUsername() + " from your friend list.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } else if (choice == 2) {
+            FriendServiceManager.getInstance(user).blockFriend(recipientUsername);
+            JOptionPane.showMessageDialog(null, "You have blocked " + recipient.getUsername() + ".", "Blocked", JOptionPane.INFORMATION_MESSAGE);
+        }
+
+        refresh();
+    }
+
     private void friendsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_friendsListValueChanged
         String SelectedFruit = (String) friendsList.getSelectedValue();
         //System.out.println("Selected String "+SelectedFruit);
     }//GEN-LAST:event_friendsListValueChanged
 
     private void suggestedFriendsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_suggestedFriendsListValueChanged
-//          if (!evt.getValueIsAdjusting()) {
-//        String selectedUsername = (String) suggestedFriendsList.getSelectedValue();
-//        System.out.println("Username selected: " + selectedUsername);
-//        if(selectedUsername!=null)
-//        {
 
-//        }
-//    }
     }//GEN-LAST:event_suggestedFriendsListValueChanged
 
     private void suggestedFriendsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_suggestedFriendsListMouseClicked
-          int index = suggestedFriendsList.locationToIndex(evt.getPoint());
-                if (index != -1) { // Ensure an item was clicked
-                    // Get the value at the clicked index
-                    String selectedValue = suggestedFriendsList.getModel().getElementAt(index);
-                    System.out.println("Selected value: " + selectedValue);
-                    sendFriendRequest(selectedValue, user);
-                    suggestedFriendsModel.removeElement(selectedValue);
-                    // Optionally, perform further actions here
-                }
+        int index = suggestedFriendsList.locationToIndex(evt.getPoint());
+        if (index != -1) { // Ensure an item was clicked
+            // Get the value at the clicked index
+            String selectedValue = suggestedFriendsList.getModel().getElementAt(index);
+            System.out.println("Selected value: " + selectedValue);
+            sendFriendRequest(selectedValue, user);
+
+        }
     }//GEN-LAST:event_suggestedFriendsListMouseClicked
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
@@ -639,8 +730,46 @@ public class NewsfeedPage extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_searchButtonActionPerformed
 
-    
+    private void requestsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_requestsListMouseClicked
+        int index = requestsList.locationToIndex(evt.getPoint());
+        if (index != -1) { // Ensure an item was clicked
+            // Get the value at the clicked index
+            String selectedValue = requestsList.getModel().getElementAt(index);
+            System.out.println("Selected value: " + selectedValue);
+            handleFriendRequest(selectedValue, user);
+
+        }
+    }//GEN-LAST:event_requestsListMouseClicked
+
+    private void friendsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_friendsListMouseClicked
+        int index = friendsList.locationToIndex(evt.getPoint());
+        if (index != -1) { // Ensure an item was clicked
+            // Get the value at the clicked index
+            String selectedValue = friendsList.getModel().getElementAt(index);
+            System.out.println("Selected value: " + selectedValue);
+            
+            handleFriendAction(selectedValue, user);
+            
+        }
+    }//GEN-LAST:event_friendsListMouseClicked
+
+    public User searchSelectedItemUser(String selectedString) {
+        for (User user : users) {
+            if (user.getUsername().equalsIgnoreCase(selectedString)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+//    public Group searchSelectedItemGroup(String selectedString)
+//    {
+//        for(Group group : groups)
+//            if(group.getName().equalsIgnoreCase(selectedString)) return group;
+//        return null;
+//    }
     public void refresh() {
+
         populateStories();
         populatePosts();
         populateFriends();
@@ -706,3 +835,4 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private javax.swing.JList<String> suggestedFriendsList;
     // End of variables declaration//GEN-END:variables
 }
+

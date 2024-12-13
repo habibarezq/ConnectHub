@@ -71,7 +71,7 @@ public class RequestsFileManager implements FileManager<Request> {
                     } else {
                         request.setRequestID(java.util.UUID.randomUUID().toString()); // Generate a new ID if missing
                     }
-
+                    System.out.println("Request"+request.getRecipient().getUsername());
                     requests.add(request);
                 }
             }
@@ -117,6 +117,38 @@ public class RequestsFileManager implements FileManager<Request> {
                 return request;
             }
         }
+        return null;
+    }
+    
+    public boolean searchForUser(String userId)
+    {
+        
+        for(Request request: RequestsFileManager.getInstance().getRequests())
+        {
+            if(request.getRecipient().getUserID().equals(userId) || request.getSender().getUserID().equals(userId))
+            {
+                //if the user is a sender or reciever
+                return true;
+            }
+        }
+        return false;
+    }
+      public Request searchForRequestByIds(String senderId, String recipientId) {
+    for (Request r : RequestsFileManager.getInstance().getRequests()) {
+        if ((r.getRecipient().getUserID().equals(recipientId)) && (r.getSender().getUserID().equals(senderId))) {
+            
+            { System.out.println("Found !");
+            return r; }
+        }
+    }
+    return null; // Return null if no match is found
+}
+
+
+    public Request searchByRequestId(String requestId) {
+        for (Request r : RequestsFileManager.getInstance().getRequests()) {
+                return r;
+            }
         return null;
     }
 }
