@@ -1,18 +1,32 @@
 package Frontend;
 
+import Backend.FileManagers.UserFileManager;
 import Backend.GroupManagement.Group;
+import Backend.GroupManagement.GroupPost;
 import Backend.GroupManagement.GroupUser;
 import Backend.GroupManagement.NormalAdmin;
 import Backend.UserManagement.User;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 public class UserGroupPage extends javax.swing.JFrame {
 
@@ -20,7 +34,9 @@ public class UserGroupPage extends javax.swing.JFrame {
     private User user;
     private String groupId;
     private Group group;
+    private ArrayList<GroupPost> posts;
 
+    
     public UserGroupPage(NewsfeedPage newsfeed, String groupId) {
         initComponents();
         setTitle("User");
@@ -33,6 +49,9 @@ public class UserGroupPage extends javax.swing.JFrame {
 
         //the user using the app
         this.user = newsfeed.user;
+        populatePosts();
+
+        startup();
     }
 
     private void startup() //MANAGEMENT OR IMAGE
@@ -58,6 +77,67 @@ public class UserGroupPage extends javax.swing.JFrame {
         groupNameLabel.setFont(new Font("Serif", Font.BOLD, 18));
     }
 
+     private void populatePosts() {
+        uploadPostsFunction(postsScrollPane, posts);
+    }
+
+    public void uploadPostsFunction(JScrollPane postsScrollPane, ArrayList<GroupPost> posts) {
+        JPanel postPanel = new JPanel();
+        postPanel.setLayout(new BoxLayout(postPanel, BoxLayout.Y_AXIS));
+        postPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+        if (posts == null) {
+            return;
+        }
+        for (GroupPost post : posts) {
+            System.out.println(posts);
+            //creating a panel for each post
+            JPanel everyPostPanel = new JPanel();
+            everyPostPanel.setLayout(new BorderLayout());
+            everyPostPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            everyPostPanel.setPreferredSize(new Dimension(300, 80));
+
+            //adding username
+            User u = UserFileManager.getInstance().findUserByID(post.getAuthorId()); //returns user to get username
+            JLabel UsernameLabel = new JLabel("Username: " + u.getUsername());
+            UsernameLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+            postPanel.add(UsernameLabel, BorderLayout.NORTH);
+
+            // adding the time Stamp
+            JLabel timestampLabel = new JLabel("Time: " + post.getUploadingTime());
+            timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Adding padding
+            postPanel.add(timestampLabel, BorderLayout.SOUTH);
+
+            //adding content
+            //adding text
+            JLabel contentLabel = new JLabel("Content: " + post.getContentTxt());
+            contentLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Adding padding
+            postPanel.add(contentLabel, BorderLayout.NORTH);
+
+            // adding the image 
+            File imageFile = new File(post.getcontentPath());
+            if (imageFile.exists()) {
+                ImageIcon imageIcon = resizeImagePosts(post.getcontentPath());
+                JLabel imageLabel = new JLabel(imageIcon);
+                postPanel.add(imageLabel, BorderLayout.WEST);
+            } else {
+                JLabel noImageLabel = new JLabel("No image.");
+                postPanel.add(noImageLabel, BorderLayout.WEST);
+            }
+
+            postPanel.add(everyPostPanel);
+            postPanel.add(Box.createRigidArea(new Dimension(0, 1))); // Adding spacing between stories
+        }
+        postsScrollPane.setViewportView(postPanel);
+    }
+
+    public ImageIcon resizeImagePosts(String contentPath) {
+        ImageIcon imageIcon = new ImageIcon(contentPath);
+        Image image = imageIcon.getImage();
+        Image resizedImage = image.getScaledInstance(postsScrollPane.getWidth() - 10, 300, Image.SCALE_SMOOTH);
+        ImageIcon resizedImageIcon = new ImageIcon(resizedImage);
+        return resizedImageIcon;
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -189,20 +269,20 @@ public class UserGroupPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addPostButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPostButtonActionPerformed
-        new groupPostCreation(this.user.getUserID(), this.groupId,newsfeed).setVisible(true);
+        new groupPostCreation(this.user.getUserID(), this.groupId, newsfeed).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_addPostButtonActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-         newsfeed.setVisible(true);
-       this.dispose();
+        newsfeed.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void leaveGroupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_leaveGroupButtonActionPerformed
         // TODO add your handling code here:
-    GroupUser u = new GroupUser(user.getUserID());
-    u.deleteGroup(groupId);
+        GroupUser u = new GroupUser(user.getUserID());
+        u.deleteGroup(groupId);
     }//GEN-LAST:event_leaveGroupButtonActionPerformed
 
     /**
