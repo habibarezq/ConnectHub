@@ -65,4 +65,17 @@ public class GroupContentManager {
         }
     }
 
+    // delete a post to the group's posts
+    public void deletePost(GroupPost post) {
+        if (post.getGroupId().equals(groupId)) {
+            
+            posts.remove(post); //removes new Post to ArrayList of User's Posts
+            GroupPostsFileManager.getInstance().getPosts().remove(post); //Adds new Post to ArrayList of AllPosts
+            GroupPostsFileManager.getInstance().saveToFile(GroupPostsFileManager.getInstance().getPosts()); //Save to File
+
+            System.out.println("Post added: " + post.getContentTxt());
+        } else {
+            System.out.println("Cannot add post: Group ID mismatch.");
+        }
+    }
 }
