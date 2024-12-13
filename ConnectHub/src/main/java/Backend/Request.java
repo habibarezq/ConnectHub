@@ -18,7 +18,7 @@ public class Request {
         this.sender = sender;
         this.recipient = recipient;
         this.requestStat = "Pending";
-       // this.requestID = UUID.randomUUID().toString();
+        this.requestID = UUID.randomUUID().toString();
 
     }
 
