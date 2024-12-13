@@ -22,8 +22,5 @@ public class GroupUser  {
         User user=UserFileManager.getInstance().findUserByID(Id);
         return user;
     }
-    public void createPost(String groupId){
-        
-        
-    }
+
 }

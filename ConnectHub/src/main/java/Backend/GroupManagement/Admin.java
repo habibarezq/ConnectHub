@@ -38,6 +38,4 @@ public abstract class Admin extends GroupUser {
             return;
         }
     }
-
-    //manage posts
 }
