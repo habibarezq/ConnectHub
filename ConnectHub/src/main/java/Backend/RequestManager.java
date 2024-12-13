@@ -7,8 +7,8 @@ public class RequestManager {
 
     private final String userId;
     private static RequestManager instance;
-    private ArrayList<Request> userRequests;
-    private ArrayList<Request> allRequests;
+    private ArrayList<UserRequest> userRequests;
+    private ArrayList<UserRequest> allRequests;
 
     private boolean requestsSentToUserLoaded = false;
     private boolean requestsLoaded = false;
@@ -30,12 +30,12 @@ public class RequestManager {
         return instance;
     }
 
-    public ArrayList<Request> getallUserRequests() {
+    public ArrayList<UserRequest> getallUserRequests() {
         loadRequests();
         return allRequests;
     }
 
-    public ArrayList<Request> getRequests() {
+    public ArrayList<UserRequest> getRequests() {
         loadRequests();
         loadRequestsSentToUser();
         return userRequests;
@@ -43,7 +43,7 @@ public class RequestManager {
 
     public void loadRequestsSentToUser() {
         if (!requestsSentToUserLoaded) {
-            for (Request request : RequestsFileManager.getInstance().getRequests()) {
+            for (UserRequest request : RequestsFileManager.getInstance().getRequests()) {
                 if (request.getRecipient().getUserID().equals(userId) && request.getRequestStat().equals("Pending")) {
                     this.userRequests.add(request);
                 }
@@ -54,7 +54,7 @@ public class RequestManager {
 
     public void loadRequests() {
         if (!requestsLoaded) {
-            for (Request request : RequestsFileManager.getInstance().getRequests()) {
+            for (UserRequest request : RequestsFileManager.getInstance().getRequests()) {
                 if (request.getRecipient().getUserID().equals(userId) || request.getSender().getUserID().equals(userId)) {
                     this.allRequests.add(request); // Add all requests regardless of status
                 }
@@ -64,10 +64,10 @@ public class RequestManager {
     }
 
     public boolean search(String userId) {
-        ArrayList<Request> userRequests = getallUserRequests();
+        ArrayList<UserRequest> userRequests = getallUserRequests();
 
         if (userRequests != null) {
-            for (Request request : userRequests) {
+            for (UserRequest request : userRequests) {
                 if ((request.getRecipient().getUserID().equals(userId) || request.getSender().getUserID().equals(userId))
                         && (request.getRequestStat().equals("Pending") || request.getRequestStat().equals("Accepted"))) {
                     return true; // User is involved in a pending or accepted request
