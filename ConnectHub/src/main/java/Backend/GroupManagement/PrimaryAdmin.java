@@ -68,8 +68,12 @@ public class PrimaryAdmin extends Admin {
     @Override
     public void deleteGroup(String groupId){
         ArrayList<Group> groups = GroupsFileManager.getInstance().getGroups();
+        for (Group group : groups){
+            if(group.getGroupId().equals(groupId)){
+                groups.remove(group);
+            }
+        }
         
-        groups.clear();
         GroupsFileManager.getInstance().saveToFile(groups);
     }
     
