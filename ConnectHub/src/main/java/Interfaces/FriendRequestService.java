@@ -2,7 +2,7 @@
 package Interfaces;
 
 //import Backend.Request;
-import Backend.User;
+import Backend.UserManagement.User;
 
 
 public interface FriendRequestService {

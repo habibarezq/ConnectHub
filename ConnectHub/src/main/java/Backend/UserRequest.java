@@ -1,21 +1,24 @@
 package Backend;
 
+import Backend.UserManagement.User;
+import Backend.FriendManagment.FriendManagerFactory;
+import Backend.FriendManagment.FriendManager;
 import Backend.FileManagers.FriendsFileManager;
 import Backend.FileManagers.RequestsFileManager;
 import java.util.UUID;
 
-public class Request {
+public class UserRequest {
 
     private User sender;
     private User recipient;
     private String requestStat;
     private String requestID;
 
-    public Request(User sender, User recipient) {
+    public UserRequest(User sender, User recipient) {
         this.sender = sender;
         this.recipient = recipient;
         this.requestStat = "Pending";
-       // this.requestID = UUID.randomUUID().toString();
+        this.requestID = UUID.randomUUID().toString();
 
     }
 
@@ -72,7 +75,7 @@ public class Request {
     }
 
     public void processAcceptFriendRequest() {
-        Request request = RequestsFileManager.getInstance().searchByRequestId(requestID);
+        UserRequest request = RequestsFileManager.getInstance().searchByRequestId(requestID);
         if (request.getRequestStat().equals("Pending")) {
 
             
@@ -101,7 +104,7 @@ public class Request {
     }
 
     public void processDeclineFriendRequest() {
-        Request request = RequestsFileManager.getInstance().searchByRequestId(requestID);
+        UserRequest request = RequestsFileManager.getInstance().searchByRequestId(requestID);
         if (request.getRequestStat().equals("Pending")) {
 
             request.setRequestStat("Declined");

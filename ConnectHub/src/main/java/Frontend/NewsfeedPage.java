@@ -1,9 +1,10 @@
 package Frontend;
 
-import Backend.FileManagers.StoriesFileManager;
-import Backend.FileManagers.PostsFileManager;
-import Backend.FileManagers.FriendsFileManager;
-import Backend.FileManagers.UserFileManager;
+import Backend.UserManagement.User;
+import Backend.FriendManagment.FriendRequestManager;
+import Backend.FriendManagment.FriendServiceManager;
+import Backend.FriendManagment.FriendManagerFactory;
+import Backend.FileManagers.*;
 import java.awt.*;
 import java.io.File;
 import java.time.*;
@@ -11,31 +12,36 @@ import java.util.ArrayList;
 import javax.swing.*;
 import Backend.*;
 import Backend.FileManagers.RequestsFileManager;
+import Backend.GroupManagement.Group;
+import Backend.GroupManagement.GroupServiceManager;
+import Backend.GroupManagement.MembershipManager;
+import Validation.GroupValidation;
 import java.time.format.DateTimeFormatter;
-import javax.swing.JList;
-import javax.swing.JScrollPane;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 public class NewsfeedPage extends javax.swing.JFrame {
 
     private DefaultListModel<String> friendsModel;
     private DefaultListModel<String> suggestedFriendsModel;
     private DefaultListModel<String> requestsModel;
+    private DefaultListModel<String> groupsModel;
+    protected DefaultListModel<String> suggestedGroupsModel;
     private ArrayList<Post> posts;
     private ArrayList<Story> stories;
     private ArrayList<User> users;
-    private ArrayList<Request> requests;
+    private ArrayList<UserRequest> requests;
+    private ArrayList<Group> groups;
     private ArrayList<User> friends;
     private String userId;
     private ConnectHubMain connectHub;
-    private User user;
+
+    public User user;
 
     public NewsfeedPage(User user, ConnectHubMain connectHub) {
         initComponents();
         setTitle("Newsfeed");
         setSize(1300, 700);
         setContentPane(mainPanel);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         this.connectHub = connectHub;
         this.dispose();
 
@@ -50,11 +56,16 @@ public class NewsfeedPage extends javax.swing.JFrame {
         this.friends = FriendManagerFactory.getFriendManager(userId).getFriends();
         this.stories = StoriesFileManager.getInstance().getStories();
         this.requests = RequestManager.getInstance(userId).getRequests();
+        this.groups = ContentManager.getInstance(userId).getGroups();
 
         friendsModel = new DefaultListModel<>();
         suggestedFriendsModel = new DefaultListModel<>();
         requestsModel = new DefaultListModel<>();
+        groupsModel = new DefaultListModel<>();
+        suggestedGroupsModel = new DefaultListModel<>();
 
+        groupsList.setModel(groupsModel);
+        suggestedGroupsList.setModel(suggestedGroupsModel);
         friendsList.setModel(friendsModel);
         friendsList.setVisibleRowCount(5);
 
@@ -69,12 +80,41 @@ public class NewsfeedPage extends javax.swing.JFrame {
         populatePosts();
         populateStories();
         populateRequests();
+        populateGroups();
+        populateSuggestedGroups();
 
         ContentManager.getInstance(userId).refreshPosts();
 
     }
 
-   private void populateSuggestedFriends() {
+    private void populateGroups() {
+        groupsModel.removeAllElements();
+        groups.clear();
+        groups=ContentManager.getInstance(userId).getGroups();
+        if (groups == null) {
+            groupsModel.addElement("No Friends");
+        } else {
+            for (Group group : groups) {
+                groupsModel.addElement(group.getName());
+            }
+        }
+    }
+
+    private void populateSuggestedGroups() {
+        suggestedGroupsModel.removeAllElements();
+
+        ArrayList<Group> allGroups = GroupsFileManager.getInstance().getGroups();
+        ArrayList<Group> suggestedGroups = ContentManager.getInstance(userId).suggestGroup();
+
+        //suggestedGroups = null;
+        //suggestedGroups = GroupServiceManager;
+        for (Group suggestedGroup : suggestedGroups) {
+            System.out.println("Suggest: " + suggestedGroup.getName());
+            suggestedGroupsModel.addElement(suggestedGroup.getName());
+        }
+    }
+
+    private void populateSuggestedFriends() {
 
         suggestedFriendsModel.removeAllElements();
 
@@ -85,10 +125,10 @@ public class NewsfeedPage extends javax.swing.JFrame {
         suggestedFriends = FriendServiceManager.getInstance(user).suggestFriends();
 
         for (User suggestedFriend : suggestedFriends) {
-            System.out.println("Suggest: "+suggestedFriend.getUsername());
+            System.out.println("Suggest: " + suggestedFriend.getUsername());
             suggestedFriendsModel.addElement(suggestedFriend.getUsername());
         }
-    } 
+    }
 
     private void populateRequests() {
         requestsModel.removeAllElements();
@@ -96,7 +136,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
         requests = RequestManager.getInstance(userId).getRequests();
 
         if (requests != null) {
-            for (Request request : requests) {
+            for (UserRequest request : requests) {
                 // Only include pending requests
                 if (request.getRequestStat().equals("Pending") && !request.getSender().equals(user)) {
                     requestsModel.addElement(request.getSender().getUsername());
@@ -221,16 +261,28 @@ public class NewsfeedPage extends javax.swing.JFrame {
         addStoryButton = new javax.swing.JButton();
         addPostButton = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
-        searchButton = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        groupsList = new javax.swing.JList<>();
+        bioLabel = new javax.swing.JLabel();
+        bioLabel1 = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        suggestedGroupsList = new javax.swing.JList<>();
         searchField = new javax.swing.JTextField();
+        searchButton = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        createGrpButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         mainPanel.setPreferredSize(new java.awt.Dimension(1168, 1000));
 
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Friends:");
+        jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("Suggested Friends:");
+        jLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         friendsList.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -300,7 +352,9 @@ public class NewsfeedPage extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("Requests:");
+        jLabel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         requestsList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -364,8 +418,8 @@ public class NewsfeedPage extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(addStoryButton, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)
-                    .addComponent(addPostButton, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE))
+                    .addComponent(addPostButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(addStoryButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -389,7 +443,7 @@ public class NewsfeedPage extends javax.swing.JFrame {
                     .addComponent(logoutButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(newRefreshButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
-            .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -405,6 +459,60 @@ public class NewsfeedPage extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        groupsList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                groupsListMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(groupsList);
+
+        bioLabel.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
+        bioLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        bioLabel.setText("My Groups");
+        bioLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        bioLabel1.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
+        bioLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        bioLabel1.setText("Suggested Groups");
+        bioLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        suggestedGroupsList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                suggestedGroupsListMouseClicked(evt);
+            }
+        });
+        jScrollPane4.setViewportView(suggestedGroupsList);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(bioLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(bioLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane4))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(bioLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(bioLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane4)
+                .addContainerGap())
+        );
+
         searchButton.setText("Search");
         searchButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -412,25 +520,28 @@ public class NewsfeedPage extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        createGrpButton.setText("Create Group");
+        createGrpButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                createGrpButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(searchField)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(createGrpButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(searchButton)
-                    .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(271, Short.MAX_VALUE))
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(17, Short.MAX_VALUE)
+                .addComponent(createGrpButton)
+                .addGap(14, 14, 14))
         );
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
@@ -440,11 +551,19 @@ public class NewsfeedPage extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 113, Short.MAX_VALUE))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(mainPanelLayout.createSequentialGroup()
+                                .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(mainPanelLayout.createSequentialGroup()
+                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(storiesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 670, Short.MAX_VALUE)
                     .addComponent(postsScrollPane))
@@ -452,32 +571,26 @@ public class NewsfeedPage extends javax.swing.JFrame {
                     .addGroup(mainPanelLayout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
                             .addComponent(jPanelSuggestedFriends, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(mainPanelLayout.createSequentialGroup()
                                 .addGap(6, 6, 6)
                                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jPanelRequests, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                    .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(mainPanelLayout.createSequentialGroup()
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(138, 138, 138))
-                        .addComponent(jPanelFriends, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jPanelFriends, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(28, 28, 28))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
-                .addGap(18, 18, 18)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGap(18, 18, 18)
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(mainPanelLayout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -495,8 +608,22 @@ public class NewsfeedPage extends javax.swing.JFrame {
                                 .addComponent(jPanelRequests, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(postsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 416, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(postsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 416, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(mainPanelLayout.createSequentialGroup()
+                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(30, 30, 30)))
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(searchButton))
+                        .addGap(10, 10, 10)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -505,12 +632,12 @@ public class NewsfeedPage extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1156, Short.MAX_VALUE)
+                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1200, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 656, Short.MAX_VALUE)
+            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 660, Short.MAX_VALUE)
         );
 
         pack();
@@ -696,38 +823,38 @@ public class NewsfeedPage extends javax.swing.JFrame {
     }//GEN-LAST:event_suggestedFriendsListMouseClicked
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-//        String searchResult = searchField.getText();
-//        if (searchResult.isEmpty()) {
-//            JOptionPane.showMessageDialog(null, "Empty Field.", "Error", JOptionPane.ERROR_MESSAGE);
-//        } else {
-//            //searching in lists of users and groups
-//            for (User user : users) {
-//                if (user.getUsername().toLowerCase().contains(searchResult)) {
-//                    searchModel.addElement(user.getUsername());
-//                }
-//            }
-//            for (Group group : groups) {
-//                if (group.getName().toLowerCase().contains(searchResult)) {
-//                    searchModel.addElement(group.getName());
-//                }
-//            }
-//        }
-//        if(groups == null && users == null) searchModel.addElement("No search Results.");
-//
-//        searchList.addListSelectionListener(new ListSelectionListener() {
-//        @Override
-//        public void  valueChanged(ListSelectionEvent e) 
-//        {
-//            if(!e.getValueIsAdjusting())
-//            {
-//                String selectedString = searchList.getSelectedValue();
-//                User u = searchSelectedItemUser(selectedString);
-//                //Group g = searchSelectedItemGroup(selectedString);
-//                if(u!= null) new Profile(u);
-//                else if(g!=null) new groupPage(g);
-//            }
-//        }
-//        });
+        String searchResult = searchField.getText();
+
+        //test 
+        ArrayList<User> friends = UserFileManager.getInstance().findUserByID(userId).getFriends();
+        for (User friend : friends) {
+            System.out.println("friends : " + friend.getUsername());
+        }
+
+        boolean userFound = false, groupFound = false;
+        if (searchResult.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Empty Field.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            //searching in lists of users and groups
+            for (User user : users) {
+                if (user.getUsername().equalsIgnoreCase(searchResult)) {
+                    userFound = true;
+                    new SearchActionsUser(this, false, user).setVisible(true);
+                }
+            }
+            if (!userFound) {
+                for (Group group : GroupsFileManager.getInstance().getGroups()) {
+                    if (group.getName().equalsIgnoreCase(searchResult)) {
+                        groupFound = true;
+                        new SearchActionsGroup(this, false, group,"").setVisible(true);
+                    }
+                }
+            }
+            if (!userFound && !groupFound) {
+                JOptionPane.showMessageDialog(null, "No search results.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        }
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void requestsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_requestsListMouseClicked
@@ -747,11 +874,54 @@ public class NewsfeedPage extends javax.swing.JFrame {
             // Get the value at the clicked index
             String selectedValue = friendsList.getModel().getElementAt(index);
             System.out.println("Selected value: " + selectedValue);
-            
+
             handleFriendAction(selectedValue, user);
-            
+
         }
     }//GEN-LAST:event_friendsListMouseClicked
+
+    private void groupsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_groupsListMouseClicked
+        int index = groupsList.locationToIndex(evt.getPoint());
+        if (index != -1) { // Ensure an item was clicked
+            // Get the value at the clicked index
+            String selectedValue = groupsList.getModel().getElementAt(index);
+            System.out.println("Selected value: " + selectedValue);
+            Group group=GroupsFileManager.getInstance().getGroupByName(selectedValue);
+            //Check User's role
+            new RoleManager().checkRole(group,userId,this);
+          
+        }
+    }//GEN-LAST:event_groupsListMouseClicked
+
+    private void suggestedGroupsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_suggestedGroupsListMouseClicked
+        int index = suggestedGroupsList.locationToIndex(evt.getPoint());
+        if (index != -1) { // Ensure an item was clicked
+            // Get the value at the clicked index
+            String selectedValue = suggestedGroupsList.getModel().getElementAt(index);
+            System.out.println("Selected value: " + selectedValue);
+            for (Group group : GroupsFileManager.getInstance().getGroups()) {
+                if (group.getName().equalsIgnoreCase(selectedValue)) {
+                    
+                    new SearchActionsGroup(this, false, group,selectedValue).setVisible(true);
+                }
+            }
+        }
+    }//GEN-LAST:event_suggestedGroupsListMouseClicked
+
+    private void createGrpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createGrpButtonActionPerformed
+        String userInput = JOptionPane.showInputDialog(mainPanel, "Enter Group Name: ");
+
+        if (userInput != null) {
+            if (GroupValidation.isNameTaken(userInput)) {
+                JOptionPane.showMessageDialog(this, "Name is already taken.", "Message", JOptionPane.ERROR_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(mainPanel, "You entered: " + userInput);
+                Group newGroup= new GroupServiceManager().createGroup(userInput, "","",userId);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Empty Field.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_createGrpButtonActionPerformed
 
     public User searchSelectedItemUser(String selectedString) {
         for (User user : users) {
@@ -762,12 +932,8 @@ public class NewsfeedPage extends javax.swing.JFrame {
         return null;
     }
 
-//    public Group searchSelectedItemGroup(String selectedString)
-//    {
-//        for(Group group : groups)
-//            if(group.getName().equalsIgnoreCase(selectedString)) return group;
-//        return null;
-//    }
+  
+
     public void refresh() {
 
         populateStories();
@@ -775,6 +941,8 @@ public class NewsfeedPage extends javax.swing.JFrame {
         populateFriends();
         populateSuggestedFriends();
         populateRequests();
+        populateGroups();
+        populateSuggestedGroups();
     }
 
     public static void main(String args[]) {
@@ -810,18 +978,25 @@ public class NewsfeedPage extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addPostButton;
     private javax.swing.JButton addStoryButton;
+    private javax.swing.JLabel bioLabel;
+    private javax.swing.JLabel bioLabel1;
+    private javax.swing.JButton createGrpButton;
     private javax.swing.JList<String> friendsList;
+    private javax.swing.JList<String> groupsList;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanelFriends;
     private javax.swing.JPanel jPanelRequests;
     private javax.swing.JPanel jPanelSuggestedFriends;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPaneSugFriends;
     private javax.swing.JButton logoutButton;
     private javax.swing.JPanel mainPanel;
@@ -833,5 +1008,6 @@ public class NewsfeedPage extends javax.swing.JFrame {
     private javax.swing.JTextField searchField;
     private javax.swing.JScrollPane storiesScrollPane;
     private javax.swing.JList<String> suggestedFriendsList;
+    private javax.swing.JList<String> suggestedGroupsList;
     // End of variables declaration//GEN-END:variables
 }

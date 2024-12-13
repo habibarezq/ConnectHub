@@ -1,7 +1,11 @@
 package Backend;
 
-import Backend.FileManagers.StoriesFileManager;
-import Backend.FileManagers.PostsFileManager;
+import Backend.FileManagers.*;
+import Backend.GroupManagement.Group;
+import Backend.GroupManagement.GroupRequest;
+import Backend.GroupManagement.GroupRequestManager;
+import Backend.GroupManagement.MembershipManager;
+import Backend.UserManagement.User;
 import java.util.ArrayList;
 
 public class ContentManager {
@@ -10,9 +14,11 @@ public class ContentManager {
     private static ContentManager instance;
     private ArrayList<Post> posts; // Changed to lazy-loadable
     private ArrayList<Story> stories; // Changed to lazy-loadable
+    private ArrayList<Group> groups;
 
     private boolean postsLoaded = false; // Tracks if posts are loaded
     private boolean storiesLoaded = false;
+    private boolean groupsLoaded = false;
 
     // Private constructor to avoid instantiation
     private ContentManager(String userId) {
@@ -33,8 +39,6 @@ public class ContentManager {
         return instance;
     }
 
-    
-
     public ArrayList<Post> getPosts() {
         if (!postsLoaded) {
             loadUserPosts();
@@ -47,6 +51,11 @@ public class ContentManager {
             loadUserStories();
         }
         return new ArrayList<>(stories);
+    }
+
+    public ArrayList<Group> getGroups() {
+            loadUserGroups();
+        return new ArrayList<>(groups);
     }
 
     private void loadUserPosts() {
@@ -73,6 +82,17 @@ public class ContentManager {
             }
             storiesLoaded = true;
         }
+    }
+
+    private void loadUserGroups() {
+            this.groups = new ArrayList<>();
+            ArrayList<Group> allGroups = GroupsFileManager.getInstance().getGroups();
+            for (Group group : allGroups) {
+                if (group.getCreatorId().equals(userId) || group.isAdmin(userId) || group.isMember(userId)) {
+                    this.groups.add(group);
+                    System.out.println("Group :"+group.getName());
+                }
+            }
     }
 
     // Observer pattern
@@ -125,5 +145,21 @@ public class ContentManager {
         } else {
             System.out.println("Cannot add story: Author ID mismatch.");
         }
+    }
+    public ArrayList<Group> suggestGroup() {
+        ArrayList<Group> suggestions = new ArrayList<>();
+        ArrayList<Group> allGroups = GroupsFileManager.getInstance().getGroups();
+        ArrayList<Group> myGroups = ContentManager.getInstance(userId).getGroups(); // Assuming getGroups() returns the groups the current user is part of
+
+        if (allGroups != null) {
+            for (Group group : allGroups) {
+                // Check if the group is not already a part of user's groups
+                if (!myGroups.contains(group)) {
+                    suggestions.add(group);
+
+                }
+            }
+        }
+        return suggestions;
     }
 }

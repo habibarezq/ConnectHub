@@ -7,7 +7,7 @@ package Frontend;
 import Backend.ContentManager;
 import Backend.Post;
 import Backend.FileManagers.PostsFileManager;
-import Backend.User;
+import Backend.UserManagement.User;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class postCreation extends javax.swing.JFrame {
     private String userId;
     private NewsfeedPage feed;
 
-    public postCreation(String userId, NewsfeedPage feed) {
+    public  postCreation(String userId, NewsfeedPage feed) {
 
         initComponents();
         this.feed = feed;

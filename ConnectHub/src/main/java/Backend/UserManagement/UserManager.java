@@ -1,12 +1,11 @@
-package Backend;
+package Backend.UserManagement;
 
 import Backend.FileManagers.ProfileFileManager;
 import Backend.FileManagers.UserFileManager;
+import Backend.UserProfile;
 import Interfaces.UserManagerInterface;
 import static Backend.Password.*;
 //import static Backend.UserFileManager.readUsers;
-import Interfaces.FilePaths;
-import Validation.UserValidation;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -43,11 +42,6 @@ public class UserManager implements UserManagerInterface {
         }
         return null;
     }
-
-    
-    
- 
-
 
     public boolean loginValidation(String email, String password) {
         for (User u : users) {

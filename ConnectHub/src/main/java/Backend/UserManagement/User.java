@@ -1,8 +1,10 @@
-package Backend;
+package Backend.UserManagement;
 
+import Backend.ContentManager;
 import Backend.FileManagers.FriendsFileManager;
 import Backend.FileManagers.*;
 import Backend.FileManagers.UserFileManager;
+import Backend.GroupManagement.Group;
 import java.time.*;
 import java.util.*;
 import Interfaces.*;
@@ -21,6 +23,7 @@ public class User{
     private FriendsFileManager friendsManager;
     private ArrayList<User> friends;
     private ArrayList<User> blocked;
+    private ArrayList<Group> groups;
 
     public User(String userID, String email, String username, LocalDate dateOfBirth, String password) {
         this.userID = userID;
@@ -32,6 +35,7 @@ public class User{
 
         this.friends = new ArrayList<>();
         this.blocked = new ArrayList<>();
+        
         this.contentManager = ContentManager.getInstance(userID);
 
     }

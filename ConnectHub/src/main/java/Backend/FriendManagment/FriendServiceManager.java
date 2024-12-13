@@ -1,8 +1,16 @@
-package Backend;
+package Backend.FriendManagment;
 
+import Backend.FriendManagment.FriendManagerFactory;
+import Backend.FriendManagment.FriendManager;
 import Interfaces.*;
 import java.util.ArrayList;
 import Backend.FileManagers.*;
+import Backend.RequestManager;
+import Backend.RequestManager;
+import Backend.RequestManager;
+import Backend.UserManagement.User;
+import Backend.UserManagement.User;
+import Backend.UserManagement.User;
 
 public class FriendServiceManager implements FriendshipManager {
 

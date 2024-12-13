@@ -1,3 +1,4 @@
+
 package Interfaces;
 
 public interface FilePaths {
@@ -11,6 +12,17 @@ public interface FilePaths {
     public String STORIES_FILE_PATH="stories.txt";
     
     public String FRIENDS_FILE_PATH ="friends.txt";
-
+    
     public String REQUESTS_FILE_PATH="requests.txt";
+    
+    public String NOTIFICATION_FILE_PATH ="notification.txt";
+
+    public String GROUPS_FILE_PATH="groups.txt";
+    
+    public String GROUPSMEMBER_FILE_PATH="groupsMembership.txt";
+    
+    public String GRP_REQUESTS_FILE_PATH="groupRequests.txt";
+    
+    public String GROUP_POSTS_FILE_PATH="groupPosts.txt";
 }
+
