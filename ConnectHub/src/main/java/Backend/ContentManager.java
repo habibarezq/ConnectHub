@@ -1,8 +1,9 @@
 package Backend;
 
-import Backend.FileManagers.StoriesFileManager;
-import Backend.FileManagers.PostsFileManager;
+
+import Backend.FileManagers.*;
 import Backend.GroupManagement.Group;
+import Backend.GroupManagement.MembershipManager;
 import java.util.ArrayList;
 
 public class ContentManager {
@@ -80,6 +81,19 @@ public class ContentManager {
             for (Story story : allStories) {
                 if (story.getAuthorId().equals(userId)) {
                     this.stories.add(story);
+                }
+            }
+            storiesLoaded = true;
+        }
+    }
+    
+    private void loadUserGroups() {
+        if (!groupsLoaded) {
+            this.groups = new ArrayList<>();
+            ArrayList<Group> allGroups=GroupsFileManager.getInstance().getGroups();
+            for (Group group : allGroups) {
+                if (group.getCreatorId().equals(userId) || group.isAdmin(userId) || group.isMember(userId)) {
+                    this.groups.add(group);
                 }
             }
             storiesLoaded = true;

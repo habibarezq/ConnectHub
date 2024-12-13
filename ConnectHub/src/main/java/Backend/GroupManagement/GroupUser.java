@@ -1,6 +1,9 @@
 
 package Backend.GroupManagement;
 
+import Backend.FileManagers.UserFileManager;
+import Backend.UserManagement.User;
+
 public class GroupUser  {
     
     private String groupUserId;
@@ -14,6 +17,11 @@ public class GroupUser  {
         return groupUserId;
     }
 
+    public User getUser(String Id)
+    {
+        User user=UserFileManager.getInstance().findUserByID(Id);
+        return user;
+    }
     public void createPost(String groupId){
         
         
