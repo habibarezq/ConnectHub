@@ -1,5 +1,6 @@
 package Backend.GroupManagement;
 
+import Backend.FileManagers.GroupMembershipFileManager;
 import Backend.FileManagers.GroupsFileManager;
 import java.util.ArrayList;
 
@@ -28,8 +29,8 @@ public class PrimaryAdmin extends Admin {
                 admins.add(promotedMember); // adding the member after promotimg to be an admin to the admin ArrayList
                 members.remove(memberToPromote); // removing the member after promotimg to be an admin fom the users ArrayList
                 
+                GroupMembershipFileManager.getInstance().saveToFile();
                 
-                //HOW TO SAVEEEE IN FILE HASHMAAAP
                 return;
             }
         }
@@ -53,7 +54,7 @@ public class PrimaryAdmin extends Admin {
                 members.add(demotedAdmin); // adding the member after promotimg to be an admin to the admin ArrayList
                 admins.remove(adminToDemote); // removing the member after promotimg to be an admin fom the users ArrayList
                 
-                //HOW TO SAVEEEE IN FILE HASHMAAAP
+                GroupMembershipFileManager.getInstance().saveToFile();
                 return;
             }
         }
