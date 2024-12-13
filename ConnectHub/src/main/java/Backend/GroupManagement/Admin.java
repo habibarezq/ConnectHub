@@ -1,5 +1,6 @@
 package Backend.GroupManagement;
 
+import Backend.FileManagers.GroupMembershipFileManager;
 import Backend.FileManagers.UserFileManager;
 import Backend.UserManagement.User;
 import java.util.ArrayList;
@@ -9,14 +10,12 @@ public abstract class Admin extends GroupUser {
     public Admin(String groupUserId) {
         super(groupUserId);
     }
-    
-    public User getAdminUser(String Id)
-    {
-        User userAdmin=UserFileManager.getInstance().findUserByID(Id);
+
+    public User getAdminUser(String Id) {
+        User userAdmin = UserFileManager.getInstance().findUserByID(Id);
         return userAdmin;
     }
 
-   
     //remove members 
     public void removeMember(String Id) { // momken n3ml keda fl front w neb3atlo el user ala tol
 
@@ -28,8 +27,9 @@ public abstract class Admin extends GroupUser {
             if (currentId.equals(Id)) {
 
                 members.remove(memberToRemove);
-                
-                //HOW TO SAVEEEE IN FILE HASHMAAAP
+
+                GroupMembershipFileManager.getInstance().saveToFile();
+
                 return;
             }
         }

@@ -189,6 +189,9 @@
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="postsScrollPane">
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="postsScrollPaneMouseClicked"/>
+          </Events>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
         </Container>
@@ -317,6 +320,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Delete Post"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deletePostButtonActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="backFeedButton">
           <Properties>

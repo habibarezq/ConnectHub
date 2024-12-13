@@ -52,7 +52,6 @@
                           <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" max="-2" attributes="0">
                               <Component id="backFeedButton" max="32767" attributes="0"/>
-                              <Component id="newsfeedButton" alignment="1" max="32767" attributes="0"/>
                               <Component id="deletePostButton" alignment="1" max="32767" attributes="0"/>
                               <Component id="addPostButton" alignment="1" max="32767" attributes="0"/>
                               <Component id="editPostButton" alignment="1" max="32767" attributes="0"/>
@@ -126,9 +125,7 @@
                                   <Component id="addPostButton" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
                                   <Component id="deletePostButton" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
-                                  <Component id="newsfeedButton" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="42" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="104" max="-2" attributes="0"/>
                                   <Component id="backFeedButton" min="-2" pref="31" max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -296,14 +293,6 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deletePostButtonActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="newsfeedButton">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Newsfeed"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="newsfeedButtonActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JButton" name="backFeedButton">

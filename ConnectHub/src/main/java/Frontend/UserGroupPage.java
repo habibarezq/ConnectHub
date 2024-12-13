@@ -1,6 +1,8 @@
 package Frontend;
 
 import Backend.GroupManagement.Group;
+import Backend.GroupManagement.GroupUser;
+import Backend.GroupManagement.NormalAdmin;
 import Backend.UserManagement.User;
 import java.awt.Font;
 import java.awt.Image;
@@ -68,6 +70,7 @@ public class UserGroupPage extends javax.swing.JFrame {
         descriptionLabel = new javax.swing.JLabel();
         leaveGroupButton = new javax.swing.JButton();
         addPostButton = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -95,11 +98,24 @@ public class UserGroupPage extends javax.swing.JFrame {
         descriptionLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         leaveGroupButton.setText("Leave Group");
+        leaveGroupButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                leaveGroupButtonActionPerformed(evt);
+            }
+        });
 
         addPostButton.setText("Add Post");
         addPostButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addPostButtonActionPerformed(evt);
+            }
+        });
+
+        jButton1.setBackground(new java.awt.Color(153, 204, 255));
+        jButton1.setText("Back To Feed");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
             }
         });
 
@@ -110,16 +126,21 @@ public class UserGroupPage extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(17, 17, 17)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(groupNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(55, 55, 55)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(leaveGroupButton)
-                            .addComponent(addPostButton, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(34, 34, 34)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(17, 17, 17)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(groupNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(55, 55, 55)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(leaveGroupButton)
+                                    .addComponent(addPostButton, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(34, 34, 34))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addGap(53, 53, 53)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(postsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 527, Short.MAX_VALUE)
                     .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -137,7 +158,9 @@ public class UserGroupPage extends javax.swing.JFrame {
                         .addGap(113, 113, 113)
                         .addComponent(addPostButton)
                         .addGap(18, 18, 18)
-                        .addComponent(leaveGroupButton))
+                        .addComponent(leaveGroupButton)
+                        .addGap(94, 94, 94)
+                        .addComponent(jButton1))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(41, 41, 41)
                         .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -169,6 +192,18 @@ public class UserGroupPage extends javax.swing.JFrame {
         new groupPostCreation(this.user.getUserID(), this.groupId,newsfeed).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_addPostButtonActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+         newsfeed.setVisible(true);
+       this.dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void leaveGroupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_leaveGroupButtonActionPerformed
+        // TODO add your handling code here:
+    GroupUser u = new GroupUser(user.getUserID());
+    u.deleteGroup(groupId);
+    }//GEN-LAST:event_leaveGroupButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -210,6 +245,7 @@ public class UserGroupPage extends javax.swing.JFrame {
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JLabel groupNameLabel;
     private javax.swing.JLabel groupPicLabel;
+    private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JButton leaveGroupButton;

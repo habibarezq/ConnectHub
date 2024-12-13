@@ -1,36 +1,58 @@
 package Frontend;
 
+import Backend.FileManagers.GroupPostsFileManager;
 import Backend.FileManagers.GroupsFileManager;
+import Backend.FileManagers.UserFileManager;
 import Backend.GroupManagement.Group;
 import Backend.GroupManagement.GroupContentManager;
 import Backend.GroupManagement.GroupManager;
+import Backend.GroupManagement.GroupPost;
 import Backend.GroupManagement.GroupServiceManager;
 import Backend.GroupManagement.GroupUser;
 import Backend.GroupManagement.MembershipManager;
+import Backend.GroupManagement.NormalAdmin;
 import Backend.Post;
 import Backend.UploadPosts;
 import Backend.UserManagement.User;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 
 public class AdminGroupPage extends javax.swing.JFrame {
 
     private DefaultListModel<String> membersModel;
     private ArrayList<User> members;
-    private ArrayList<Post> posts; //HOW WILL I TAKE IT
+    private ArrayList<GroupPost> posts; //HOW WILL I TAKE IT
     private NewsfeedPage newsfeed;
     private User admin;
     private String groupId;
     private Group group;
+    JPanel selectedPostPanel;
+    GroupPost selectedPost;
 
     public AdminGroupPage(NewsfeedPage newsfeed, String groupId) {
         initComponents();
@@ -41,8 +63,8 @@ public class AdminGroupPage extends javax.swing.JFrame {
 
         this.newsfeed = newsfeed;
         this.groupId = groupId;
-        this.group=GroupsFileManager.getInstance().getGroupById(groupId);
-        
+        this.group = GroupsFileManager.getInstance().getGroupById(groupId);
+
         //the user using the app
         this.admin = newsfeed.user;
 
@@ -56,10 +78,6 @@ public class AdminGroupPage extends javax.swing.JFrame {
         populatePosts();
         populateMembers();
         startup();
-    }
-
-    private void populatePosts() {
-        new UploadPosts(postsScrollPane, posts);
     }
 
     private void populateMembers() {
@@ -77,10 +95,9 @@ public class AdminGroupPage extends javax.swing.JFrame {
 
     private void startup() //MANAGEMENT OR IMAGE
     {
-        
-        File groupPicFile = new File(group.getPhotoPath()); 
-        if(groupPicFile.exists())
-        {
+
+        File groupPicFile = new File(group.getPhotoPath());
+        if (groupPicFile.exists()) {
             try {
                 Image image = ImageIO.read(groupPicFile);
                 if (image != null) {
@@ -96,8 +113,8 @@ public class AdminGroupPage extends javax.swing.JFrame {
         }
         String username = group.getName();
         groupNameLabel.setText(username);
-         groupNameLabel.setFont(new Font("Serif", Font.BOLD, 18));
-        
+        groupNameLabel.setFont(new Font("Serif", Font.BOLD, 18));
+
     }
 
     @SuppressWarnings("unchecked")
@@ -119,7 +136,6 @@ public class AdminGroupPage extends javax.swing.JFrame {
         editPostButton = new javax.swing.JButton();
         addPostButton = new javax.swing.JButton();
         deletePostButton = new javax.swing.JButton();
-        newsfeedButton = new javax.swing.JButton();
         backFeedButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -191,13 +207,6 @@ public class AdminGroupPage extends javax.swing.JFrame {
             }
         });
 
-        newsfeedButton.setText("Newsfeed");
-        newsfeedButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newsfeedButtonActionPerformed(evt);
-            }
-        });
-
         backFeedButton.setBackground(new java.awt.Color(153, 204, 255));
         backFeedButton.setText("Back To Feed");
         backFeedButton.addActionListener(new java.awt.event.ActionListener() {
@@ -216,7 +225,6 @@ public class AdminGroupPage extends javax.swing.JFrame {
                         .addGap(63, 63, 63)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(backFeedButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(newsfeedButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(deletePostButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(addPostButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(editPostButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -275,9 +283,7 @@ public class AdminGroupPage extends javax.swing.JFrame {
                                 .addComponent(addPostButton)
                                 .addGap(37, 37, 37)
                                 .addComponent(deletePostButton)
-                                .addGap(39, 39, 39)
-                                .addComponent(newsfeedButton)
-                                .addGap(42, 42, 42)
+                                .addGap(104, 104, 104)
                                 .addComponent(backFeedButton, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(19, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -328,22 +334,18 @@ public class AdminGroupPage extends javax.swing.JFrame {
     }//GEN-LAST:event_membersListMouseClicked
 
     private void editPostButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPostButtonActionPerformed
-        //EDIT
+        editSelectedPost();
+        
     }//GEN-LAST:event_editPostButtonActionPerformed
 
     private void addPostButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPostButtonActionPerformed
-        new groupPostCreation(this.admin.getUserID(), this.groupId,newsfeed).setVisible(true);
+        new groupPostCreation(this.admin.getUserID(), this.groupId, newsfeed).setVisible(true);
         this.dispose();  //ADD
     }//GEN-LAST:event_addPostButtonActionPerformed
 
     private void deletePostButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletePostButtonActionPerformed
-        //DELETE
+        deleteSelectedPost();
     }//GEN-LAST:event_deletePostButtonActionPerformed
-
-    private void newsfeedButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newsfeedButtonActionPerformed
-        newsfeed.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_newsfeedButtonActionPerformed
 
     private void backFeedButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backFeedButtonActionPerformed
         // TODO add your handling code here:
@@ -371,13 +373,163 @@ public class AdminGroupPage extends javax.swing.JFrame {
             );
 
             if (choice == 0) {
-                //ADD USER TO MEMBERS
+                NormalAdmin a = new NormalAdmin(admin.getUserID());
+                a.acceptMember(user.getGroupUserId());
             } else if (choice == 1) {
                 return;
             }
         }
     }
 
+    private void populatePosts() {
+        uploadPostsFunction(postsScrollPane, posts);
+    }
+
+    public void uploadPostsFunction(JScrollPane postsScrollPane, ArrayList<GroupPost> posts) {
+        JPanel postPanel = new JPanel();
+        postPanel.setLayout(new BoxLayout(postPanel, BoxLayout.Y_AXIS));
+        postPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+        if (posts == null) {
+            return;
+        }
+        for (GroupPost post : posts) {
+            System.out.println(posts);
+            //creating a panel for each post
+            JPanel everyPostPanel = new JPanel();
+            everyPostPanel.setLayout(new BorderLayout());
+            everyPostPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            everyPostPanel.setPreferredSize(new Dimension(300, 80));
+
+            // Adding mouse listener for selection
+            everyPostPanel.addMouseListener(new MouseAdapter() {
+
+                public void mouseClicked(MouseEvent e) {
+                    selectPost(everyPostPanel, post);
+                }
+            });
+
+            //adding username
+            User u = UserFileManager.getInstance().findUserByID(post.getAuthorId()); //returns user to get username
+            JLabel UsernameLabel = new JLabel("Username: " + u.getUsername());
+            UsernameLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+            postPanel.add(UsernameLabel, BorderLayout.NORTH);
+
+            // adding the time Stamp
+            JLabel timestampLabel = new JLabel("Time: " + post.getUploadingTime());
+            timestampLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Adding padding
+            postPanel.add(timestampLabel, BorderLayout.SOUTH);
+
+            //adding content
+            //adding text
+            JLabel contentLabel = new JLabel("Content: " + post.getContentTxt());
+            contentLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Adding padding
+            postPanel.add(contentLabel, BorderLayout.NORTH);
+
+            // adding the image 
+            File imageFile = new File(post.getcontentPath());
+            if (imageFile.exists()) {
+                ImageIcon imageIcon = resizeImagePosts(post.getcontentPath());
+                JLabel imageLabel = new JLabel(imageIcon);
+                postPanel.add(imageLabel, BorderLayout.WEST);
+            } else {
+                JLabel noImageLabel = new JLabel("No image.");
+                postPanel.add(noImageLabel, BorderLayout.WEST);
+            }
+
+            postPanel.add(everyPostPanel);
+            postPanel.add(Box.createRigidArea(new Dimension(0, 1))); // Adding spacing between stories
+        }
+        postsScrollPane.setViewportView(postPanel);
+    }
+
+    public ImageIcon resizeImagePosts(String contentPath) {
+        ImageIcon imageIcon = new ImageIcon(contentPath);
+        Image image = imageIcon.getImage();
+        Image resizedImage = image.getScaledInstance(postsScrollPane.getWidth() - 10, 300, Image.SCALE_SMOOTH);
+        ImageIcon resizedImageIcon = new ImageIcon(resizedImage);
+        return resizedImageIcon;
+    }
+
+    private void selectPost(JPanel postPanel, GroupPost post) {
+
+        if (selectedPostPanel != null) {
+            selectedPostPanel.setBackground(Color.WHITE);
+        }
+        selectedPostPanel = postPanel;
+        selectedPostPanel.setBackground(Color.LIGHT_GRAY);
+        selectedPost = post;
+        System.out.println("Selected post: " + selectedPost.getContentTxt());
+    }
+
+    public void editSelectedPost() {
+        if (selectedPost != null) {
+            JTextField contentField = new JTextField(selectedPost.getContentTxt());
+            JTextField imagePathField = new JTextField(selectedPost.getcontentPath());
+            JButton browseButton = new JButton("Browse...");
+
+            browseButton.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    JFileChooser fileChooser = new JFileChooser();
+                    int result = fileChooser.showOpenDialog(null);
+                    if (result == JFileChooser.APPROVE_OPTION) {
+                        File selectedFile = fileChooser.getSelectedFile();
+                        imagePathField.setText(selectedFile.getAbsolutePath());
+                    }
+                }
+            });
+
+            JPanel panel = new JPanel(new BorderLayout());
+            panel.add(new JLabel("Edit Content:"), BorderLayout.NORTH);
+            panel.add(contentField, BorderLayout.CENTER);
+
+            JPanel imagePanel = new JPanel(new BorderLayout());
+            imagePanel.add(new JLabel("Edit Image Path:"), BorderLayout.NORTH);
+            imagePanel.add(imagePathField, BorderLayout.CENTER);
+            imagePanel.add(browseButton, BorderLayout.EAST);
+
+            panel.add(imagePanel, BorderLayout.SOUTH);
+
+            int result = JOptionPane.showConfirmDialog(null, panel, "Edit Post", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+            if (result == JOptionPane.OK_OPTION) {
+                String newContent = contentField.getText();
+                String newImagePath = imagePathField.getText();
+
+                if (newContent != null && !newContent.trim().isEmpty()) {
+                    selectedPost.setContentTxt(newContent);
+                }
+                if (newImagePath != null && !newImagePath.trim().isEmpty()) {
+                    selectedPost.setcontentPath(newImagePath);
+                }
+
+                GroupPostsFileManager.getInstance().saveToFile(GroupPostsFileManager.getInstance().getPosts());
+                JOptionPane.showMessageDialog(null, "Post updated successfully!");
+                // Refresh the posts display
+                uploadPostsFunction(postsScrollPane, GroupPostsFileManager.getInstance().getPosts());
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No post selected to edit!");
+        }
+    }
+
+    
+       public void deleteSelectedPost() {
+        if (selectedPost != null) {
+           
+                ArrayList<GroupPost> posts = GroupPostsFileManager.getInstance().getPosts();
+                posts.remove(selectedPost);
+                GroupPostsFileManager.getInstance().saveToFile(posts);
+                JOptionPane.showMessageDialog(null, "Post deleted successfully!");
+                // Refresh the posts display
+                uploadPostsFunction(postsScrollPane, GroupPostsFileManager.getInstance().getPosts());
+            }
+        else {
+            JOptionPane.showMessageDialog(null, "No post selected to delete!");
+        }
+    }
+    
     private void handleMemberSelection(String username) {
         GroupUser user = MembershipManager.getInstance(groupId).getGroupUserByUsername(username);
 
@@ -398,7 +550,8 @@ public class AdminGroupPage extends javax.swing.JFrame {
             );
 
             if (choice == 0) {
-                //REMOVE USER FROM MEMBERS
+                NormalAdmin a = new NormalAdmin(admin.getUserID());
+                a.decline(user.getGroupUserId());
             } else if (choice == 1) {
                 return;
             }
@@ -426,7 +579,6 @@ public class AdminGroupPage extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JList<String> membersList;
-    private javax.swing.JButton newsfeedButton;
     private javax.swing.JScrollPane postsScrollPane;
     private javax.swing.JList<String> requestsList;
     // End of variables declaration//GEN-END:variables

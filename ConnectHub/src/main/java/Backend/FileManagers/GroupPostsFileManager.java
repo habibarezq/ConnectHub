@@ -87,7 +87,7 @@ public class GroupPostsFileManager implements FileManager<GroupPost> {
         for (GroupPost post : data) {
             JSONObject postJSON = new JSONObject();
             postJSON.put("userId", post.getAuthorId());
-            postJSON.put("groupId", post.getContentId());
+            postJSON.put("groupId", post.getGroupId());
             postJSON.put("TextContent", post.getContentTxt());
             postJSON.put("imagePath", post.getcontentPath()); 
             postJSON.put("time", post.getUploadingTime());
