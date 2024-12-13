@@ -3,7 +3,11 @@ package Frontend;
 import Backend.FileManagers.UserFileManager;
 import Backend.Post;
 import Backend.UploadPosts;
-import Backend.User;
+import Backend.*;
+import Backend.FriendManagment.*;
+import Backend.GroupManagement.*;
+import Backend.UserManagement.*;
+import Backend.UserManagement.User;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
@@ -26,26 +30,28 @@ public class CreatorGroupPage extends javax.swing.JFrame {
     private ArrayList<Post> posts;
     private NewsfeedPage newsfeed;
     private User creator;
+    private String groupId;
 
-    public CreatorGroupPage(NewsfeedPage newsfeed) {
+    public CreatorGroupPage(NewsfeedPage newsfeed,String groupId) {
         initComponents();
         setTitle("Group");
         setContentPane(jPanel3);
 
         this.newsfeed = newsfeed;
         this.creator = newsfeed.user;
+        this.groupId=groupId;
 
-        //adding admins for test
-        admins.add(new User("jfnjdn", "admin1@gmail.com", "admin1", LocalDate.now(), "vjnjejl,nf"));
-        admins.add(new User("jfnerpojdn", "admin2@gmail.com", "admin2", LocalDate.now(), "vjnjejrl,f,nf"));
-        admins.add(new User("jfnjrdn", "admin3@gmail.com", "admin3", LocalDate.now(), "vjnjejl;nf"));
-        admins.add(new User("jfnjrl,dn", "admin4@gmail.com", "admin4", LocalDate.now(), "vjnjejrl,nf"));
-
-        //adding members for test
-        members.add(new User("jjdn", "admin1@gmail.com", "member1", LocalDate.now(), "vjnjejl,nf"));
-        members.add(new User("pojdn", "admin2@gmail.com", "member2", LocalDate.now(), "vjnjejrl,f,nf"));
-        members.add(new User("jrdn", "admin3@gmail.com", "member3", LocalDate.now(), "vjnjejl;nf"));
-        members.add(new User("jfndn", "admin4@gmail.com", "member4", LocalDate.now(), "vjnjejrl,nf"));
+//        //adding admins for test
+//        admins.add(new User("jfnjdn", "admin1@gmail.com", "admin1", LocalDate.now(), "vjnjejl,nf"));
+//        admins.add(new User("jfnerpojdn", "admin2@gmail.com", "admin2", LocalDate.now(), "vjnjejrl,f,nf"));
+//        admins.add(new User("jfnjrdn", "admin3@gmail.com", "admin3", LocalDate.now(), "vjnjejl;nf"));
+//        admins.add(new User("jfnjrl,dn", "admin4@gmail.com", "admin4", LocalDate.now(), "vjnjejrl,nf"));
+//
+//        //adding members for test
+//        members.add(new User("jjdn", "admin1@gmail.com", "member1", LocalDate.now(), "vjnjejl,nf"));
+//        members.add(new User("pojdn", "admin2@gmail.com", "member2", LocalDate.now(), "vjnjejrl,f,nf"));
+//        members.add(new User("jrdn", "admin3@gmail.com", "member3", LocalDate.now(), "vjnjejl;nf"));
+//        members.add(new User("jfndn", "admin4@gmail.com", "member4", LocalDate.now(), "vjnjejrl,nf"));
 
         adminsModel = new DefaultListModel<>();
         adminsList.setModel(adminsModel);
@@ -61,32 +67,6 @@ public class CreatorGroupPage extends javax.swing.JFrame {
         populateAdmins();
         populateMembers();
         startup();
-
-        //to allow selecting a string from the jList
-        adminsList.addListSelectionListener(new ListSelectionListener() {
-
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                String selectedAdmin = adminsList.getSelectedValue();
-
-                if (selectedAdmin != null) {
-                    System.out.println("Selected admin: " + selectedAdmin);
-                }
-            }
-        });
-
-        membersList.addListSelectionListener(new ListSelectionListener() {
-
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                String selectedAdmin = membersList.getSelectedValue();
-
-                if (membersList != null) {
-                    System.out.println("Selected member: " + selectedAdmin);
-                }
-            }
-        });
-
     }
 
     private void populatePosts() {
@@ -157,12 +137,9 @@ public class CreatorGroupPage extends javax.swing.JFrame {
         bioLabel1 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         adminsList = new javax.swing.JList<>();
-        promoteButton = new javax.swing.JButton();
-        demoteButton = new javax.swing.JButton();
         descriptionLabel = new javax.swing.JLabel();
         changeDescriptionButton = new javax.swing.JButton();
         changeGroupPhotoButton = new javax.swing.JButton();
-        removeMemberButton = new javax.swing.JButton();
         addPostButton = new javax.swing.JButton();
         deletePostButton = new javax.swing.JButton();
 
@@ -203,6 +180,11 @@ public class CreatorGroupPage extends javax.swing.JFrame {
             }
         });
 
+        membersList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                membersListMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(membersList);
 
         bioLabel.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
@@ -222,20 +204,6 @@ public class CreatorGroupPage extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(adminsList);
 
-        promoteButton.setText("Promote");
-        promoteButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                promoteButtonActionPerformed(evt);
-            }
-        });
-
-        demoteButton.setText("Demote");
-        demoteButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                demoteButtonActionPerformed(evt);
-            }
-        });
-
         descriptionLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         changeDescriptionButton.setText("Change Description");
@@ -249,13 +217,6 @@ public class CreatorGroupPage extends javax.swing.JFrame {
         changeGroupPhotoButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 changeGroupPhotoButtonActionPerformed(evt);
-            }
-        });
-
-        removeMemberButton.setText("Remove");
-        removeMemberButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeMemberButtonActionPerformed(evt);
             }
         });
 
@@ -299,23 +260,13 @@ public class CreatorGroupPage extends javax.swing.JFrame {
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(removeMemberButton)
-                                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(27, 27, 27))))
                             .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(28, 28, 28)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel3Layout.createSequentialGroup()
-                                        .addGap(28, 28, 28)
-                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(bioLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(bioLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                                .addGap(60, 60, 60)
-                                                .addComponent(demoteButton))))
-                                    .addGroup(jPanel3Layout.createSequentialGroup()
-                                        .addGap(49, 49, 49)
-                                        .addComponent(promoteButton)))
+                                    .addComponent(bioLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(bioLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(groupNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -346,19 +297,13 @@ public class CreatorGroupPage extends javax.swing.JFrame {
                                 .addComponent(bioLabel1)
                                 .addGap(18, 18, 18)
                                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(demoteButton)
-                                .addGap(43, 43, 43)
+                                .addGap(84, 84, 84)
                                 .addComponent(bioLabel)
                                 .addGap(18, 18, 18)
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(promoteButton)
-                            .addComponent(removeMemberButton))
-                        .addGap(0, 33, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE)
                         .addGap(12, 12, 12)
                         .addComponent(changeDescriptionButton)
                         .addGap(18, 18, 18)
@@ -370,22 +315,23 @@ public class CreatorGroupPage extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 6, Short.MAX_VALUE)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 6, Short.MAX_VALUE)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 6, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void changeGroupPhotoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeGroupPhotoButtonActionPerformed
-        String path = changeImage(groupPicLabel);
+        String path = changeImage();
         //CHANGE IMAGE IN BACKEND
     }//GEN-LAST:event_changeGroupPhotoButtonActionPerformed
 
@@ -401,46 +347,58 @@ public class CreatorGroupPage extends javax.swing.JFrame {
 
     private void editPostButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPostButtonActionPerformed
         //removes posts from arraylist and from scrollpane
-
+        //
     }//GEN-LAST:event_editPostButtonActionPerformed
 
-    private void demoteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_demoteButtonActionPerformed
-        String selectedAdmin = adminsList.getSelectedValue();
-        if (selectedAdmin == null) {
-            JOptionPane.showMessageDialog(this, "Choose an admin to be demoted.", "Error", JOptionPane.ERROR_MESSAGE);
-        } else {
-            demoteAdmin(selectedAdmin);
-        }
-
-    }//GEN-LAST:event_demoteButtonActionPerformed
-
-    private void promoteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_promoteButtonActionPerformed
-        String selectedMember = membersList.getSelectedValue();
-        if (selectedMember == null)
-            JOptionPane.showMessageDialog(this, "Choose a member to be promoted.", "Error", JOptionPane.ERROR_MESSAGE);
-        else
-            promoteMember(selectedMember);
-    }//GEN-LAST:event_promoteButtonActionPerformed
-
     private void deleteGroupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteGroupButtonActionPerformed
-        //
+        //DELETE GROUP
     }//GEN-LAST:event_deleteGroupButtonActionPerformed
 
-    private void removeMemberButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeMemberButtonActionPerformed
-        String selectedMember = membersList.getSelectedValue();
-        if (selectedMember == null)
-            JOptionPane.showMessageDialog(this, "Choose a member to be removed.", "Error", JOptionPane.ERROR_MESSAGE);
-        else {
-            User member = UserFileManager.getInstance().findUserByUsername(selectedMember);
-            if (member != null) {
-                members.remove(member);
-            }
-        }
-    }//GEN-LAST:event_removeMemberButtonActionPerformed
-
     private void adminsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_adminsListMouseClicked
-        //
+        int index = adminsList.locationToIndex(evt.getPoint());
+        if (index != -1) { // Ensure an item was clicked
+            // Get the value at the clicked index
+            String selectedValue = adminsList.getModel().getElementAt(index);
+            System.out.println("Selected value: " + selectedValue);
+            handleAdminSelection(selectedValue);}
     }//GEN-LAST:event_adminsListMouseClicked
+
+    private void membersListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_membersListMouseClicked
+        int index = membersList.locationToIndex(evt.getPoint());
+        if (index != -1) { // Ensure an item was clicked
+            // Get the value at the clicked index
+            String selectedValue = membersList.getModel().getElementAt(index);
+            System.out.println("Selected value: " + selectedValue);
+            handleMemberSelection(selectedValue);}
+    }//GEN-LAST:event_membersListMouseClicked
+
+    private void handleAdminSelection(String username)
+    {
+       GroupUser user = MembershipManager.getInstance(groupId).getGroupUserByUsername(username);
+       
+       if(user ==  null)
+       {
+            JOptionPane.showMessageDialog(null, "Admin not found!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+       }
+       else
+       {
+           Object[] options = {"Demote", "Cancel"};
+        int choice = JOptionPane.showOptionDialog(
+                null,
+                "<html>What do you want to do with <b>" + username + "</b>?</html>",
+                "Admin Options",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+        
+        if(choice == 0) demoteAdmin(username);
+        else if(choice == 1) return;
+       }
+    }
 
     private void demoteAdmin(String adminUsername) {
         User selectedAdmin = UserFileManager.getInstance().findUserByUsername(adminUsername);
@@ -454,6 +412,34 @@ public class CreatorGroupPage extends javax.swing.JFrame {
         populateMembers();
     }
 
+    private void handleMemberSelection(String username)
+    {
+       GroupUser user = MembershipManager.getInstance(groupId).getGroupUserByUsername(username);
+       
+       if(user ==  null)
+       {
+            JOptionPane.showMessageDialog(null, "Member not found!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+       }
+       else
+       {
+           Object[] options = {"Pomote", "Remove", "Cancel"};
+        int choice = JOptionPane.showOptionDialog(
+                null,
+                "<html>What do you want to do with <b>" + username + "</b>?</html>",
+                "Admin Options",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+        
+        if(choice == 0) promoteMember(username);
+        else if(choice == 1) removeMember(username);
+        else if(choice == 2) return;
+       }
+    }
     private void promoteMember(String memberUsername) {
         User selectedMember = UserFileManager.getInstance().findUserByUsername(memberUsername);
         if (selectedMember != null) {
@@ -466,7 +452,12 @@ public class CreatorGroupPage extends javax.swing.JFrame {
         populateMembers();
     }
 
-    private String changeImage(javax.swing.JLabel imageLabel) {
+    private void removeMember(String username)
+    {
+        //REMOVE MEMBER
+    }
+    
+    private String changeImage() {
 
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File(".")); // Changing the directory to specific one
@@ -493,8 +484,8 @@ public class CreatorGroupPage extends javax.swing.JFrame {
 
                 if (image != null) {
                     // Scale image to fit within the label
-                    Image scaledImage = image.getScaledInstance(imageLabel.getWidth(), imageLabel.getHeight(), Image.SCALE_SMOOTH);
-                    imageLabel.setIcon(new ImageIcon(scaledImage));
+                    Image scaledImage = image.getScaledInstance(groupPicLabel.getWidth(), groupPicLabel.getHeight(), Image.SCALE_SMOOTH);
+                    groupPicLabel.setIcon(new ImageIcon(scaledImage));
 
                     return imagePath; //TO BE SENT TO THE BACKEND TO SAVE IT 
                 } else {
@@ -547,7 +538,6 @@ public class CreatorGroupPage extends javax.swing.JFrame {
     private javax.swing.JButton changeGroupPhotoButton;
     private javax.swing.JButton deleteGroupButton;
     private javax.swing.JButton deletePostButton;
-    private javax.swing.JButton demoteButton;
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JButton editPostButton;
     private javax.swing.JLabel groupNameLabel;
@@ -558,7 +548,5 @@ public class CreatorGroupPage extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JList<String> membersList;
     private javax.swing.JScrollPane postsScrollPane;
-    private javax.swing.JButton promoteButton;
-    private javax.swing.JButton removeMemberButton;
     // End of variables declaration//GEN-END:variables
 }

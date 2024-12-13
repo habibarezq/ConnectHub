@@ -1,10 +1,10 @@
 package Frontend;
 
-import Backend.FriendManager;
-import Backend.FriendManagerFactory;
-import Backend.FriendRequestManager;
-import Backend.FriendServiceManager;
-import Backend.User;
+import Backend.*;
+import Backend.FriendManagment.*;
+import Backend.GroupManagement.*;
+import Backend.UserManagement.*;
+import Backend.UserManagement.User;
 import javax.swing.JOptionPane;
 
 

@@ -1,10 +1,24 @@
 package Frontend;
 
+import Backend.GroupManagement.Group;
+
 public class SearchActionsGroup extends javax.swing.JDialog {
 
-    public SearchActionsGroup(java.awt.Frame parent, boolean modal) {
+    private NewsfeedPage newsfeed;
+    private Group group;
+    
+    public SearchActionsGroup(java.awt.Frame parent, boolean modal, Group group) {
         super(parent, modal);
         initComponents();
+        setContentPane(mainPanel);
+        setTitle("Search for "+group.getName());
+        //setSize(306, 302);
+        setResizable(false);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        
+        this.group = group;
+        this.newsfeed = (NewsfeedPage) parent;
+
     }
 
     @SuppressWarnings("unchecked")
@@ -85,15 +99,15 @@ public class SearchActionsGroup extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void leaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_leaveButtonActionPerformed
-        //
+        //SAME AS REMOVE
     }//GEN-LAST:event_leaveButtonActionPerformed
 
     private void joinButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_joinButtonActionPerformed
-        // 
+        // SEND REQUEST
     }//GEN-LAST:event_joinButtonActionPerformed
 
     private void viewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewButtonActionPerformed
-        // 
+        // HOW TO KNOW ROLE
     }//GEN-LAST:event_viewButtonActionPerformed
 
     public static void main(String args[]) {

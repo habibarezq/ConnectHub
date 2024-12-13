@@ -22,8 +22,7 @@ public class MembershipManager {
         this.groupUsers = new ArrayList<>();
         loadMembershipData();
     }
-    
-    
+
     public static synchronized MembershipManager getInstance(String groupId) {
         if (instance == null) {
             instance = new MembershipManager(groupId); // Create a new instance for the specific userId
@@ -89,12 +88,22 @@ public class MembershipManager {
         GroupMembershipFileManager.getInstance().updateUserData(groupId, userData);
         GroupMembershipFileManager.getInstance().saveToFile();
     }
-        public GroupUser getGroupUserById(String Id)
-    {
-       for (GroupUser u : groupUsers) {
+
+    public GroupUser getGroupUserById(String Id) {
+        for (GroupUser u : groupUsers) {
             if (Id.equals(u.getGroupUserId())) {
                 return u;
             }
+        }
+        return null;
+    }
+
+    public GroupUser getGroupUserByUsername(String username) {
+        for(NormalAdmin admin:admins)
+        {
+            User adminUser=admin.getAdminUser(admin.getGroupUserId());
+            if(adminUser.getUsername().equals(username))
+                return admin;
         }
         return null;
     }
