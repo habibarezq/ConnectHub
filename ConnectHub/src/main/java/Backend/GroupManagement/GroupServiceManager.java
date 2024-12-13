@@ -1,7 +1,13 @@
 package Backend.GroupManagement;
 
+import Backend.ContentManager;
 import Backend.FileManagers.GroupMembershipFileManager;
 import Backend.FileManagers.GroupsFileManager;
+import Backend.FileManagers.UserFileManager;
+import Backend.FriendManagment.FriendManager;
+import Backend.FriendManagment.FriendManagerFactory;
+import Backend.RequestManager;
+import Backend.UserManagement.User;
 import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
