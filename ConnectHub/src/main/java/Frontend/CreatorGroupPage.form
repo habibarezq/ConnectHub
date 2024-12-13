@@ -63,7 +63,7 @@
                           <Group type="103" groupAlignment="1" max="-2" attributes="0">
                               <Component id="editPostButton" alignment="0" max="32767" attributes="0"/>
                               <Component id="addPostButton" alignment="0" max="32767" attributes="0"/>
-                              <Component id="deletePostButton" alignment="0" max="32767" attributes="0"/>
+                              <Component id="deleteButton" alignment="0" max="32767" attributes="0"/>
                               <Component id="deleteGroupButton" pref="144" max="32767" attributes="0"/>
                               <Component id="backFeedButton" max="32767" attributes="0"/>
                           </Group>
@@ -141,7 +141,7 @@
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Component id="addPostButton" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="deletePostButton" min="-2" max="-2" attributes="0"/>
+                                  <Component id="deleteButton" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Component id="deleteGroupButton" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -337,13 +337,18 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addPostButtonActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="deletePostButton">
+        <Component class="javax.swing.JButton" name="deleteButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Delete Post"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="&quot;Delete Post&quot;" type="code"/>
+            </Property>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deletePostButtonActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteButtonActionPerformed"/>
           </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JButton()"/>
+          </AuxValues>
         </Component>
         <Component class="javax.swing.JButton" name="backFeedButton">
           <Properties>

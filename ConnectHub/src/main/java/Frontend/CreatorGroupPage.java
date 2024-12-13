@@ -197,7 +197,8 @@ public class CreatorGroupPage extends javax.swing.JFrame {
             adminsModel.addElement("");
         } else {
             for (NormalAdmin admin : admins) {
-                adminsModel.addElement(admin.getUser(groupId).getUsername());
+                if(!admin.getGroupUserId().equals(creator.getUserID()))
+                adminsModel.addElement(admin.getUser(admin.getGroupUserId()).getUsername());
             }
         }
     }
@@ -210,7 +211,8 @@ public class CreatorGroupPage extends javax.swing.JFrame {
             membersModel.addElement("");
         } else {
             for (GroupUser member : members) {
-                membersModel.addElement(member.getUser(groupId).getUsername());
+               if(!member.getGroupUserId().equals(creator.getUserID()) && admins.contains(admins))
+                membersModel.addElement(member.getUser(member.getGroupUserId()).getUsername());
             }
         }
     }
@@ -338,7 +340,7 @@ public class CreatorGroupPage extends javax.swing.JFrame {
         changeDescriptionButton = new javax.swing.JButton();
         changeGroupPhotoButton = new javax.swing.JButton();
         addPostButton = new javax.swing.JButton();
-        deletePostButton = new javax.swing.JButton();
+        deleteButton = new javax.swing.JButton();
         backFeedButton = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         requestsList = new javax.swing.JList<>();
@@ -428,10 +430,10 @@ public class CreatorGroupPage extends javax.swing.JFrame {
             }
         });
 
-        deletePostButton.setText("Delete Post");
-        deletePostButton.addActionListener(new java.awt.event.ActionListener() {
+        deleteButton.setText("Delete Post");
+        deleteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deletePostButtonActionPerformed(evt);
+                deleteButtonActionPerformed(evt);
             }
         });
 
@@ -474,7 +476,7 @@ public class CreatorGroupPage extends javax.swing.JFrame {
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(editPostButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(addPostButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(deletePostButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(deleteButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(deleteGroupButton, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
                             .addComponent(backFeedButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addGap(56, 56, 56)
@@ -533,7 +535,7 @@ public class CreatorGroupPage extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(addPostButton)
                                 .addGap(18, 18, 18)
-                                .addComponent(deletePostButton)
+                                .addComponent(deleteButton)
                                 .addGap(18, 18, 18)
                                 .addComponent(deleteGroupButton)
                                 .addGap(18, 18, 18)
@@ -634,10 +636,10 @@ public class CreatorGroupPage extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_addPostButtonActionPerformed
 
-    private void deletePostButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletePostButtonActionPerformed
+    private void deletePostButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                 
         PrimaryAdmin admin=new PrimaryAdmin(groupId);
         //GroupContentManager.getInstance(groupId).deletePost(post);
-    }//GEN-LAST:event_deletePostButtonActionPerformed
+    }                                                
 
     private void requestsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_requestsListMouseClicked
         int index = requestsList.locationToIndex(evt.getPoint());
@@ -681,10 +683,11 @@ public class CreatorGroupPage extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_postsScrollPaneMouseClicked
 
-    private void deletePostButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletePostButtonActionPerformed
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
         // TODO add your handling code here:
         deleteSelectedPost();
-    }//GEN-LAST:event_deletePostButtonActionPerformed
+       
+    }//GEN-LAST:event_deleteButtonActionPerformed
 
     private void handleAdminSelection(String username) {
         GroupUser user = MembershipManager.getInstance(groupId).getGroupUserByUsername(username);
@@ -826,8 +829,8 @@ public class CreatorGroupPage extends javax.swing.JFrame {
     private javax.swing.JLabel bioLabel2;
     private javax.swing.JButton changeDescriptionButton;
     private javax.swing.JButton changeGroupPhotoButton;
+    private javax.swing.JButton deleteButton;
     private javax.swing.JButton deleteGroupButton;
-    private javax.swing.JButton deletePostButton;
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JButton editPostButton;
     private javax.swing.JLabel groupPicLabel;
