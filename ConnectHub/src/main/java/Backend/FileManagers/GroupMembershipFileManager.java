@@ -1,5 +1,7 @@
 package Backend.FileManagers;
 
+import Backend.GroupManagement.GroupUser;
+import Backend.UserManagement.User;
 import Interfaces.FilePaths;
 import java.io.File;
 import java.io.FileWriter;
