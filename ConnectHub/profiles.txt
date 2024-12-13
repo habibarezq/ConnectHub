@@ -1,26 +1,20 @@
 [
     {
-        "CoverPhotoPath": "C:\\Users\\habib\\Documents\\NetBeansProjects\\ConnectHub\\ConnectHub\\pics\\download.jpeg",
-        "Bio": "hello , my name is habiba rezq",
-        "userId": "6125e6f4-2273-43f7-902a-437a4ef2d45f",
+        "CoverPhotoPath": "",
+        "Bio": "",
+        "userId": "69890c7f-4ed0-4eda-a986-1583e21087bd",
         "ProfilePhotoPath": ""
     },
     {
         "CoverPhotoPath": "",
         "Bio": "",
-        "userId": "97a34610-5607-4783-bc01-2122ccaab61f",
+        "userId": "eeb29fd7-0b9c-4518-abb4-c68b2b32bb2e",
         "ProfilePhotoPath": ""
     },
     {
         "CoverPhotoPath": "",
         "Bio": "",
-        "userId": "5561a668-5473-4658-a5b4-64de252fa4bb",
-        "ProfilePhotoPath": ""
-    },
-    {
-        "CoverPhotoPath": "",
-        "Bio": "",
-        "userId": "387bced4-f57a-48d5-9a83-5dfe6b5edf9f",
+        "userId": "7ef6ad98-f308-456d-992d-da459205f711",
         "ProfilePhotoPath": ""
     }
 ]
