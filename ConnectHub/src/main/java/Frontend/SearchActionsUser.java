@@ -1,5 +1,9 @@
 package Frontend;
 
+import Backend.FriendManager;
+import Backend.FriendManagerFactory;
+import Backend.FriendRequestManager;
+import Backend.FriendServiceManager;
 import Backend.User;
 import javax.swing.JOptionPane;
 
@@ -7,6 +11,7 @@ import javax.swing.JOptionPane;
 public class SearchActionsUser extends javax.swing.JDialog {
 
     protected NewsfeedPage newsfeed;
+    protected User friend;
     protected User user;
     
     public SearchActionsUser(java.awt.Frame parent, boolean modal, User user) {
@@ -18,7 +23,8 @@ public class SearchActionsUser extends javax.swing.JDialog {
         setResizable(false);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.newsfeed = (NewsfeedPage) parent;
-        this.user = user;
+        this.user=this.newsfeed.user;
+        this.friend = user;
         //jLabel1.setText("User "+user.getUsername()+" found. Choose an Option:");
     }
 
@@ -105,17 +111,16 @@ public class SearchActionsUser extends javax.swing.JDialog {
 
     private void viewProfileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewProfileButtonActionPerformed
         //go to profile frame
-            new FriendProfile(user, newsfeed).setVisible(true);  
+            new FriendProfile(friend, newsfeed).setVisible(true);  
             this.dispose();
     }//GEN-LAST:event_viewProfileButtonActionPerformed
 
     private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
-        //removing user from friends list
-        //newsfeed.user is the main user that is using the program
-        //and user is the friend that is being searched for
-        if(this.newsfeed.user.getFriends().contains(this.user))
+        FriendManager userManager=FriendManagerFactory.getFriendManager(user.getUserID());
+        
+        if(userManager.getFriends().contains(friend))
         {
-           //newsfeed.user.removeFriend(user); Eh ely by7sal henaa?
+            FriendServiceManager.getInstance(user).removeFriend(friend.getUsername());
            JOptionPane.showMessageDialog(null, "User removed successfully", "Message", JOptionPane.INFORMATION_MESSAGE);
         } 
         else JOptionPane.showMessageDialog(null, "This user is not added so it cannot be removed.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -124,17 +129,18 @@ public class SearchActionsUser extends javax.swing.JDialog {
 
     private void blockButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_blockButtonActionPerformed
         //blocking user 
-            //newsfeed.user.blockFriend(user);
+            FriendServiceManager.getInstance(user).blockFriend(friend.getUsername());
             JOptionPane.showMessageDialog(null, "User blocked successfully", "Message", JOptionPane.INFORMATION_MESSAGE);
 
         this.dispose();
     }//GEN-LAST:event_blockButtonActionPerformed
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-        //adding a new user to the friends list
-        if(!this.newsfeed.user.getFriends().contains(user))
+        FriendManager userManager=FriendManagerFactory.getFriendManager(user.getUserID());
+        
+        if(!userManager.getFriends().contains(friend))
         {
-            //newsfeed.user.sendRequest(user);
+            FriendRequestManager.getInstance(user.getUserID()).sendRequest(friend);
             JOptionPane.showMessageDialog(null, "Request sent successfully", "Message", JOptionPane.INFORMATION_MESSAGE);
         }
         else JOptionPane.showMessageDialog(null, "This user is already added.", "Error", JOptionPane.ERROR_MESSAGE);
