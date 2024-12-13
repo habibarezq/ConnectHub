@@ -1,6 +1,8 @@
-package Backend;
+package Backend.FriendManagment;
 
 import Backend.FileManagers.*;
+import Backend.Request;
+import Backend.UserManagement.User;
 import Interfaces.*;
 import java.util.ArrayList;
 

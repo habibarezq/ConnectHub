@@ -1,5 +1,6 @@
-package Backend;
+package Backend.FriendManagment;
 
+import Backend.FriendManagment.FriendManager;
 import java.util.HashMap;
 import java.util.Map;
 

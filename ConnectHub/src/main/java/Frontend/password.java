@@ -4,6 +4,7 @@
  */
 package Frontend;
 
+import Backend.UserManagement.User;
 import Backend.Password;
 import Backend.FileManagers.ProfileFileManager;
 import javax.swing.JOptionPane;

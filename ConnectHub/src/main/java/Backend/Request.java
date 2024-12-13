@@ -1,5 +1,8 @@
 package Backend;
 
+import Backend.UserManagement.User;
+import Backend.FriendManagment.FriendManagerFactory;
+import Backend.FriendManagment.FriendManager;
 import Backend.FileManagers.FriendsFileManager;
 import Backend.FileManagers.RequestsFileManager;
 import java.util.UUID;
@@ -15,7 +18,7 @@ public class Request {
         this.sender = sender;
         this.recipient = recipient;
         this.requestStat = "Pending";
-       // this.requestID = UUID.randomUUID().toString();
+        this.requestID = UUID.randomUUID().toString();
 
     }
 

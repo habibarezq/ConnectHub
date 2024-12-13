@@ -1,7 +1,8 @@
-package Backend;
+package Backend.UserManagement;
 
 import Backend.FileManagers.ProfileFileManager;
 import Backend.FileManagers.UserFileManager;
+import Backend.UserProfile;
 import Interfaces.UserManagerInterface;
 import static Backend.Password.*;
 //import static Backend.UserFileManager.readUsers;

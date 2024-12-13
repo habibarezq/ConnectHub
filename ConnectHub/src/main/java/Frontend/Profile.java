@@ -1,5 +1,7 @@
+
 package Frontend;
 
+import Backend.UserManagement.User;
 import javax.swing.*;
 import java.awt.*;
 import Backend.FileManagers.PostsFileManager;
@@ -98,7 +100,7 @@ public class Profile extends javax.swing.JFrame {
                 Image image2 = ImageIO.read(profileFile);
                 if (image2 != null) {
                     // Scale image to fit within the label
-                    Image scaledImage = image2.getScaledInstance(coverLabel.getWidth(), coverLabel.getHeight(), Image.SCALE_SMOOTH);
+                    Image scaledImage = image2.getScaledInstance(profileLabel.getWidth(), profileLabel.getHeight(), Image.SCALE_SMOOTH);
                     profileLabel.setIcon(new ImageIcon(scaledImage));
                 } else {
                     JOptionPane.showMessageDialog(this, "The selected file is not a valid image.", "Invalid Image", JOptionPane.ERROR_MESSAGE);

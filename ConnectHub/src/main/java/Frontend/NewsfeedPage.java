@@ -1,5 +1,9 @@
 package Frontend;
 
+import Backend.UserManagement.User;
+import Backend.FriendManagment.FriendRequestManager;
+import Backend.FriendManagment.FriendServiceManager;
+import Backend.FriendManagment.FriendManagerFactory;
 import Backend.FileManagers.StoriesFileManager;
 import Backend.FileManagers.PostsFileManager;
 import Backend.FileManagers.FriendsFileManager;

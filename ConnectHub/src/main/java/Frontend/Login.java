@@ -1,6 +1,8 @@
 package Frontend;
 
 
+import Backend.UserManagement.User;
+import Backend.UserManagement.UserManager;
 import Backend.FileManagers.UserFileManager;
 import javax.swing.JOptionPane;
 import Backend.*;

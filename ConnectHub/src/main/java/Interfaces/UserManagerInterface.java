@@ -1,6 +1,6 @@
 package Interfaces;
 
-import Backend.User;
+import Backend.UserManagement.User;
 import java.time.LocalDate;
 
 public interface UserManagerInterface {

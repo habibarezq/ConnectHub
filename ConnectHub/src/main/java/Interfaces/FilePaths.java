@@ -17,5 +17,9 @@ public interface FilePaths {
     
     public String NOTIFICATION_FILE_PATH ="notification.txt";
 
+    public String GROUPS_FILE_PATH="groups.txt";
+    
+    public String GROUPSMEMBER_FILE_PATH="groupsMembership.txt";
+
 }
 

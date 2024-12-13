@@ -1,5 +1,6 @@
-package Backend;
+package Backend.NotificationManagment;
 
+import Backend.NotificationManagment.Notification;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -30,10 +31,10 @@ public class NotificationManager {
             default:
                 message = null;
         }
-        String notificationID=UUID.randomUUID().toString();
-        String timestamp=LocalDate.now().toString();
-        boolean status=false;
-        Notification notif = new Notification(notificationID,userID,timestamp,type,message,status);
+        Notification notif = new Notification(userID, type, message);
+        notif.setNotificationID(UUID.randomUUID().toString());
+        notif.setTimestamp(LocalDate.now().toString());
+        notif.setStatus(false);
         notifications.add(notif);
         return notif;
     }
