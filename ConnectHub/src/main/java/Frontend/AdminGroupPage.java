@@ -335,7 +335,7 @@ public class AdminGroupPage extends javax.swing.JFrame {
 
     private void editPostButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPostButtonActionPerformed
         editSelectedPost();
-        
+
     }//GEN-LAST:event_editPostButtonActionPerformed
 
     private void addPostButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPostButtonActionPerformed
@@ -472,6 +472,7 @@ public class AdminGroupPage extends javax.swing.JFrame {
 
                 public void actionPerformed(ActionEvent e) {
                     JFileChooser fileChooser = new JFileChooser();
+                    fileChooser.setCurrentDirectory(new File("."));
                     int result = fileChooser.showOpenDialog(null);
                     if (result == JFileChooser.APPROVE_OPTION) {
                         File selectedFile = fileChooser.getSelectedFile();
@@ -514,22 +515,20 @@ public class AdminGroupPage extends javax.swing.JFrame {
         }
     }
 
-    
-       public void deleteSelectedPost() {
+    public void deleteSelectedPost() {
         if (selectedPost != null) {
-           
-                ArrayList<GroupPost> posts = GroupPostsFileManager.getInstance().getPosts();
-                posts.remove(selectedPost);
-                GroupPostsFileManager.getInstance().saveToFile(posts);
-                JOptionPane.showMessageDialog(null, "Post deleted successfully!");
-                // Refresh the posts display
-                uploadPostsFunction(postsScrollPane, GroupPostsFileManager.getInstance().getPosts());
-            }
-        else {
+
+            ArrayList<GroupPost> posts = GroupPostsFileManager.getInstance().getPosts();
+            posts.remove(selectedPost);
+            GroupPostsFileManager.getInstance().saveToFile(posts);
+            JOptionPane.showMessageDialog(null, "Post deleted successfully!");
+            // Refresh the posts display
+            uploadPostsFunction(postsScrollPane, GroupPostsFileManager.getInstance().getPosts());
+        } else {
             JOptionPane.showMessageDialog(null, "No post selected to delete!");
         }
     }
-    
+
     private void handleMemberSelection(String username) {
         GroupUser user = MembershipManager.getInstance(groupId).getGroupUserByUsername(username);
 

@@ -192,16 +192,18 @@ public class CreatorGroupPage extends javax.swing.JFrame {
         System.out.println("Selected post: " + selectedPost.getContentTxt());
     }
 
-     public void editSelectedPost() {
+    public void editSelectedPost() {
         if (selectedPost != null) {
             JTextField contentField = new JTextField(selectedPost.getContentTxt());
             JTextField imagePathField = new JTextField(selectedPost.getcontentPath());
+
             JButton browseButton = new JButton("Browse...");
 
             browseButton.addActionListener(new ActionListener() {
-                
+
                 public void actionPerformed(ActionEvent e) {
                     JFileChooser fileChooser = new JFileChooser();
+                    fileChooser.setCurrentDirectory(new File("."));
                     int result = fileChooser.showOpenDialog(null);
                     if (result == JFileChooser.APPROVE_OPTION) {
                         File selectedFile = fileChooser.getSelectedFile();
@@ -244,20 +246,20 @@ public class CreatorGroupPage extends javax.swing.JFrame {
         }
     }
 
-       public void deleteSelectedPost() {
+    public void deleteSelectedPost() {
         if (selectedPost != null) {
-           
-                ArrayList<GroupPost> posts = GroupPostsFileManager.getInstance().getPosts();
-                posts.remove(selectedPost);
-                GroupPostsFileManager.getInstance().saveToFile(posts);
-                JOptionPane.showMessageDialog(null, "Post deleted successfully!");
-                // Refresh the posts display
-                uploadPostsFunction(postsScrollPane, GroupPostsFileManager.getInstance().getPosts());
-            }
-        else {
+
+            ArrayList<GroupPost> posts = GroupPostsFileManager.getInstance().getPosts();
+            posts.remove(selectedPost);
+            GroupPostsFileManager.getInstance().saveToFile(posts);
+            JOptionPane.showMessageDialog(null, "Post deleted successfully!");
+            // Refresh the posts display
+            uploadPostsFunction(postsScrollPane, GroupPostsFileManager.getInstance().getPosts());
+        } else {
             JOptionPane.showMessageDialog(null, "No post selected to delete!");
         }
     }
+
     private void startup() //MANAGEMENT OR IMAGE
     {
 
@@ -527,7 +529,7 @@ public class CreatorGroupPage extends javax.swing.JFrame {
 
     private void editPostButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPostButtonActionPerformed
         //removes posts from arraylist and from scrollpane
-       editSelectedPost();
+        editSelectedPost();
     }//GEN-LAST:event_editPostButtonActionPerformed
 
     private void deleteGroupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteGroupButtonActionPerformed
