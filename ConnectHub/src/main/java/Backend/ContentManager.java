@@ -92,7 +92,7 @@ public class ContentManager {
             this.groups = new ArrayList<>();
             ArrayList<Group> allGroups=GroupsFileManager.getInstance().getGroups();
             for (Group group : allGroups) {
-                if (group.getCreatorId().equals(userId)) {
+                if (group.getCreatorId().equals(userId) || group.isAdmin(userId) || group.isMember(userId)) {
                     this.groups.add(group);
                 }
             }
