@@ -24,7 +24,7 @@ public class GroupServiceManager { //Greates the group only
         groupsFileManager.getGroups().add(group);
         ContentManager.getInstance(creatorId).getGroups().add(group);
         groupsFileManager.saveToFile(groupsFileManager.getGroups());
-
+        membershipFileManager.saveToFile();
         MembershipManager.getInstance(group.getGroupId()).saveUserData();
         return group;
     }

@@ -2,6 +2,7 @@ package Frontend;
 
 import Backend.FileManagers.UserFileManager;
 import Backend.GroupManagement.Group;
+import Backend.GroupManagement.GroupContentManager;
 import Backend.GroupManagement.GroupPost;
 import Backend.GroupManagement.GroupUser;
 import Backend.GroupManagement.NormalAdmin;
@@ -46,6 +47,7 @@ public class UserGroupPage extends javax.swing.JFrame {
         this.newsfeed = newsfeed;
         this.groupId = groupId;
         this.group = group;
+        this.posts=GroupContentManager.getInstance(groupId).getPosts();
 
         //the user using the app
         this.user = newsfeed.user;
@@ -56,7 +58,7 @@ public class UserGroupPage extends javax.swing.JFrame {
 
     private void startup() //MANAGEMENT OR IMAGE
     {
-
+if(group!=null){
         File groupPicFile = new File(group.getPhotoPath());
         if (groupPicFile.exists()) {
             try {
@@ -76,7 +78,7 @@ public class UserGroupPage extends javax.swing.JFrame {
         groupNameLabel.setText(username);
         groupNameLabel.setFont(new Font("Serif", Font.BOLD, 18));
     }
-
+    }
      private void populatePosts() {
         uploadPostsFunction(postsScrollPane, posts);
     }

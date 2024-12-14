@@ -149,18 +149,19 @@ public class groupPostCreation extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Error creating Post !!", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             // If a file is selected, create a post with the file's path
+            GroupPost post;
             if (this.selectedFile != null) {
-                GroupPost post = new GroupPost(groupId,userId, text, selectedFile.getAbsolutePath(), LocalDateTime.now());
+                post = new GroupPost(groupId,userId, text, selectedFile.getAbsolutePath(), LocalDateTime.now());
                 
-                ContentManager.getInstance(userId).addPost(post);
-                GroupContentManager.getInstance(groupId).addPost(post);
+                
                 
             } else { // If no file is selected, create a post with just the text
 
-                GroupPost post = new GroupPost(groupId,userId, text, "", LocalDateTime.now());
-                ContentManager.getInstance(userId).addPost(post);
-                GroupContentManager.getInstance(groupId).addPost(post);
+                post = new GroupPost(groupId,userId, text, "", LocalDateTime.now());
+                
             }
+            ContentManager.getInstance(userId).addPost(post);
+                GroupContentManager.getInstance(groupId).addPost(post);
         }
 
         // Refresh the posts and update the feed

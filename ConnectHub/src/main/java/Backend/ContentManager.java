@@ -2,7 +2,10 @@ package Backend;
 
 import Backend.FileManagers.*;
 import Backend.GroupManagement.Group;
+import Backend.GroupManagement.GroupRequest;
+import Backend.GroupManagement.GroupRequestManager;
 import Backend.GroupManagement.MembershipManager;
+import Backend.UserManagement.User;
 import java.util.ArrayList;
 
 public class ContentManager {
@@ -143,7 +146,6 @@ public class ContentManager {
             System.out.println("Cannot add story: Author ID mismatch.");
         }
     }
-
     public ArrayList<Group> suggestGroup() {
         ArrayList<Group> suggestions = new ArrayList<>();
         ArrayList<Group> allGroups = GroupsFileManager.getInstance().getGroups();

@@ -1,13 +1,15 @@
 package Frontend;
-
-import Backend.GroupManagement.Group;
+import Backend.FileManagers.*;
+import Backend.GroupManagement.*;
 
 public class SearchActionsGroup extends javax.swing.JDialog {
 
     private NewsfeedPage newsfeed;
     private Group group;
+    private GroupUser member;
+    private String input;
     
-    public SearchActionsGroup(java.awt.Frame parent, boolean modal, Group group) {
+    public SearchActionsGroup(java.awt.Frame parent, boolean modal, Group group,String input) {
         super(parent, modal);
         initComponents();
         setContentPane(mainPanel);
@@ -18,7 +20,8 @@ public class SearchActionsGroup extends javax.swing.JDialog {
         
         this.group = group;
         this.newsfeed = (NewsfeedPage) parent;
-
+        this.member=new GroupUser(newsfeed.user.getUserID());
+        this.input=input;
     }
 
     @SuppressWarnings("unchecked")
@@ -104,11 +107,17 @@ public class SearchActionsGroup extends javax.swing.JDialog {
 
     private void joinButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_joinButtonActionPerformed
         // SEND REQUEST
+        GroupRequestManager manager=GroupRequestManager.getInstance(group.getGroupId());
+        GroupRequest request=new GroupRequest(member, group);
+        request.sendRequest(group.getGroupId());
+        newsfeed.suggestedGroupsModel.removeElement(input);
+        newsfeed.refresh();
     }//GEN-LAST:event_joinButtonActionPerformed
 
     private void viewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewButtonActionPerformed
         // HOW TO KNOW ROLE
-        
+        new RoleManager().checkRole(group,newsfeed.user.getUserID(),newsfeed);
+          
     }//GEN-LAST:event_viewButtonActionPerformed
 
     public static void main(String args[]) {

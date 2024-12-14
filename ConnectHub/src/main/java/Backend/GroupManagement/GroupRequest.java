@@ -59,6 +59,7 @@ public class GroupRequest implements GroupRequestService {
 
         GroupRequestsFileManager.getInstance().getRequests().add(this);
         GroupRequestManager.getInstance(groupId).getGroupRequests().add(this);
+        GroupRequestsFileManager.getInstance().saveToFile(GroupRequestsFileManager.getInstance().getRequests());
         //MUST ADD GROUP TO ARRAYLIST OF GROUPS FOR THIS USER
         System.out.println("Group Request sent From " + user.getGroupUserId() + " --> " + group.getName());
         } 

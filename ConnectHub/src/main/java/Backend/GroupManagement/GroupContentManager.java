@@ -3,6 +3,7 @@ import Backend.FileManagers.GroupPostsFileManager;
 import Backend.FileManagers.PostsFileManager;
 import Backend.Post;
 import java.util.ArrayList;
+import javax.swing.SwingConstants;
 
 public class GroupContentManager {
 
@@ -54,10 +55,11 @@ public class GroupContentManager {
                 posts = new ArrayList<>();
             }
             posts.add(post); //Adds new Post to ArrayList of User's Posts
-            GroupPostsFileManager.getInstance().getPosts().add(post); //Adds new Post to ArrayList of AllPosts
             
+            GroupPostsFileManager.getInstance().getPosts().add(post); //Adds new Post to ArrayList of AllPosts
             GroupPostsFileManager.getInstance().saveToFile(GroupPostsFileManager.getInstance().getPosts()); //Save to File
-
+            
+            
             System.out.println("Post added: " + post.getContentTxt());
         } else {
             System.out.println("Cannot add post: Group ID mismatch.");
@@ -71,7 +73,8 @@ public class GroupContentManager {
             posts.remove(post); //removes new Post to ArrayList of User's Posts
             GroupPostsFileManager.getInstance().getPosts().remove(post); //Adds new Post to ArrayList of AllPosts
             GroupPostsFileManager.getInstance().saveToFile(GroupPostsFileManager.getInstance().getPosts()); //Save to File
-
+PostsFileManager.getInstance().getPosts().remove(post);
+            PostsFileManager.getInstance().saveToFile(PostsFileManager.getInstance().getPosts());
             System.out.println("Post added: " + post.getContentTxt());
         } else {
             System.out.println("Cannot add post: Group ID mismatch.");

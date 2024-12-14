@@ -4,6 +4,7 @@ import Backend.FileManagers.FriendsFileManager;
 import Backend.FileManagers.GroupMembershipFileManager;
 import Backend.FileManagers.GroupsFileManager;
 import Backend.FileManagers.UserFileManager;
+import Backend.ProfileManager;
 import Backend.UserManagement.User;
 import java.util.ArrayList;
 import org.json.JSONArray;
@@ -24,8 +25,12 @@ public class MembershipManager {
     }
 
     public static synchronized MembershipManager getInstance(String groupId) {
+        if (instance != null && !instance.groupId.equals(groupId)) {
+            // Clear the existing instance when the userId changes
+            instance = null;  //SHOULD CALL CONSTRUCTOR HERE TO MAKE A NEW INSTANCE FOR NEW ID 
+        }
         if (instance == null) {
-            instance = new MembershipManager(groupId); // Create a new instance for the specific userId
+            instance = new MembershipManager(groupId);
         }
         return instance;
     }
@@ -99,14 +104,16 @@ public class MembershipManager {
     }
 
     public GroupUser getGroupUserByUsername(String username) {
-        for(NormalAdmin admin:admins)
+        for(GroupUser user:groupUsers)
         {
-            User adminUser=admin.getAdminUser(admin.getGroupUserId());
-            if(adminUser.getUsername().equals(username))
-                return admin;
+            User grpUser=user.getUser(user.getGroupUserId());
+            if(grpUser.getUsername().equals(username))
+                return user;
         }
         return null;
     }
+    
+    
     //NOTE THAT The saveUserData() saves the user's friends and blocked lists back to the friends file. 
     //It updates the corresponding JSON object for the user and saves it using FriendsFileManager.
 }
